@@ -1,11 +1,5 @@
 import { PPQ, type Exercise } from '@/model'
 
-const eighthNotes = Array.from({ length: 16 }, (_, index) => ({
-  voice: 'hihat' as const,
-  tick: index * (PPQ / 2),
-  duration: PPQ / 2,
-}))
-
 export const AUDIO_DEMO_EXERCISE: Exercise = {
   id: 'audio-engine-test',
   title: 'Two-bar audio engine test',
@@ -13,17 +7,48 @@ export const AUDIO_DEMO_EXERCISE: Exercise = {
   timeSignature: { beats: 4, beatValue: 4 },
   bars: 2,
   events: [
-    ...eighthNotes,
-    ...[0, 2, 4, 6].map((beat) => ({
-      voice: 'kick' as const,
-      tick: beat * PPQ,
-      duration: PPQ,
+    { voice: 'hihat', tick: 0, duration: PPQ },
+    { voice: 'hihat', tick: 480, duration: PPQ / 2 },
+    { voice: 'hihat', tick: 720, duration: PPQ / 2 },
+    { voice: 'hihat', tick: 960, duration: PPQ / 4 },
+    { voice: 'hihat', tick: 1_080, duration: PPQ / 4 },
+    { voice: 'hihat', tick: 1_200, duration: PPQ / 4 },
+    { voice: 'hihat', tick: 1_320, duration: PPQ / 4 },
+    ...[1_440, 1_600, 1_760].map((tick) => ({
+      voice: 'hihat' as const,
+      tick,
+      duration: PPQ / 3,
+      tuplet: { num: 3, den: 2 },
     })),
-    ...[1, 3, 5, 7].map((beat) => ({
-      voice: 'snare' as const,
-      tick: beat * PPQ,
-      duration: PPQ,
+    { voice: 'hihat', tick: 1_920, duration: PPQ / 2 },
+    { voice: 'hihat', tick: 2_160, duration: PPQ / 2 },
+    { voice: 'hihat', tick: 2_640, duration: PPQ / 2 },
+    { voice: 'hihat', tick: 2_880, duration: PPQ },
+    ...[3_360, 3_520, 3_680].map((tick) => ({
+      voice: 'hihat' as const,
+      tick,
+      duration: PPQ / 3,
+      tuplet: { num: 3, den: 2 },
     })),
+    { voice: 'snare', tick: 480, duration: PPQ / 2 },
+    {
+      voice: 'snare',
+      tick: 1_440,
+      duration: PPQ / 3,
+      tuplet: { num: 3, den: 2 },
+    },
+    { voice: 'snare', tick: 2_400, duration: PPQ / 2 },
+    {
+      voice: 'snare',
+      tick: 3_360,
+      duration: PPQ / 3,
+      tuplet: { num: 3, den: 2 },
+    },
+    { voice: 'kick', tick: 0, duration: PPQ },
+    { voice: 'kick', tick: 960, duration: PPQ },
+    { voice: 'kick', tick: 1_920, duration: PPQ },
+    { voice: 'kick', tick: 2_640, duration: PPQ / 2 },
+    { voice: 'kick', tick: 2_880, duration: PPQ },
   ],
   tier: 'beginner',
   listenFirstAllowed: true,

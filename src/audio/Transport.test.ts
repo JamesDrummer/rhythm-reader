@@ -111,13 +111,15 @@ describe('Transport', () => {
       tick: 3840,
     })
     expect(player.played.filter(({ voice }) => voice === 'hihat')).toHaveLength(
-      16,
+      AUDIO_DEMO_EXERCISE.events.filter(({ voice }) => voice === 'hihat')
+        .length,
     )
     expect(player.played.filter(({ voice }) => voice === 'kick')).toHaveLength(
-      4,
+      AUDIO_DEMO_EXERCISE.events.filter(({ voice }) => voice === 'kick').length,
     )
     expect(player.played.filter(({ voice }) => voice === 'snare')).toHaveLength(
-      4,
+      AUDIO_DEMO_EXERCISE.events.filter(({ voice }) => voice === 'snare')
+        .length,
     )
   })
 
