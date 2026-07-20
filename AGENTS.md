@@ -1,0 +1,1 @@
+Read SPEC.md before any task. This project is built in sequenced milestones; the current milestone will be given in the task prompt. Follow the UI rules in SPEC.md section 6.2 for all UI work. Never add features beyond the current milestone.
