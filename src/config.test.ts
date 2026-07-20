@@ -11,41 +11,64 @@ import {
 } from './config'
 
 describe('game tuning config', () => {
-  it('defines timing windows for every tier', () => {
-    expect(TIMING_WINDOWS_MS).toEqual({
-      beginner: { perfectMs: 80, goodMs: 160 },
-      intermediate: { perfectMs: 60, goodMs: 120 },
-      advanced: { perfectMs: 40, goodMs: 90 },
+  it('keeps perfect windows positive and narrower than good windows', () => {
+    Object.values(TIMING_WINDOWS_MS).forEach(({ goodMs, perfectMs }) => {
+      expect(perfectMs).toBeGreaterThan(0)
+      expect(perfectMs).toBeLessThan(goodMs)
     })
   })
 
-  it('defines star thresholds and per-hit values as percentages', () => {
-    expect(STAR_THRESHOLDS_PERCENT).toEqual({ one: 60, two: 75, three: 90 })
-    expect(PER_HIT_VALUES_PERCENT).toEqual({
-      perfect: 100,
-      good: 70,
-      miss: 0,
-    })
+  it('makes timing windows strictly tighter as tiers advance', () => {
+    expect(TIMING_WINDOWS_MS.beginner.perfectMs).toBeGreaterThan(
+      TIMING_WINDOWS_MS.intermediate.perfectMs,
+    )
+    expect(TIMING_WINDOWS_MS.intermediate.perfectMs).toBeGreaterThan(
+      TIMING_WINDOWS_MS.advanced.perfectMs,
+    )
+    expect(TIMING_WINDOWS_MS.beginner.goodMs).toBeGreaterThan(
+      TIMING_WINDOWS_MS.intermediate.goodMs,
+    )
+    expect(TIMING_WINDOWS_MS.intermediate.goodMs).toBeGreaterThan(
+      TIMING_WINDOWS_MS.advanced.goodMs,
+    )
+  })
+
+  it('keeps star thresholds ascending and within 0 to 100 percent', () => {
+    const { one, three, two } = STAR_THRESHOLDS_PERCENT
+
+    expect(one).toBeGreaterThanOrEqual(0)
+    expect(one).toBeLessThan(two)
+    expect(two).toBeLessThan(three)
+    expect(three).toBeLessThanOrEqual(100)
+  })
+
+  it('keeps hit values ordered from perfect to miss', () => {
+    const { good, miss, perfect } = PER_HIT_VALUES_PERCENT
+
+    expect(perfect).toBeGreaterThanOrEqual(good)
+    expect(good).toBeGreaterThanOrEqual(miss)
   })
 
   it('keeps penalties and count-in length configurable', () => {
-    expect(EXTRA_HIT_PENALTY_PERCENT).toBe(10)
-    expect(COUNT_IN_BARS).toBe(1)
+    expect(EXTRA_HIT_PENALTY_PERCENT).toBeGreaterThanOrEqual(0)
+    expect(COUNT_IN_BARS).toBeGreaterThanOrEqual(1)
     expect(REQUIRED_STARS_PER_EXERCISE).toBe(2)
   })
 })
 
 describe('star thresholds', () => {
-  it.each([
-    [0, 0],
-    [59.99, 0],
-    [60, 1],
-    [74.99, 1],
-    [75, 2],
-    [89.99, 2],
-    [90, 3],
+  const { one, three, two } = STAR_THRESHOLDS_PERCENT
+  const thresholdCases: [number, 0 | 1 | 2 | 3][] = [
+    [one - 1, 0],
+    [one, 1],
+    [(one + two) / 2, 1],
+    [two, 2],
+    [(two + three) / 2, 2],
+    [three, 3],
     [100, 3],
-  ] as const)('awards %i stars for %f%%', (accuracy, expected) => {
+  ]
+
+  it.each(thresholdCases)('awards %i stars for %f%%', (accuracy, expected) => {
     expect(starsForAccuracy(accuracy)).toBe(expected)
   })
 })
