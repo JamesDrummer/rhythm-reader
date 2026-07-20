@@ -28,6 +28,12 @@ export const EXTRA_HIT_PENALTY_PERCENT = 10
 export const REQUIRED_STARS_PER_EXERCISE = 2
 export const COUNT_IN_BARS = 1
 
+export const AUDIO_SCHEDULER = {
+  intervalMs: 25,
+  lookaheadSeconds: 0.1,
+  startDelaySeconds: 0.05,
+} as const
+
 export type StarRating = 0 | 1 | 2 | 3
 
 export interface ExerciseProgress {
