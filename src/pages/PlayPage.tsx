@@ -21,6 +21,10 @@ interface AudioEngine {
 
 const demoExerciseTicks =
   ticksPerBar(AUDIO_DEMO_EXERCISE.timeSignature) * AUDIO_DEMO_EXERCISE.bars
+const ONE_SYSTEM_DEMO_EXERCISE = {
+  ...AUDIO_DEMO_EXERCISE,
+  notationSystems: 1 as const,
+}
 
 function createAudioContext(): AudioContext {
   const AudioContextConstructor =
@@ -215,11 +219,24 @@ export function PlayPage() {
           </div>
         </div>
 
-        <Notation
-          clock={notationClock}
-          exercise={AUDIO_DEMO_EXERCISE}
-          overlayRef={overlayRef}
-        />
+        <div className="space-y-4">
+          <h2 className="text-base font-semibold">
+            Two-system layout (default)
+          </h2>
+          <Notation
+            clock={notationClock}
+            exercise={AUDIO_DEMO_EXERCISE}
+            overlayRef={overlayRef}
+          />
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-base font-semibold">One-system layout</h2>
+          <Notation
+            exercise={ONE_SYSTEM_DEMO_EXERCISE}
+            label="Audio demo exercise in one-system drum notation"
+          />
+        </div>
 
         <div className="flex flex-wrap gap-4">
           <Button

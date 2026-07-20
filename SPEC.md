@@ -60,6 +60,7 @@ Project: Rhythm Reader \| Status: Ready for build \| Owner: James Bracey \| Last
 ## 2.5 Notation
 - Proper percussion staff notation: 5-line stave, percussion clef, standard drum kit mapping (hi-hat = x notehead above top line, snare = third space, kick = bottom space).
 - Static bar(s) on screen with a scrolling playhead. No note-highway scrolling.
+- **Notation layout (per exercise):** either **two systems** (hands stems up, kick stems down as separate voices; the default) or **one system** (all voices merged into single stem-up chords, beamed together). When simultaneous notes in a one-system exercise have different written durations, the chord takes the shortest duration (standard kit-chart convention); simultaneous notes may not disagree about tuplets.
 - **v1 rhythmic scope:** quarter notes, 8th notes, 16th notes, 8th-note triplets, and rests. 4/4 only in the UI.
 - **Architecture requirement:** the data model, engine, renderer and scoring must all be time-signature aware and subdivision-extensible (see 3.2). Compound time (6/8), basic odd time (5/4, 7/8), dotted notes, more tuplets and repeat marks are planned future content and must not require a rewrite.
 ## 2.6 Progression & difficulty design
@@ -79,7 +80,7 @@ Project: Rhythm Reader \| Status: Ready for build \| Owner: James Bracey \| Last
 - Built into the app (a route like `/editor`), designed for James only, but no auth in v1.
 - **Grid input:** step-sequencer style. Rows for kick / snare / hi-hat, columns for the current subdivision grid, click to toggle hits. Grid resolution switchable per beat (16ths vs triplet 8ths) so tuplets and binary subdivisions can coexist in one bar.
 - **Live notation preview** rendered by the same renderer as the game, plus audio preview playback with click.
-- Exercise settings: title, tempo, bars, tier (timing windows), level assignment, `listenFirstAllowed` flag.
+- Exercise settings: title, tempo, bars, tier (timing windows), level assignment, `listenFirstAllowed` flag, notation layout (one or two systems).
 - **Saving (no redeploy needed):** saved exercises write to localStorage and appear immediately as playable Custom Levels on that device. JSON export/import lets James back up exercises or move them between devices. Optionally, exported JSON can be added to the repo's built-in library and deployed for all users.
 - When accounts arrive, custom exercises move server-side and become assignable to individual students.
 ## 2.8 Branding, tone & naming
@@ -119,6 +120,7 @@ interface Exercise {
   bars: number;
   events: NoteEvent[];        // rests are derived from gaps, but the
                               // renderer computes and displays them explicitly
+  notationSystems?: 1 | 2;   // defaults to 2 (hands up, kick down)
   tier: "beginner" | "intermediate" | "advanced"; // timing windows
   listenFirstAllowed: boolean;
   modes: ("playAlong" | "memorise")[];
@@ -208,6 +210,21 @@ Implement notation rendering as a hybrid: VexFlow draws the static notation; a t
 - Notation scales responsively (fit-width) while keeping coordinate mapping correct.
 
 Done when: a test page renders a 2-bar exercise using all v1 values (quarters, 8ths, 16ths, triplet 8ths, rests) across 3 voices that visibly looks like correct drum notation; playhead sweeps in perfect sync with the click from Prompt 3; snapshot test of NoteLayout output; the 6/8 proof exercise renders without error on the test page.
+	```
+</details>
+<details>
+<summary>**Prompt 4b - One-system and two-system notation layouts**</summary>
+	```plain text
+Add support for two engraving layouts, driven by a new optional Exercise field notationSystems?: 1 | 2 (default 2 = current behaviour).
+
+- 2 systems (default): current engraving - hands stems up, kick stems down as separate voices.
+- 1 system: all voices render in a single stem-up voice, beamed together. Simultaneous events merge into one chord; where their written durations differ, the chord takes the shortest duration (standard kit-chart convention).
+- Validation: in one-system exercises, simultaneous events must have identical tuplet status; reject with a clear error otherwise.
+- Keep changes inside src/model (type + validation) and src/notation (lane construction). Scoring and audio must be untouched.
+- Update SPEC.md sections 2.5, 2.7 and 3.2 to record the new field, so the editor prompt later exposes it as a setting.
+- Tests: snapshot a one-system render of the audio demo exercise; a mixed-duration simultaneous pair engraves with the shortest duration; validation rejects mismatched tuplets at a shared tick when notationSystems is 1.
+
+Done when: the notation test page shows the same exercise rendered in both layouts; all tests pass.
 	```
 </details>
 <details>

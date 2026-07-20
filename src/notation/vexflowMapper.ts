@@ -65,6 +65,7 @@ interface Lane {
   voices: Voice[]
   stemDirection: number
   restLine: number
+  mergeToShortestDuration?: boolean
 }
 
 interface RenderedEntry {
@@ -158,6 +159,20 @@ function createLanes(exercise: Exercise): Lane[] {
   const lanes: Lane[] = []
   const presentVoices = new Set(exercise.events.map((event) => event.voice))
 
+  if (exercise.notationSystems === 1) {
+    return presentVoices.size === 0
+      ? []
+      : [
+          {
+            id: 'single-system',
+            voices: [...presentVoices],
+            stemDirection: Stem.UP,
+            restLine: 3,
+            mergeToShortestDuration: true,
+          },
+        ]
+  }
+
   if (presentVoices.has('hihat') || presentVoices.has('snare')) {
     if (canShareHandLane(exercise.events)) {
       lanes.push({
@@ -201,10 +216,25 @@ function createLanes(exercise: Exercise): Lane[] {
 function tupletSpecs(
   events: readonly NoteEvent[],
   barStart: number,
+  mergeToShortestDuration: boolean,
 ): TupletSpec[] {
   const specs = new Map<string, TupletSpec>()
+  const shortestEventsByTick = new Map<number, NoteEvent>()
 
-  for (const event of events) {
+  if (mergeToShortestDuration) {
+    for (const event of events) {
+      const shortest = shortestEventsByTick.get(event.tick)
+      if (!shortest || event.duration < shortest.duration) {
+        shortestEventsByTick.set(event.tick, event)
+      }
+    }
+  }
+
+  const sourceEvents = mergeToShortestDuration
+    ? [...shortestEventsByTick.values()]
+    : events
+
+  for (const event of sourceEvents) {
     if (!event.tuplet) continue
     const localTick = event.tick - barStart
     const span = event.duration * event.tuplet.num
@@ -258,6 +288,7 @@ function buildTimeline(
   barStart: number,
   barTicks: number,
   timeSignature: TimeSignature,
+  mergeToShortestDuration = false,
 ): TimelineEntry[] {
   const localEvents = new Map<number, NoteEvent[]>()
   for (const event of events) {
@@ -267,7 +298,7 @@ function buildTimeline(
     localEvents.set(localTick, atTick)
   }
 
-  const tuplets = tupletSpecs(events, barStart)
+  const tuplets = tupletSpecs(events, barStart, mergeToShortestDuration)
   const tupletsAtTick = new Map(tuplets.map((tuplet) => [tuplet.start, tuplet]))
   const boundaries = groupingBoundaries(timeSignature)
   const entries: TimelineEntry[] = []
@@ -291,7 +322,9 @@ function buildTimeline(
 
     const eventsAtTick = localEvents.get(cursor)
     if (eventsAtTick?.length) {
-      const duration = eventsAtTick[0].duration
+      const duration = mergeToShortestDuration
+        ? Math.min(...eventsAtTick.map((event) => event.duration))
+        : eventsAtTick[0].duration
       entries.push({ tick: cursor, duration, events: eventsAtTick })
       cursor += duration
       continue
@@ -369,6 +402,7 @@ function renderBar(
       barStart,
       barTicks,
       exercise.timeSignature,
+      lane.mergeToShortestDuration,
     )
     const rendered: RenderedEntry[] = timeline.map((entry) => ({
       entry,

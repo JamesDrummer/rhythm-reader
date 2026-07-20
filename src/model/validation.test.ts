@@ -124,6 +124,49 @@ describe('exercise validation', () => {
     expect(validateExercise(triplets)).toEqual([])
   })
 
+  it('rejects mismatched tuplets at a shared tick in one-system notation', () => {
+    const issues = validateExercise(
+      exercise({
+        notationSystems: 1,
+        events: [
+          {
+            voice: 'hihat',
+            tick: 0,
+            duration: 160,
+            tuplet: { num: 3, den: 2 },
+          },
+          { voice: 'kick', tick: 0, duration: PPQ },
+        ],
+      }),
+    )
+
+    expect(issues).toContainEqual({
+      code: 'mismatched-tuplets',
+      path: 'events[1].tuplet',
+      message:
+        'Simultaneous events in one-system notation must have identical tuplet status',
+    })
+  })
+
+  it('allows mismatched tuplets at a shared tick in two-system notation', () => {
+    expect(
+      validateExercise(
+        exercise({
+          notationSystems: 2,
+          events: [
+            {
+              voice: 'hihat',
+              tick: 0,
+              duration: 160,
+              tuplet: { num: 3, den: 2 },
+            },
+            { voice: 'kick', tick: 0, duration: PPQ },
+          ],
+        }),
+      ),
+    ).toEqual([])
+  })
+
   it.each([
     [{ num: 0, den: 2 }, 160],
     [{ num: 3, den: 0 }, 160],

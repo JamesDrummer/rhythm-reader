@@ -13,6 +13,7 @@ export type ValidationCode =
   | 'event-out-of-bounds'
   | 'duplicate-event'
   | 'invalid-tuplet'
+  | 'mismatched-tuplets'
 
 export interface ValidationIssue {
   code: ValidationCode
@@ -81,6 +82,7 @@ export function validateExercise(exercise: Exercise): ValidationIssue[] {
       ? barTicks * exercise.bars
       : undefined
   const occupiedStarts = new Set<string>()
+  const tupletStatusByTick = new Map<number, string>()
 
   exercise.events.forEach((event, index) => {
     const path = `events[${index}]`
@@ -159,6 +161,25 @@ export function validateExercise(exercise: Exercise): ValidationIssue[] {
             'Tuplet values must be positive integers and match an integer base duration',
           ),
         )
+      }
+    }
+
+    if (exercise.notationSystems === 1 && Number.isInteger(event.tick)) {
+      const tupletStatus = event.tuplet
+        ? `${event.tuplet.num}:${event.tuplet.den}`
+        : 'straight'
+      const existingStatus = tupletStatusByTick.get(event.tick)
+
+      if (existingStatus !== undefined && existingStatus !== tupletStatus) {
+        issues.push(
+          issue(
+            'mismatched-tuplets',
+            `${path}.tuplet`,
+            'Simultaneous events in one-system notation must have identical tuplet status',
+          ),
+        )
+      } else {
+        tupletStatusByTick.set(event.tick, tupletStatus)
       }
     }
   })

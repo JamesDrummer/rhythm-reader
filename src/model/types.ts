@@ -31,6 +31,7 @@ export interface Exercise {
   timeSignature: TimeSignature
   bars: number
   events: NoteEvent[]
+  notationSystems?: 1 | 2
   tier: Tier
   listenFirstAllowed: boolean
   modes: ExerciseMode[]
