@@ -70,4 +70,24 @@ describe('SamplePlayer', () => {
     immediate.stop()
     expect(stops).toHaveLength(2)
   })
+
+  it('retries loading after a failed sample fetch', async () => {
+    const { context } = createAudioContext()
+    let shouldFail = true
+    const fetchSample = vi.fn(() => {
+      if (shouldFail) {
+        shouldFail = false
+        return Promise.reject(new TypeError('Network request failed'))
+      }
+      return Promise.resolve(new Response(new ArrayBuffer(8)))
+    })
+    const player = new SamplePlayer(context, undefined, fetchSample)
+
+    await expect(player.preload()).rejects.toThrow('Network request failed')
+    expect(player.isReady).toBe(false)
+
+    await player.preload()
+
+    expect(player.isReady).toBe(true)
+  })
 })
