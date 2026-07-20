@@ -1,0 +1,115 @@
+import { StrictMode } from 'react'
+import { cleanup, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { PlayPage } from './PlayPage'
+
+const audio = vi.hoisted(() => {
+  let state: AudioContextState = 'suspended'
+  const close = vi.fn(() => {
+    state = 'closed'
+    return Promise.resolve()
+  })
+  const context = {
+    get currentTime() {
+      return 0
+    },
+    get state() {
+      return state
+    },
+    close,
+  }
+
+  return {
+    close,
+    context,
+    reset() {
+      state = 'suspended'
+      close.mockClear()
+    },
+    unlock() {
+      state = 'running'
+    },
+  }
+})
+
+vi.mock('@/audio', () => {
+  class FakeSamplePlayer {
+    isUnlocked = false
+
+    unlock() {
+      audio.unlock()
+      this.isUnlocked = true
+      return Promise.resolve()
+    }
+
+    preload() {
+      return Promise.resolve()
+    }
+
+    playNow() {}
+  }
+
+  class FakeTransport {
+    start() {
+      return {
+        countInStartTime: 0.05,
+        exerciseStartTime: 3.383,
+        exerciseEndTime: 6.716,
+        exerciseTicks: 1_920,
+        tempo: 72,
+      }
+    }
+
+    stop() {}
+
+    getPosition() {
+      return { phase: 'countIn', audioTime: 0, exerciseTick: -1_920 }
+    }
+  }
+
+  return {
+    createAudioContext: () => audio.context,
+    SamplePlayer: FakeSamplePlayer,
+    Transport: FakeTransport,
+  }
+})
+
+vi.mock('@/notation', () => ({
+  Notation: ({ exercise }: { exercise: { title: string } }) => (
+    <div role="img" aria-label={`${exercise.title} drum notation`} />
+  ),
+}))
+
+afterEach(() => {
+  cleanup()
+  audio.reset()
+})
+
+describe('Play Along page lifecycle', () => {
+  it('keeps a newly-created AudioContext open through the state update', async () => {
+    const user = userEvent.setup()
+    const view = render(
+      <StrictMode>
+        <MemoryRouter initialEntries={['/play/quarter-notes']}>
+          <Routes>
+            <Route path="play/:exerciseId" element={<PlayPage />} />
+          </Routes>
+        </MemoryRouter>
+      </StrictMode>,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Start' }))
+    await waitFor(() =>
+      expect(
+        screen.getByText('Get ready — input starts after four.'),
+      ).toBeInTheDocument(),
+    )
+
+    expect(audio.close).not.toHaveBeenCalled()
+
+    view.unmount()
+    await waitFor(() => expect(audio.close).toHaveBeenCalledOnce())
+  })
+})

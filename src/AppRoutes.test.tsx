@@ -7,7 +7,7 @@ afterEach(cleanup)
 
 const routes = [
   { path: '/', heading: 'Ready for your next rhythm?' },
-  { path: '/play/quarter-notes', heading: 'Exercise: quarter-notes' },
+  { path: '/play/quarter-notes', heading: 'Quarter note pulse' },
   { path: '/editor', heading: 'Exercise editor' },
   { path: '/settings', heading: 'Settings' },
   { path: '/calibrate', heading: 'Latency calibration' },

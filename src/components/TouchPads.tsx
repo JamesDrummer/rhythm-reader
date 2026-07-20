@@ -23,14 +23,14 @@ export function TouchPads({ disabled = false, source }: TouchPadsProps) {
   return (
     <div
       aria-label="Drum touch pads"
-      className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4"
+      className="grid grid-cols-3 gap-2 sm:gap-3"
       role="group"
     >
       {PADS.map(({ hint, label, voice }) => (
         <button
           aria-label={`Play ${label}`}
           className={cn(
-            'min-h-28 touch-manipulation select-none rounded-xl border-2 border-bhda-purple bg-white px-4 py-5 text-bhda-purple shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-purple focus-visible:ring-offset-2 focus-visible:ring-offset-bhda-background active:bg-bhda-purple active:text-white sm:min-h-40',
+            'min-h-24 touch-none select-none rounded-xl border-2 border-bhda-purple bg-white px-2 py-3 text-bhda-purple shadow-[0_4px_0_#614E90] transition-[transform,background-color,color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-purple focus-visible:ring-offset-2 focus-visible:ring-offset-bhda-background active:translate-y-1 active:bg-bhda-purple active:text-white active:shadow-none sm:min-h-32 sm:px-4 sm:py-4',
             disabled && 'cursor-not-allowed opacity-50',
           )}
           disabled={disabled}
@@ -39,8 +39,8 @@ export function TouchPads({ disabled = false, source }: TouchPadsProps) {
           onPointerDown={(event) => strike(event, voice)}
           type="button"
         >
-          <span className="block text-base font-bold">{label}</span>
-          <span className="mt-2 block text-sm font-medium opacity-70">
+          <span className="block text-sm font-bold sm:text-base">{label}</span>
+          <span className="mt-1 hidden text-xs font-medium opacity-70 sm:block sm:text-sm">
             {hint}
           </span>
         </button>
