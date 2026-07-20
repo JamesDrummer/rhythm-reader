@@ -68,7 +68,10 @@ export class SamplePlayer implements TransportVoicePlayer {
   }
 
   preload(): Promise<void> {
-    this.loadPromise ??= this.loadAllSamples()
+    this.loadPromise ??= this.loadAllSamples().catch((error: unknown) => {
+      this.loadPromise = null
+      throw error
+    })
     return this.loadPromise
   }
 

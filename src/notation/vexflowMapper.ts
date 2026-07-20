@@ -79,17 +79,11 @@ interface EventNoteReference {
 }
 
 function durationSpec(ticks: number): string {
-  return (
-    DURATION_SPECS.find((candidate) => candidate.ticks === ticks)?.vex ?? '16'
-  )
-}
-
-function durationOverride(ticks: number): Fraction | undefined {
-  if (DURATION_SPECS.some((candidate) => candidate.ticks === ticks)) {
-    return undefined
+  const spec = DURATION_SPECS.find((candidate) => candidate.ticks === ticks)
+  if (!spec) {
+    throw new RangeError(`Unsupported notation duration: ${ticks} ticks`)
   }
-
-  return new Fraction(ticks * 16_384, PPQ)
+  return spec.vex
 }
 
 function effectiveGrouping(timeSignature: TimeSignature): number[] {
@@ -329,7 +323,6 @@ function createStaveNote(entry: TimelineEntry, lane: Lane): StaveNote {
       ? ['b/4']
       : entry.events.map((event) => DRUM_KEYS[event.voice]),
     duration: `${duration}${isRest ? 'r' : ''}`,
-    durationOverride: tuplet ? undefined : durationOverride(entry.duration),
     clef: 'percussion',
     stemDirection: lane.stemDirection,
   })
