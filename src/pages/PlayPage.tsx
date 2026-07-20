@@ -323,6 +323,8 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
       }
 
       const calloutRating = calloutRatingForHit(
+        exercise,
+        timingWindow,
         currentScore,
         nextHits.length - 1,
       )

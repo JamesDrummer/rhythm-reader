@@ -45,24 +45,29 @@ describe('Play Along live feedback', () => {
     ])
   })
 
-  it('does not show an immediate red callout for an unmatched hit', () => {
+  it('shows no callout for an unmatched hit inside a same-voice Good window', () => {
+    const firstExpectedTime = scoreExercise(exercise, timing, []).noteResults[0]
+      .expectedTimeMs
     const record = scoreExercise(exercise, timing, [
-      { voice: 'kick', timeMs: 3_333 },
+      { voice: 'snare', timeMs: firstExpectedTime },
+      { voice: 'snare', timeMs: firstExpectedTime + timing.goodMs },
     ])
-    const firstExpectedTime = record.noteResults[0].expectedTimeMs
 
-    expect(calloutRatingForHit(record, 0)).toBeNull()
-    expect(
-      visibleNoteFeedback(record, firstExpectedTime, timing.goodMs),
-    ).toEqual([])
-    expect(
-      visibleNoteFeedback(
-        record,
-        firstExpectedTime + timing.goodMs,
-        timing.goodMs,
-      ),
-    ).toEqual([
-      expect.objectContaining({ event: exercise.events[0], rating: 'miss' }),
+    expect(resultForHit(record, 1)).toBeUndefined()
+    expect(calloutRatingForHit(exercise, timing, record, 1)).toBeNull()
+  })
+
+  it('shows an immediate Miss for an unmatched hit outside every same-voice Good window', () => {
+    const firstExpectedTime = scoreExercise(exercise, timing, []).noteResults[0]
+      .expectedTimeMs
+    const record = scoreExercise(exercise, timing, [
+      {
+        voice: 'snare',
+        timeMs: firstExpectedTime + timing.goodMs + 1,
+      },
     ])
+
+    expect(resultForHit(record, 0)).toBeUndefined()
+    expect(calloutRatingForHit(exercise, timing, record, 0)).toBe('miss')
   })
 })

@@ -1,5 +1,11 @@
-import type { NoteEvent } from '@/model'
-import type { HitRating, NoteScoreResult, ScoreRecord } from '@/scoring'
+import type { Exercise, NoteEvent } from '@/model'
+import {
+  classifyLiveHit,
+  type HitRating,
+  type NoteScoreResult,
+  type ScoreRecord,
+  type TierScoringConfig,
+} from '@/scoring'
 
 export interface VisibleNoteFeedback {
   event: NoteEvent
@@ -34,14 +40,23 @@ export function resultForHit(
 }
 
 /**
- * Only matched hits get an immediate callout. An unmatched hit may still be
- * followed by a valid strike inside the note's Good window, so showing a red
- * Miss here would mark the moment as failed too early. The settled note miss
- * is revealed by visibleNoteFeedback once that window closes.
+ * Matched hits get their rating immediately. An unmatched hit only gets an
+ * immediate Miss when it is outside every same-voice Good window; otherwise it
+ * may still resolve differently as more hits arrive.
  */
 export function calloutRatingForHit(
+  exercise: Exercise,
+  config: TierScoringConfig,
   record: ScoreRecord,
   hitIndex: number,
 ): HitRating | null {
-  return resultForHit(record, hitIndex)?.rating ?? null
+  const matchedResult = resultForHit(record, hitIndex)
+  if (matchedResult) return matchedResult.rating
+
+  const hit = record.rawHits[hitIndex]
+  if (!hit) return null
+
+  return classifyLiveHit(exercise, config, hit).rating === 'miss'
+    ? 'miss'
+    : null
 }
