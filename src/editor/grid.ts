@@ -9,6 +9,7 @@ export interface EditorGrid {
 }
 
 const BEATS_PER_BAR = 4
+const SUPPORTED_BINARY_DURATIONS = [PPQ, PPQ / 2, PPQ / 4] as const
 
 export function beatCount(bars: EditorGrid['bars']): number {
   return bars * BEATS_PER_BAR
@@ -20,6 +21,52 @@ export function subdivisionTicks(resolution: BeatResolution): number {
 
 export function subdivisionCount(resolution: BeatResolution): number {
   return resolution === 'sixteenth' ? 4 : 3
+}
+
+export function normaliseDurations(
+  events: readonly NoteEvent[],
+  resolutions: readonly BeatResolution[],
+): NoteEvent[] {
+  return events.map((event) => {
+    const beatIndex = Math.floor(event.tick / PPQ)
+    const resolution = resolutions[beatIndex]
+    if (!resolution) {
+      throw new RangeError(
+        `No grid resolution exists for beat ${beatIndex + 1}`,
+      )
+    }
+
+    if (resolution === 'tripletEighth') {
+      return {
+        voice: event.voice,
+        tick: event.tick,
+        duration: PPQ / 3,
+        tuplet: { num: 3, den: 2 },
+      }
+    }
+
+    const beatEnd = (beatIndex + 1) * PPQ
+    const nextTick = events.reduce(
+      (next, candidate) =>
+        candidate.voice === event.voice &&
+        candidate.tick > event.tick &&
+        candidate.tick < beatEnd
+          ? Math.min(next, candidate.tick)
+          : next,
+      beatEnd,
+    )
+    const availableTicks = nextTick - event.tick
+    const duration = SUPPORTED_BINARY_DURATIONS.find(
+      (candidate) => candidate <= availableTicks,
+    )
+    if (!duration) {
+      throw new RangeError(
+        `Hit at tick ${event.tick} cannot use a supported binary duration`,
+      )
+    }
+
+    return { voice: event.voice, tick: event.tick, duration }
+  })
 }
 
 export function createEditorGrid(bars: EditorGrid['bars'] = 1): EditorGrid {

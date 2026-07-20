@@ -26,6 +26,7 @@ import { ExerciseGrid } from '@/editor/ExerciseGrid'
 import {
   createEditorGrid,
   gridFromExercise,
+  normaliseDurations,
   resizeGrid,
   setBeatResolution,
   type BeatResolution,
@@ -120,7 +121,7 @@ function editorExercise(
     tempo: settings.tempo,
     timeSignature: { beats: 4, beatValue: 4 },
     bars: grid.bars,
-    events: grid.events,
+    events: normaliseDurations(grid.events, grid.resolutions),
     notationSystems: settings.notationSystems,
     tier: settings.tier,
     listenFirstAllowed: settings.listenFirstAllowed,

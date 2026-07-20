@@ -79,7 +79,7 @@ describe('Exercise editor', () => {
       bars: 2,
       modes: ['playAlong', 'memorise'],
       events: [
-        { voice: 'kick', tick: 120, duration: 120 },
+        { voice: 'kick', tick: 120, duration: 240 },
         {
           voice: 'snare',
           tick: 640,
