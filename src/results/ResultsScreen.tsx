@@ -42,6 +42,7 @@ export interface ResultsScreenProps {
   isPlayingLayered: boolean
   layeredPlaybackError?: string | null
   nextExerciseHref: string
+  nextExerciseLabel?: string
   onLayeredPlayback: () => void
   onRetry: () => void
   onStopLayeredPlayback: () => void
@@ -53,6 +54,7 @@ export function ResultsScreen({
   isPlayingLayered,
   layeredPlaybackError,
   nextExerciseHref,
+  nextExerciseLabel = 'Next exercise',
   onLayeredPlayback,
   onRetry,
   onStopLayeredPlayback,
@@ -178,7 +180,7 @@ export function ResultsScreen({
         </Button>
         <Button asChild className="h-12 px-6" variant="outline">
           <Link to={nextExerciseHref}>
-            Next exercise
+            {nextExerciseLabel}
             <ArrowRight aria-hidden="true" className="size-4" />
           </Link>
         </Button>

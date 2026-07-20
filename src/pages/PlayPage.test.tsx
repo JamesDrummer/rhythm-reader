@@ -163,6 +163,7 @@ vi.mock('@/input', async (importOriginal) => {
 
 afterEach(() => {
   cleanup()
+  localStorage.clear()
   audio.reset()
   inputs.reset()
   transport.reset()
@@ -252,12 +253,15 @@ describe('Play Along page lifecycle', () => {
     expect(
       screen.getByRole('link', { name: /Next exercise/ }),
     ).toBeInTheDocument()
+    expect(
+      localStorage.getItem('rhythm-reader:progress:v1:local-device'),
+    ).toContain('quarter-notes')
   })
 
   it('hides the notation after Ready and completes Memorise & Perform', async () => {
     const user = userEvent.setup()
     render(
-      <MemoryRouter initialEntries={['/play/quarter-notes']}>
+      <MemoryRouter initialEntries={['/play/quarter-kick-pulse']}>
         <Routes>
           <Route path="play/:exerciseId" element={<PlayPage />} />
         </Routes>
@@ -265,7 +269,7 @@ describe('Play Along page lifecycle', () => {
     )
 
     expect(
-      screen.getByRole('img', { name: /Quarter note pulse drum notation/ }),
+      screen.getByRole('img', { name: /Kick on the beat drum notation/ }),
     ).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Memorise & Perform' }))
@@ -286,7 +290,7 @@ describe('Play Along page lifecycle', () => {
 
     await waitFor(() =>
       expect(
-        screen.getByRole('heading', { name: 'Quarter note pulse' }),
+        screen.getByRole('heading', { name: 'Kick on the beat' }),
       ).toBeInTheDocument(),
     )
     expect(screen.getByText('Overall accuracy')).toBeInTheDocument()

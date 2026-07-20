@@ -12,9 +12,10 @@ import { TouchPads } from '@/components/TouchPads'
 import { Button } from '@/components/ui/button'
 import { TIMING_WINDOWS_MS } from '@/config'
 import {
-  findPlayAlongExercise,
-  PLAY_ALONG_EXERCISES,
-} from '@/game/playAlongExercises'
+  findCatalogueExercise,
+  useCatalogue,
+  type CatalogueExercise,
+} from '@/content'
 import { calloutRatingForHit, visibleNoteFeedback } from '@/game/liveFeedback'
 import {
   applyDeviceLatencyOffset,
@@ -26,7 +27,7 @@ import {
   type AudioTimeline,
   type InputHit,
 } from '@/input'
-import type { Exercise, ExerciseMode, NoteEvent } from '@/model'
+import type { ExerciseMode, NoteEvent } from '@/model'
 import {
   Notation,
   type NotationClock,
@@ -41,6 +42,7 @@ import {
   type ScoreRecord,
 } from '@/scoring'
 import { ResultsScreen } from '@/results'
+import { useAppServices } from '@/services/useAppServices'
 
 interface AudioEngine {
   context: AudioContext
@@ -112,39 +114,55 @@ function inputStatus(phase: GamePhase, gameMode: ExerciseMode): string {
     : 'Press Start when you are ready.'
 }
 
-function ExerciseNotFound() {
+function ExerciseNotFound({ loading }: { loading: boolean }) {
   return (
     <section className="mx-auto max-w-3xl" aria-labelledby="page-title">
       <p className="text-sm font-semibold uppercase tracking-[0.18em] text-bhda-purple">
         Play Along
       </p>
       <h1 className="mt-3 text-3xl font-bold" id="page-title">
-        Exercise not found
+        {loading ? 'Loading exercise' : 'Exercise not found'}
       </h1>
       <p className="mt-4 text-black/65">
-        Choose one of the three Play Along exercises below.
+        {loading
+          ? 'Getting your rhythm ready…'
+          : 'Return to the levels page and choose an unlocked exercise.'}
       </p>
-      <div className="mt-8 grid gap-3 sm:grid-cols-3">
-        {PLAY_ALONG_EXERCISES.map((exercise) => (
-          <Button asChild key={exercise.id} variant="outline">
-            <Link to={`/play/${exercise.id}`}>{exercise.title}</Link>
-          </Button>
-        ))}
-      </div>
+      {!loading && (
+        <Button asChild className="mt-8" variant="outline">
+          <Link to="/">Back to levels</Link>
+        </Button>
+      )}
     </section>
   )
 }
 
 export function PlayPage() {
   const { exerciseId = '' } = useParams()
-  const exercise = findPlayAlongExercise(exerciseId)
+  const { catalogueScope, exerciseSource } = useAppServices()
+  const { levels, loading } = useCatalogue(exerciseSource, catalogueScope)
+  const catalogueExercise = findCatalogueExercise(levels, exerciseId)
 
-  if (!exercise) return <ExerciseNotFound />
+  if (!catalogueExercise) return <ExerciseNotFound loading={loading} />
 
-  return <PlayableExercise exercise={exercise} key={exercise.id} />
+  return (
+    <PlayableExercise
+      catalogueExercise={catalogueExercise}
+      catalogue={levels}
+      key={catalogueExercise.exercise.id}
+    />
+  )
 }
 
-function PlayableExercise({ exercise }: { exercise: Exercise }) {
+function PlayableExercise({
+  catalogue,
+  catalogueExercise,
+}: {
+  catalogue: readonly import('@/model').Level[]
+  catalogueExercise: CatalogueExercise
+}) {
+  const { exercise } = catalogueExercise
+  const { progressScope, progressStore } = useAppServices()
   const engineRef = useRef<AudioEngine | null>(null)
   const timingRef = useRef<TransportTiming | null>(null)
   const transportModeRef = useRef<TransportMode | null>(null)
@@ -267,6 +285,19 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
 
     setInputsActive(false)
     const finalScore = scoreExercise(exercise, timingWindow, hitsRef.current)
+    void progressStore
+      .recordAttempt(
+        progressScope,
+        {
+          exerciseId: exercise.id,
+          accuracyPercent: finalScore.overallAccuracyPercent,
+          stars: finalScore.stars,
+        },
+        catalogue,
+      )
+      .catch(() => {
+        // A failed persistence adapter must not stop the student seeing results.
+      })
     if (selectedMode === 'playAlong') {
       syncLiveFeedback(finalScore, Number.POSITIVE_INFINITY)
     }
@@ -277,6 +308,9 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
     setGamePhase('results')
   }, [
     exercise,
+    catalogue,
+    progressScope,
+    progressStore,
     selectedMode,
     setGamePhase,
     setInputsActive,
@@ -591,17 +625,15 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
   }
 
   if (phase === 'results' && score) {
-    const exerciseIndex = PLAY_ALONG_EXERCISES.findIndex(
-      ({ id }) => id === exercise.id,
-    )
     const nextExercise =
-      PLAY_ALONG_EXERCISES[(exerciseIndex + 1) % PLAY_ALONG_EXERCISES.length]
+      catalogueExercise.level.exercises[catalogueExercise.exerciseIndex + 1]
     return (
       <ResultsScreen
         exerciseTitle={exercise.title}
         isPlayingLayered={isPlayingLayered}
         layeredPlaybackError={layeredPlaybackError}
-        nextExerciseHref={`/play/${nextExercise.id}`}
+        nextExerciseHref={nextExercise ? `/play/${nextExercise.id}` : '/'}
+        nextExerciseLabel={nextExercise ? 'Next exercise' : 'Back to levels'}
         onLayeredPlayback={() => void startLayeredPlayback()}
         onRetry={retry}
         onStopLayeredPlayback={stopLayeredPlayback}

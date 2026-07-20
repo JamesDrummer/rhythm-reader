@@ -36,3 +36,11 @@ export interface Exercise {
   listenFirstAllowed: boolean
   modes: ExerciseMode[]
 }
+
+export interface Level {
+  id: string
+  title: string
+  description: string
+  order: number
+  exercises: Exercise[]
+}

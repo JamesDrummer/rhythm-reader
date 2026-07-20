@@ -14,6 +14,7 @@ export {
   VOICES,
   type Exercise,
   type ExerciseMode,
+  type Level,
   type NoteEvent,
   type Tier,
   type TimeSignature,

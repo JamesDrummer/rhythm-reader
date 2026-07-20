@@ -28,6 +28,10 @@ export const EXTRA_HIT_PENALTY_PERCENT = 10
 export const REQUIRED_STARS_PER_EXERCISE = 2
 export const COUNT_IN_BARS = 1
 
+export function requiredStarsForLevel(exerciseCount: number): number {
+  return REQUIRED_STARS_PER_EXERCISE * exerciseCount
+}
+
 export const AUDIO_SCHEDULER = {
   intervalMs: 25,
   lookaheadSeconds: 0.1,
@@ -63,7 +67,6 @@ export function isNextLevelUnlocked(
   const totalStars = exerciseProgress.reduce((sum, { stars }) => sum + stars, 0)
 
   return (
-    allComplete &&
-    totalStars >= REQUIRED_STARS_PER_EXERCISE * exerciseProgress.length
+    allComplete && totalStars >= requiredStarsForLevel(exerciseProgress.length)
   )
 }

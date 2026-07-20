@@ -1,5 +1,5 @@
 import { TIMING_WINDOWS_MS } from '@/config'
-import { PLAY_ALONG_EXERCISES } from '@/game/playAlongExercises'
+import { BUILT_IN_LEVELS } from '@/content'
 import { scoreExercise } from '@/scoring'
 import { describe, expect, it } from 'vitest'
 import {
@@ -8,19 +8,21 @@ import {
   visibleNoteFeedback,
 } from './liveFeedback'
 
-const exercise = PLAY_ALONG_EXERCISES[0]
+const exercise = BUILT_IN_LEVELS[0].exercises[0]
 const timing = TIMING_WINDOWS_MS[exercise.tier]
 
 describe('Play Along live feedback', () => {
   it('uses the complete score record for the label shown for a hit', () => {
+    const firstExpectedTime = scoreExercise(exercise, timing, []).noteResults[0]
+      .expectedTimeMs
     const record = scoreExercise(exercise, timing, [
-      { voice: 'snare', timeMs: 3_333 + 70 },
+      { voice: 'snare', timeMs: firstExpectedTime + 70 },
     ])
 
     expect(resultForHit(record, 0)?.rating).toBe('perfect')
-    expect(visibleNoteFeedback(record, 3_403, timing.goodMs)).toEqual([
-      expect.objectContaining({ rating: 'perfect' }),
-    ])
+    expect(
+      visibleNoteFeedback(record, firstExpectedTime + 70, timing.goodMs),
+    ).toEqual([expect.objectContaining({ rating: 'perfect' })])
   })
 
   it('waits until the Good window closes before revealing a miss', () => {
