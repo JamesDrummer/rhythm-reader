@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-black/10;
+  }
+
+  html {
+    font-family: theme('fontFamily.sans');
+  }
+
+  body {
+    @apply m-0 min-w-[320px] bg-bhda-background text-bhda-text antialiased;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
