@@ -19,4 +19,12 @@ export class MergedExerciseSource implements ExerciseSource {
     assertValidLevels(levels)
     return levels satisfies Level[]
   }
+
+  subscribe(listener: () => void): () => void {
+    const unsubscribers = this.sources.flatMap((source) => {
+      const unsubscribe = source.subscribe?.(listener)
+      return unsubscribe ? [unsubscribe] : []
+    })
+    return () => unsubscribers.forEach((unsubscribe) => unsubscribe())
+  }
 }

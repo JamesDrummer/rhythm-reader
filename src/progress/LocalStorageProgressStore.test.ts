@@ -21,6 +21,26 @@ describe('LocalStorageProgressStore', () => {
     ).toBe(true)
   })
 
+  it('keeps custom levels playable without changing built-in progression', async () => {
+    const customLevel = {
+      ...BUILT_IN_LEVELS[0],
+      id: 'custom-level',
+      order: 100,
+      custom: true,
+      exercises: [
+        { ...BUILT_IN_LEVELS[0].exercises[0], id: 'custom-exercise' },
+      ],
+    }
+    const catalogue = [...BUILT_IN_LEVELS, customLevel]
+    const progress = await new LocalStorageProgressStore(localStorage).load(
+      learner,
+      catalogue,
+    )
+
+    expect(progress.levels[customLevel.id].unlocked).toBe(true)
+    expect(progress.levels[BUILT_IN_LEVELS[1].id].unlocked).toBe(false)
+  })
+
   it('unlocks level two only after every level-one exercise is complete with enough stars', async () => {
     const store = new LocalStorageProgressStore(localStorage)
     const firstLevel = BUILT_IN_LEVELS[0]

@@ -19,25 +19,31 @@ export function useCatalogue(
   useEffect(() => {
     let active = true
 
-    void source
-      .loadLevels(scope)
-      .then((nextLevels) => {
-        if (active) {
-          setError(null)
-          setLevels(nextLevels)
-        }
-      })
-      .catch(() => {
-        if (active) {
-          setError('Your exercise library could not be loaded.')
-        }
-      })
-      .finally(() => {
-        if (active) setLoading(false)
-      })
+    const load = () => {
+      void source
+        .loadLevels(scope)
+        .then((nextLevels) => {
+          if (active) {
+            setError(null)
+            setLevels(nextLevels)
+          }
+        })
+        .catch(() => {
+          if (active) {
+            setError('Your exercise library could not be loaded.')
+          }
+        })
+        .finally(() => {
+          if (active) setLoading(false)
+        })
+    }
+
+    load()
+    const unsubscribe = source.subscribe?.(load)
 
     return () => {
       active = false
+      unsubscribe?.()
     }
   }, [scope, source])
 

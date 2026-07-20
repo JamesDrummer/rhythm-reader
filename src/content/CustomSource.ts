@@ -18,6 +18,7 @@ function browserStorage(): Storage | null {
 
 export class CustomSource implements WritableExerciseSource {
   private readonly storage: Storage | null
+  private readonly listeners = new Set<() => void>()
 
   constructor(storage: Storage | null = browserStorage()) {
     this.storage = storage
@@ -29,7 +30,9 @@ export class CustomSource implements WritableExerciseSource {
       if (!raw) return Promise.resolve([])
       const levels = JSON.parse(raw) as Level[]
       assertValidLevels(levels)
-      return Promise.resolve(levels)
+      return Promise.resolve(
+        levels.map((level) => ({ ...level, custom: true })),
+      )
     } catch {
       return Promise.resolve([])
     }
@@ -37,7 +40,22 @@ export class CustomSource implements WritableExerciseSource {
 
   saveLevels(scope: CatalogueScope, levels: readonly Level[]): Promise<void> {
     assertValidLevels(levels)
-    this.storage?.setItem(storageKey(scope), JSON.stringify(levels))
+    const storedLevels = levels.map(
+      ({ description, exercises, id, order, title }): Level => ({
+        id,
+        title,
+        description,
+        order,
+        exercises,
+      }),
+    )
+    this.storage?.setItem(storageKey(scope), JSON.stringify(storedLevels))
+    this.listeners.forEach((listener) => listener())
     return Promise.resolve()
+  }
+
+  subscribe(listener: () => void): () => void {
+    this.listeners.add(listener)
+    return () => this.listeners.delete(listener)
   }
 }

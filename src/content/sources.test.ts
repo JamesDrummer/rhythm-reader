@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import type { Level } from '@/model'
 import { BuiltInSource } from './BuiltInSource'
 import { CustomSource } from './CustomSource'
+import { parseLibraryJson, serialiseLibrary } from './libraryFormat'
 import { MergedExerciseSource } from './MergedExerciseSource'
 
 const scope = { learnerId: 'content-test' }
@@ -34,7 +35,7 @@ describe('exercise sources', () => {
     await source.saveLevels(scope, [customLevel])
 
     expect(await new CustomSource(localStorage).loadLevels(scope)).toEqual([
-      customLevel,
+      { ...customLevel, custom: true },
     ])
     expect(await source.loadLevels({ learnerId: 'another-learner' })).toEqual(
       [],
@@ -57,5 +58,37 @@ describe('exercise sources', () => {
         .flatMap((level) => level.exercises)
         .some((exercise) => exercise.id === 'custom-quarter-note'),
     ).toBe(true)
+  })
+
+  it('notifies a mounted merged catalogue immediately after a custom save', async () => {
+    const custom = new CustomSource(localStorage)
+    const catalogue = new MergedExerciseSource([new BuiltInSource(), custom])
+    let notifications = 0
+    const unsubscribe = catalogue.subscribe(() => {
+      notifications += 1
+    })
+
+    await custom.saveLevels(scope, [customLevel])
+
+    expect(notifications).toBe(1)
+    expect(await catalogue.loadLevels(scope)).toContainEqual({
+      ...customLevel,
+      custom: true,
+    })
+    unsubscribe()
+  })
+
+  it('restores custom content after export and a complete storage wipe', async () => {
+    const source = new CustomSource(localStorage)
+    await source.saveLevels(scope, [customLevel])
+    const exported = serialiseLibrary(await source.loadLevels(scope))
+
+    localStorage.clear()
+    expect(await source.loadLevels(scope)).toEqual([])
+
+    await source.saveLevels(scope, parseLibraryJson(exported))
+    expect(await source.loadLevels(scope)).toEqual([
+      { ...customLevel, custom: true },
+    ])
   })
 })

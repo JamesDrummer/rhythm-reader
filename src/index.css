@@ -8,11 +8,12 @@
   }
 
   html {
+    @apply overflow-x-hidden;
     font-family: theme('fontFamily.sans');
   }
 
   body {
-    @apply m-0 min-w-[320px] bg-bhda-background text-bhda-text antialiased;
+    @apply m-0 min-w-[320px] overflow-x-hidden bg-bhda-background text-bhda-text antialiased;
   }
 
   button,

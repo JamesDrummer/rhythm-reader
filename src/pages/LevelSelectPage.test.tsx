@@ -7,7 +7,7 @@ import {
 } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { BUILT_IN_LEVELS, BuiltInSource } from '@/content'
+import { BUILT_IN_LEVELS, BuiltInSource, CustomSource } from '@/content'
 import { LocalStorageProgressStore } from '@/progress'
 import { AppServicesProvider, type AppServices } from '@/services/AppServices'
 import { LevelSelectPage } from './LevelSelectPage'
@@ -15,8 +15,10 @@ import { LevelSelectPage } from './LevelSelectPage'
 const learner = { learnerId: 'level-page-test' }
 
 function services(store: LocalStorageProgressStore): AppServices {
+  const customSource = new CustomSource(localStorage)
   return {
     catalogueScope: learner,
+    customExerciseSource: customSource,
     exerciseSource: new BuiltInSource(),
     progressScope: learner,
     progressStore: store,

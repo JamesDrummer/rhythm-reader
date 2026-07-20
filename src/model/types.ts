@@ -43,4 +43,6 @@ export interface Level {
   description: string
   order: number
   exercises: Exercise[]
+  /** Runtime catalogue metadata. Omitted from built-in/exported JSON. */
+  custom?: boolean
 }

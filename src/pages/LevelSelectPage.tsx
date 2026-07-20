@@ -24,12 +24,10 @@ function emptySnapshot(levels: readonly Level[]): ProgressSnapshot {
 }
 
 function LevelCard({
-  index,
   level,
   previousLevelProgress,
   progress,
 }: {
-  index: number
   level: Level
   previousLevelProgress?: LevelProgressState
   progress: ProgressSnapshot
@@ -50,7 +48,7 @@ function LevelCard({
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold uppercase tracking-widest text-bhda-purple">
-            Level {index + 1}
+            {level.custom ? 'Custom level' : `Level ${level.order}`}
           </p>
           <h2 className="mt-2 text-xl font-bold" id={`${level.id}-title`}>
             {level.title}
@@ -250,7 +248,6 @@ export function LevelSelectPage() {
       <div className="mt-8 space-y-6">
         {levels.map((level, index) => (
           <LevelCard
-            index={index}
             key={level.id}
             level={level}
             previousLevelProgress={

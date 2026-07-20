@@ -5,6 +5,7 @@ import {
   MergedExerciseSource,
   type CatalogueScope,
   type ExerciseSource,
+  type WritableExerciseSource,
 } from '@/content'
 import {
   LocalStorageProgressStore,
@@ -14,16 +15,20 @@ import {
 
 export interface AppServices {
   catalogueScope: CatalogueScope
+  customExerciseSource: WritableExerciseSource
   exerciseSource: ExerciseSource
   progressScope: ProgressScope
   progressStore: ProgressStore
 }
 
+const localCustomSource = new CustomSource()
+
 export const localServices: AppServices = {
   catalogueScope: { learnerId: 'local-device' },
+  customExerciseSource: localCustomSource,
   exerciseSource: new MergedExerciseSource([
     new BuiltInSource(),
-    new CustomSource(),
+    localCustomSource,
   ]),
   progressScope: { learnerId: 'local-device' },
   progressStore: new LocalStorageProgressStore(),

@@ -7,7 +7,7 @@ export function deriveLevelProgress(
   exerciseProgress: Readonly<Record<string, ExerciseProgressRecord>>,
 ): Record<string, LevelProgressState> {
   const states: Record<string, LevelProgressState> = {}
-  let unlocked = true
+  let builtInUnlocked = true
 
   for (const level of levels) {
     const records = level.exercises.map(({ id }) => exerciseProgress[id])
@@ -21,21 +21,23 @@ export function deriveLevelProgress(
 
     states[level.id] = {
       levelId: level.id,
-      unlocked,
+      unlocked: level.custom ? true : builtInUnlocked,
       completedExercises,
       exerciseCount: level.exercises.length,
       totalStars,
       requiredStars: requiredStarsForLevel(level.exercises.length),
     }
 
-    unlocked =
-      unlocked &&
-      isNextLevelUnlocked(
-        records.map((record) => ({
-          completed: record?.completed ?? false,
-          stars: record?.bestStars ?? 0,
-        })),
-      )
+    if (!level.custom) {
+      builtInUnlocked =
+        builtInUnlocked &&
+        isNextLevelUnlocked(
+          records.map((record) => ({
+            completed: record?.completed ?? false,
+            stars: record?.bestStars ?? 0,
+          })),
+        )
+    }
   }
 
   return states

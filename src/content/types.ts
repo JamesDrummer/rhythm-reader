@@ -7,6 +7,7 @@ export interface CatalogueScope {
 
 export interface ExerciseSource {
   loadLevels(scope: CatalogueScope): Promise<readonly Level[]>
+  subscribe?(listener: () => void): () => void
 }
 
 export interface WritableExerciseSource extends ExerciseSource {
