@@ -42,6 +42,7 @@ import {
   type ScoreRecord,
 } from '@/scoring'
 import { ResultsScreen } from '@/results'
+import { deriveLevelProgress, type ProgressSnapshot } from '@/progress'
 import { useAppServices } from '@/services/useAppServices'
 
 interface AudioEngine {
@@ -137,13 +138,69 @@ function ExerciseNotFound({ loading }: { loading: boolean }) {
   )
 }
 
+function ExerciseLocked() {
+  return (
+    <section className="mx-auto max-w-3xl" aria-labelledby="page-title">
+      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-bhda-purple">
+        Level locked
+      </p>
+      <h1 className="mt-3 text-3xl font-bold" id="page-title">
+        This one is still locked.
+      </h1>
+      <p className="mt-4 text-black/65">
+        Earn more stars in the earlier levels to open it.
+      </p>
+      <Button asChild className="mt-8" variant="outline">
+        <Link to="/">
+          <ArrowLeft aria-hidden="true" className="size-4" />
+          Back to levels
+        </Link>
+      </Button>
+    </section>
+  )
+}
+
 export function PlayPage() {
   const { exerciseId = '' } = useParams()
-  const { catalogueScope, exerciseSource } = useAppServices()
+  const { catalogueScope, exerciseSource, progressScope, progressStore } =
+    useAppServices()
   const { levels, loading } = useCatalogue(exerciseSource, catalogueScope)
   const catalogueExercise = findCatalogueExercise(levels, exerciseId)
+  const [loadedProgress, setLoadedProgress] = useState<{
+    catalogue: readonly import('@/model').Level[]
+    snapshot: ProgressSnapshot
+  } | null>(null)
 
-  if (!catalogueExercise) return <ExerciseNotFound loading={loading} />
+  useEffect(() => {
+    let active = true
+    void progressStore
+      .load(progressScope, levels)
+      .then((snapshot) => {
+        if (active) setLoadedProgress({ catalogue: levels, snapshot })
+      })
+      .catch(() => {
+        if (active) {
+          setLoadedProgress({
+            catalogue: levels,
+            snapshot: {
+              exercises: {},
+              levels: deriveLevelProgress(levels, {}),
+            },
+          })
+        }
+      })
+    return () => {
+      active = false
+    }
+  }, [levels, progressScope, progressStore])
+
+  const progressLoading = loadedProgress?.catalogue !== levels
+
+  if (loading || progressLoading) return <ExerciseNotFound loading />
+  if (!catalogueExercise) return <ExerciseNotFound loading={false} />
+  if (!loadedProgress.snapshot.levels[catalogueExercise.level.id]?.unlocked) {
+    return <ExerciseLocked />
+  }
 
   return (
     <PlayableExercise

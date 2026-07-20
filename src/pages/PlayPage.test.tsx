@@ -3,6 +3,8 @@ import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { BUILT_IN_LEVELS } from '@/content'
+import { LocalStorageProgressStore } from '@/progress'
 import { PlayPage } from './PlayPage'
 
 const audio = vi.hoisted(() => {
@@ -169,7 +171,54 @@ afterEach(() => {
   transport.reset()
 })
 
+async function unlockLevelTwo() {
+  const store = new LocalStorageProgressStore(localStorage)
+  for (const exercise of BUILT_IN_LEVELS[0].exercises) {
+    await store.recordAttempt(
+      { learnerId: 'local-device' },
+      { exerciseId: exercise.id, accuracyPercent: 75, stars: 2 },
+      BUILT_IN_LEVELS,
+    )
+  }
+}
+
 describe('Play Along page lifecycle', () => {
+  it('blocks a direct link to an exercise in a locked level', async () => {
+    render(
+      <MemoryRouter initialEntries={['/play/quarter-kick-pulse']}>
+        <Routes>
+          <Route path="play/:exerciseId" element={<PlayPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(
+      await screen.findByRole('heading', {
+        name: 'This one is still locked.',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('Earn more stars in the earlier levels to open it.'),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Start' })).toBeNull()
+  })
+
+  it('still allows an exercise in an unlocked level to play', async () => {
+    const user = userEvent.setup()
+    render(
+      <MemoryRouter initialEntries={['/play/quarter-notes']}>
+        <Routes>
+          <Route path="play/:exerciseId" element={<PlayPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    await user.click(await screen.findByRole('button', { name: 'Start' }))
+    expect(
+      await screen.findByText('Get ready — input starts after four.'),
+    ).toBeInTheDocument()
+  })
+
   it('keeps a newly-created AudioContext open through the state update', async () => {
     const user = userEvent.setup()
     const view = render(
@@ -182,7 +231,7 @@ describe('Play Along page lifecycle', () => {
       </StrictMode>,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Start' }))
+    await user.click(await screen.findByRole('button', { name: 'Start' }))
     await waitFor(() =>
       expect(
         screen.getByText('Get ready — input starts after four.'),
@@ -204,13 +253,14 @@ describe('Play Along page lifecycle', () => {
         </Routes>
       </MemoryRouter>,
     )
+    const startButton = await screen.findByRole('button', { name: 'Start' })
     const keyboardBeforeStart = [...inputs.keyboard]
     const touchBeforeStart = [...inputs.touch]
 
     expect(keyboardBeforeStart).toHaveLength(1)
     expect(touchBeforeStart).toHaveLength(1)
 
-    await user.click(screen.getByRole('button', { name: 'Start' }))
+    await user.click(startButton)
     await waitFor(() =>
       expect(
         screen.getByText('Get ready — input starts after four.'),
@@ -233,7 +283,7 @@ describe('Play Along page lifecycle', () => {
       </MemoryRouter>,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Start' }))
+    await user.click(await screen.findByRole('button', { name: 'Start' }))
     await waitFor(() =>
       expect(
         screen.getByText('Get ready — input starts after four.'),
@@ -260,6 +310,7 @@ describe('Play Along page lifecycle', () => {
 
   it('hides the notation after Ready and completes Memorise & Perform', async () => {
     const user = userEvent.setup()
+    await unlockLevelTwo()
     render(
       <MemoryRouter initialEntries={['/play/quarter-kick-pulse']}>
         <Routes>
@@ -269,7 +320,9 @@ describe('Play Along page lifecycle', () => {
     )
 
     expect(
-      screen.getByRole('img', { name: /Kick on the beat drum notation/ }),
+      await screen.findByRole('img', {
+        name: /Kick on the beat drum notation/,
+      }),
     ).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Memorise & Perform' }))
