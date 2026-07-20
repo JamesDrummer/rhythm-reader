@@ -1,10 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { SamplePlayer, Transport, type TransportMode } from '@/audio'
 import { AUDIO_DEMO_EXERCISE } from '@/audio/demoExercise'
 import { PageIntro } from '@/components/PageIntro'
 import { Button } from '@/components/ui/button'
 import { ticksPerBar, type Voice } from '@/model'
+import {
+  Notation,
+  type NotationClock,
+  type NoteFeedback,
+  type OverlayHandle,
+} from '@/notation'
+import { SIX_EIGHT_PROOF_EXERCISE } from '@/notation/demoExercises'
 
 interface AudioEngine {
   context: AudioContext
@@ -34,6 +41,18 @@ function createAudioContext(): AudioContext {
 export function PlayPage() {
   const { exerciseId = 'Unknown exercise' } = useParams()
   const engineRef = useRef<AudioEngine | null>(null)
+  const overlayRef = useRef<OverlayHandle>(null)
+  const notationClock = useMemo<NotationClock>(
+    () => ({
+      getElapsedTicks: () => {
+        const position = engineRef.current?.transport.getPosition()
+        return position && position.phase !== 'idle'
+          ? position.exerciseTick
+          : -1
+      },
+    }),
+    [],
+  )
   const [audioReady, setAudioReady] = useState(false)
   const [busy, setBusy] = useState(false)
   const [countInBeat, setCountInBeat] = useState<number | null>(null)
@@ -157,10 +176,19 @@ export function PlayPage() {
     }
   }
 
+  const showFeedback = (feedback: NoteFeedback) => {
+    const voice: Voice =
+      feedback === 'perfect' ? 'hihat' : feedback === 'good' ? 'snare' : 'kick'
+    const event = AUDIO_DEMO_EXERCISE.events.find(
+      (candidate) => candidate.voice === voice,
+    )
+    if (event) overlayRef.current?.showFeedback(event, feedback)
+  }
+
   return (
     <PageIntro
-      description="Temporary milestone page: a one-bar count-in and two-bar 80 bpm exercise for checking the Web Audio clock."
-      eyebrow="Audio engine test"
+      description="Temporary milestone page: engraved drum notation, overlay feedback and a playhead driven directly by the Web Audio clock."
+      eyebrow="Notation renderer test"
       title={`Exercise: ${exerciseId}`}
     >
       <div className="space-y-8">
@@ -186,6 +214,12 @@ export function PlayPage() {
             />
           </div>
         </div>
+
+        <Notation
+          clock={notationClock}
+          exercise={AUDIO_DEMO_EXERCISE}
+          overlayRef={overlayRef}
+        />
 
         <div className="flex flex-wrap gap-4">
           <Button
@@ -226,6 +260,45 @@ export function PlayPage() {
               </Button>
             ))}
           </div>
+        </div>
+
+        <div>
+          <h2 className="text-base font-semibold">Overlay feedback check</h2>
+          <p className="mt-2 text-sm leading-6 text-black/70">
+            These checks colour only the transparent overlay; VexFlow stays
+            static underneath.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-4">
+            {(['perfect', 'good', 'miss'] as const).map((feedback) => (
+              <Button
+                key={feedback}
+                onClick={() => showFeedback(feedback)}
+                variant="outline"
+              >
+                {feedback[0].toUpperCase() + feedback.slice(1)}
+              </Button>
+            ))}
+            <Button
+              onClick={() => overlayRef.current?.clearFeedback()}
+              variant="outline"
+            >
+              Clear feedback
+            </Button>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-base font-semibold">6/8 renderer proof</h2>
+            <p className="mt-2 text-sm leading-6 text-black/70">
+              Renderer-only proof: two grouped dotted-quarter pulses. Compound
+              time remains outside the v1 exercise UI.
+            </p>
+          </div>
+          <Notation
+            exercise={SIX_EIGHT_PROOF_EXERCISE}
+            label="6/8 grouped drum notation renderer proof"
+          />
         </div>
       </div>
     </PageIntro>
