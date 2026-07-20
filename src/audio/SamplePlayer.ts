@@ -1,5 +1,10 @@
 import type { Voice } from '@/model'
-import type { AudioVoice, ScheduledVoice, TransportVoicePlayer } from './types'
+import type {
+  AudioVoice,
+  PlayAtOptions,
+  ScheduledVoice,
+  TransportVoicePlayer,
+} from './types'
 
 const baseUrl = import.meta.env.BASE_URL
 
@@ -102,7 +107,11 @@ export class SamplePlayer implements TransportVoicePlayer {
     this.unlocked = true
   }
 
-  playAt(voice: AudioVoice, time: number): ScheduledVoice {
+  playAt(
+    voice: AudioVoice,
+    time: number,
+    options: PlayAtOptions = {},
+  ): ScheduledVoice {
     if (!this.isUnlocked) throw new AudioLockedError()
 
     const buffer = this.buffers.get(voice)
@@ -113,7 +122,17 @@ export class SamplePlayer implements TransportVoicePlayer {
     source.buffer = buffer
     gain.gain.value = VOICE_LEVELS[voice]
     source.connect(gain)
-    gain.connect(this.context.destination)
+    const studentPan =
+      options.layer === 'student'
+        ? this.context.createStereoPanner?.()
+        : undefined
+    if (studentPan) {
+      studentPan.pan.value = 0.22
+      gain.connect(studentPan)
+      studentPan.connect(this.context.destination)
+    } else {
+      gain.connect(this.context.destination)
+    }
     source.start(Math.max(time, this.context.currentTime))
 
     let stopped = false

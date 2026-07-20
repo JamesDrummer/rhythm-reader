@@ -7,11 +7,17 @@ import {
   type Exercise,
 } from '@/model'
 import { AudioLockedError, SamplesNotLoadedError } from './SamplePlayer'
-import type { AudioVoice, ScheduledVoice, TransportVoicePlayer } from './types'
+import type {
+  AudioVoice,
+  PlaybackLayer,
+  ScheduledVoice,
+  TransportVoicePlayer,
+} from './types'
 
-export type TransportMode = 'attempt' | 'playback'
+export type TransportMode = 'attempt' | 'playback' | 'layered'
 export type TransportPhase = 'idle' | 'countIn' | 'exercise' | 'ended'
-export type ScheduleKind = 'countInClick' | 'exerciseClick' | 'note'
+export type ScheduleKind =
+  'countInClick' | 'exerciseClick' | 'note' | 'studentHit'
 
 export interface ScheduleInfo {
   kind: ScheduleKind
@@ -21,6 +27,13 @@ export interface ScheduleInfo {
   audioTime: number
   bar: number
   beat?: number
+  layer?: PlaybackLayer
+}
+
+export interface RecordedHit {
+  voice: Exercise['events'][number]['voice']
+  /** Hit time from the start of the count-in. */
+  timeMs: number
 }
 
 export interface CountInBeatInfo {
@@ -48,6 +61,8 @@ export interface TransportTiming {
   exerciseEndTime: number
   exerciseTicks: number
   tempo: number
+  /** May extend slightly for a late recorded hit in layered playback. */
+  playbackEndTime: number
 }
 
 export interface TransportPosition {
@@ -122,6 +137,7 @@ export class Transport {
     exercise: Exercise,
     mode: TransportMode = 'attempt',
     callbacks: TransportCallbacks = {},
+    recordedHits: readonly RecordedHit[] = [],
   ): TransportTiming {
     if (!this.player.isUnlocked) throw new AudioLockedError()
     if (!this.player.isReady) throw new SamplesNotLoadedError()
@@ -141,14 +157,26 @@ export class Transport {
       AUDIO_SCHEDULER.startDelaySeconds +
       tickToSeconds(countInTicks, exercise.tempo)
 
+    const exerciseEndTime =
+      exerciseStartTime + tickToSeconds(exerciseTicks, exercise.tempo)
+    const countInStartTime =
+      exerciseStartTime - tickToSeconds(countInTicks, exercise.tempo)
+    const finalRecordedHitTime = recordedHits.reduce(
+      (latest, hit) => Math.max(latest, countInStartTime + hit.timeMs / 1_000),
+      exerciseEndTime,
+    )
+    const playbackEndTime =
+      mode === 'layered'
+        ? Math.max(exerciseEndTime, finalRecordedHitTime + 0.05)
+        : exerciseEndTime
+
     this.timing = {
-      countInStartTime:
-        exerciseStartTime - tickToSeconds(countInTicks, exercise.tempo),
+      countInStartTime,
       exerciseStartTime,
-      exerciseEndTime:
-        exerciseStartTime + tickToSeconds(exerciseTicks, exercise.tempo),
+      exerciseEndTime,
       exerciseTicks,
       tempo: exercise.tempo,
+      playbackEndTime,
     }
 
     this.eventQueue = this.buildEventQueue(
@@ -157,17 +185,27 @@ export class Transport {
       this.timing,
       countInTicks,
       barTicks,
+      recordedHits,
     )
     this.callbackQueue = this.buildCallbackQueue(
       exercise,
       this.timing,
       countInTicks,
+      playbackEndTime,
     )
     this.running = true
 
     this.pump()
     this.timer.start(() => this.pumpSafely(), AUDIO_SCHEDULER.intervalMs)
     return this.timing
+  }
+
+  startLayered(
+    exercise: Exercise,
+    recordedHits: readonly RecordedHit[],
+    callbacks: TransportCallbacks = {},
+  ): TransportTiming {
+    return this.start(exercise, 'layered', callbacks, recordedHits)
   }
 
   stop(): void {
@@ -209,6 +247,7 @@ export class Transport {
     timing: TransportTiming,
     countInTicks: number,
     barTicks: number,
+    recordedHits: readonly RecordedHit[],
   ): PlannedEvent[] {
     const countInClicks = generateBeatGrid(
       exercise.timeSignature,
@@ -244,7 +283,7 @@ export class Transport {
     })
 
     const notes =
-      mode === 'playback'
+      mode === 'playback' || mode === 'layered'
         ? exercise.events.map((event): PlannedEvent => ({
             kind: 'note',
             voice: event.voice,
@@ -253,10 +292,37 @@ export class Transport {
               timing.exerciseStartTime +
               tickToSeconds(event.tick, exercise.tempo),
             bar: Math.floor(event.tick / barTicks),
+            layer: 'correct',
           }))
         : []
 
-    return [...countInClicks, ...exerciseClicks, ...notes].sort(
+    const studentHits =
+      mode === 'layered'
+        ? recordedHits.map((hit): PlannedEvent => {
+            const exerciseRelativeTimeMs =
+              hit.timeMs -
+              (timing.exerciseStartTime - timing.countInStartTime) * 1_000
+            return {
+              kind: 'studentHit',
+              voice: hit.voice,
+              tick:
+                (exerciseRelativeTimeMs / 1_000) * (exercise.tempo / 60) * PPQ,
+              audioTime: timing.countInStartTime + hit.timeMs / 1_000,
+              bar: Math.max(
+                0,
+                Math.floor(
+                  ((exerciseRelativeTimeMs / 1_000) *
+                    (exercise.tempo / 60) *
+                    PPQ) /
+                    barTicks,
+                ),
+              ),
+              layer: 'student',
+            }
+          })
+        : []
+
+    return [...countInClicks, ...exerciseClicks, ...notes, ...studentHits].sort(
       (left, right) => left.audioTime - right.audioTime,
     )
   }
@@ -265,6 +331,7 @@ export class Transport {
     exercise: Exercise,
     timing: TransportTiming,
     countInTicks: number,
+    playbackEndTime: number,
   ): PlannedCallback[] {
     const countInCallbacks = generateBeatGrid(
       exercise.timeSignature,
@@ -294,8 +361,8 @@ export class Transport {
           }),
       },
       {
-        audioTime: timing.exerciseEndTime,
-        run: () => this.completeNaturally(),
+        audioTime: playbackEndTime,
+        run: () => this.completeNaturally(playbackEndTime),
       },
     ].sort((left, right) => left.audioTime - right.audioTime)
   }
@@ -320,7 +387,9 @@ export class Transport {
       this.eventQueue[this.nextEventIndex].audioTime < horizon
     ) {
       const event = this.eventQueue[this.nextEventIndex]
-      const scheduledVoice = this.player.playAt(event.voice, event.audioTime)
+      const scheduledVoice = this.player.playAt(event.voice, event.audioTime, {
+        layer: event.layer,
+      })
       this.scheduledVoices.push(scheduledVoice)
       this.scheduledEvents.push(event)
       this.callbacks.onSchedule?.(event)
@@ -338,10 +407,10 @@ export class Transport {
     }
   }
 
-  private completeNaturally(): void {
+  private completeNaturally(playbackEndTime: number): void {
     if (!this.timing) return
     const endInfo = {
-      audioTime: this.timing.exerciseEndTime,
+      audioTime: playbackEndTime,
       tick: this.timing.exerciseTicks,
     }
     this.timer.stop()

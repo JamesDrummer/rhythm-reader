@@ -9,9 +9,19 @@ export interface ScheduledVoice {
   stop(): void
 }
 
+export type PlaybackLayer = 'correct' | 'student'
+
+export interface PlayAtOptions {
+  layer?: PlaybackLayer
+}
+
 export interface TransportVoicePlayer {
   readonly currentTime: number
   readonly isReady: boolean
   readonly isUnlocked: boolean
-  playAt(voice: AudioVoice, time: number): ScheduledVoice
+  playAt(
+    voice: AudioVoice,
+    time: number,
+    options?: PlayAtOptions,
+  ): ScheduledVoice
 }

@@ -41,6 +41,15 @@ export interface VoiceScore {
   meanSignedErrorMs: number | null
 }
 
+export interface ScoreTimeline {
+  /** Start of the exercise after the count-in, on the attempt timeline. */
+  startTimeMs: number
+  /** End of the final bar, on the attempt timeline. */
+  endTimeMs: number
+  /** Start, internal bar lines, and end of the exercise. */
+  barLineTimeMs: number[]
+}
+
 export interface ScoreRecord {
   exerciseId: string
   tier: Tier
@@ -50,6 +59,8 @@ export interface ScoreRecord {
   overallAccuracyPercent: number
   stars: StarRating
   rawHits: CalibratedHit[]
+  /** Everything the results timeline needs, without the original Exercise. */
+  timeline: ScoreTimeline
 }
 
 export interface LiveHitResult {

@@ -200,6 +200,10 @@ export function scoreExercise(
   const extraHitsByVoice = (voice: Voice): number =>
     extraHits.filter(({ hit }) => hit.voice === voice).length
   const overallAccuracyPercent = accuracyPercent(noteResults, extraHits.length)
+  const barTicks = ticksPerBar(exercise.timeSignature)
+  const countInTimeMs =
+    tickToSeconds(barTicks * COUNT_IN_BARS, exercise.tempo) * 1_000
+  const barDurationMs = tickToSeconds(barTicks, exercise.tempo) * 1_000
 
   return {
     exerciseId: exercise.id,
@@ -214,6 +218,14 @@ export function scoreExercise(
     overallAccuracyPercent,
     stars: starsForAccuracy(overallAccuracyPercent),
     rawHits,
+    timeline: {
+      startTimeMs: countInTimeMs,
+      endTimeMs: countInTimeMs + barDurationMs * exercise.bars,
+      barLineTimeMs: Array.from(
+        { length: exercise.bars + 1 },
+        (_, barIndex) => countInTimeMs + barDurationMs * barIndex,
+      ),
+    },
   }
 }
 

@@ -199,6 +199,11 @@ describe('matching and penalties', () => {
     expect(record.rawHits).toEqual(hits)
     expect(record.rawHits).not.toBe(hits)
     expect(record.rawHits[0]).not.toBe(hit)
+    expect(record.timeline).toEqual({
+      startTimeMs: 2_000,
+      endTimeMs: 4_000,
+      barLineTimeMs: [2_000, 4_000],
+    })
   })
 })
 

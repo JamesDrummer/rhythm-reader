@@ -7,6 +7,7 @@ export type {
   LiveHitResult,
   NoteScoreResult,
   ScoreRecord,
+  ScoreTimeline,
   TierScoringConfig,
   VoiceScore,
 } from './types'

@@ -5,6 +5,7 @@ function createAudioContext() {
   let state: AudioContextState = 'suspended'
   const starts: number[] = []
   const stops: number[] = []
+  const pannerValues: { value: number }[] = []
   const buffer = {} as AudioBuffer
 
   const context = {
@@ -24,6 +25,14 @@ function createAudioContext() {
       connect: vi.fn(),
       gain: { value: 1 },
     })),
+    createStereoPanner: vi.fn(() => {
+      const pan = { value: 0 }
+      pannerValues.push(pan)
+      return {
+        connect: vi.fn(),
+        pan,
+      }
+    }),
     createBufferSource: vi.fn(() => ({
       buffer: null,
       connect: vi.fn(),
@@ -32,7 +41,7 @@ function createAudioContext() {
     })),
   } as unknown as AudioContext
 
-  return { context, starts, stops }
+  return { context, pannerValues, starts, stops }
 }
 
 describe('SamplePlayer', () => {
@@ -89,5 +98,19 @@ describe('SamplePlayer', () => {
     await player.preload()
 
     expect(player.isReady).toBe(true)
+  })
+
+  it('places the student layer slightly to the right', async () => {
+    const { context, pannerValues } = createAudioContext()
+    const fetchSample = vi.fn(() =>
+      Promise.resolve(new Response(new ArrayBuffer(8))),
+    )
+    const player = new SamplePlayer(context, undefined, fetchSample)
+
+    await player.unlock()
+    await player.preload()
+    player.playAt('kick', 3, { layer: 'student' })
+
+    expect(pannerValues[0].value).toBe(0.22)
   })
 })

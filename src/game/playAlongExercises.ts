@@ -14,7 +14,7 @@ const quarterNotes: Exercise = {
   notationSystems: 2,
   tier: 'beginner',
   listenFirstAllowed: true,
-  modes: ['playAlong'],
+  modes: ['playAlong', 'memorise'],
 }
 
 const eighthNoteBackbeat: Exercise = {
@@ -43,7 +43,7 @@ const eighthNoteBackbeat: Exercise = {
   notationSystems: 1,
   tier: 'beginner',
   listenFirstAllowed: true,
-  modes: ['playAlong'],
+  modes: ['playAlong', 'memorise'],
 }
 
 const syncopationStarter: Exercise = {
@@ -77,7 +77,7 @@ const syncopationStarter: Exercise = {
   notationSystems: 2,
   tier: 'intermediate',
   listenFirstAllowed: false,
-  modes: ['playAlong'],
+  modes: ['playAlong', 'memorise'],
 }
 
 export const PLAY_ALONG_EXERCISES = [

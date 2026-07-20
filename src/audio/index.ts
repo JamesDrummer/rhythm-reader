@@ -9,6 +9,7 @@ export {
   Transport,
   type CountInBeatInfo,
   type ExerciseBoundaryInfo,
+  type RecordedHit,
   type ScheduleInfo,
   type ScheduleKind,
   type SchedulerTimer,
@@ -22,6 +23,8 @@ export {
   CLICK_VOICES,
   type AudioVoice,
   type ClickVoice,
+  type PlaybackLayer,
+  type PlayAtOptions,
   type ScheduledVoice,
   type TransportVoicePlayer,
 } from './types'

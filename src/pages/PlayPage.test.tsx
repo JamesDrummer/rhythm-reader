@@ -1,5 +1,5 @@
 import { StrictMode } from 'react'
-import { cleanup, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -7,13 +7,14 @@ import { PlayPage } from './PlayPage'
 
 const audio = vi.hoisted(() => {
   let state: AudioContextState = 'suspended'
+  let currentTime = 0
   const close = vi.fn(() => {
     state = 'closed'
     return Promise.resolve()
   })
   const context = {
     get currentTime() {
-      return 0
+      return currentTime
     },
     get state() {
       return state
@@ -24,12 +25,35 @@ const audio = vi.hoisted(() => {
   return {
     close,
     context,
+    advanceTo(time: number) {
+      currentTime = time
+    },
     reset() {
       state = 'suspended'
+      currentTime = 0
       close.mockClear()
     },
     unlock() {
       state = 'running'
+    },
+  }
+})
+
+const transport = vi.hoisted(() => {
+  type Callbacks = {
+    onExerciseEnd?: () => void
+  }
+  let callbacks: Callbacks = {}
+
+  return {
+    finish() {
+      callbacks.onExerciseEnd?.()
+    },
+    reset() {
+      callbacks = {}
+    },
+    setCallbacks(nextCallbacks: Callbacks = {}) {
+      callbacks = nextCallbacks
     },
   }
 })
@@ -61,14 +85,21 @@ vi.mock('@/audio', () => {
   }
 
   class FakeTransport {
-    start() {
+    start(_exercise: unknown, _mode: unknown, callbacks = {}) {
+      transport.setCallbacks(callbacks)
       return {
         countInStartTime: 0.05,
         exerciseStartTime: 3.383,
         exerciseEndTime: 6.716,
         exerciseTicks: 1_920,
         tempo: 72,
+        playbackEndTime: 6.716,
       }
+    }
+
+    startLayered(_exercise: unknown, _hits: unknown, callbacks = {}) {
+      transport.setCallbacks(callbacks)
+      return this.start(_exercise, 'layered', callbacks)
     }
 
     stop() {}
@@ -134,6 +165,7 @@ afterEach(() => {
   cleanup()
   audio.reset()
   inputs.reset()
+  transport.reset()
 })
 
 describe('Play Along page lifecycle', () => {
@@ -188,5 +220,78 @@ describe('Play Along page lifecycle', () => {
     expect(inputs.touch).toEqual(touchBeforeStart)
 
     view.unmount()
+  })
+
+  it('completes Play Along into the full results screen', async () => {
+    const user = userEvent.setup()
+    render(
+      <MemoryRouter initialEntries={['/play/quarter-notes']}>
+        <Routes>
+          <Route path="play/:exerciseId" element={<PlayPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Start' }))
+    await waitFor(() =>
+      expect(
+        screen.getByText('Get ready — input starts after four.'),
+      ).toBeInTheDocument(),
+    )
+
+    act(() => {
+      audio.advanceTo(10)
+      transport.finish()
+    })
+
+    await waitFor(() =>
+      expect(screen.getByText('Where your hits landed')).toBeInTheDocument(),
+    )
+    expect(screen.getByText('Play correct + my hits')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', { name: /Next exercise/ }),
+    ).toBeInTheDocument()
+  })
+
+  it('hides the notation after Ready and completes Memorise & Perform', async () => {
+    const user = userEvent.setup()
+    render(
+      <MemoryRouter initialEntries={['/play/quarter-notes']}>
+        <Routes>
+          <Route path="play/:exerciseId" element={<PlayPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(
+      screen.getByRole('img', { name: /Quarter note pulse drum notation/ }),
+    ).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Memorise & Perform' }))
+    await user.click(screen.getByRole('button', { name: 'Ready' }))
+
+    await waitFor(() =>
+      expect(screen.getByText('From memory…')).toBeInTheDocument(),
+    )
+    expect(
+      screen.queryByRole('img', { name: /drum notation/ }),
+    ).not.toBeInTheDocument()
+    expect(screen.queryByText('Perfect')).not.toBeInTheDocument()
+
+    act(() => {
+      audio.advanceTo(10)
+      transport.finish()
+    })
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole('heading', { name: 'Quarter note pulse' }),
+      ).toBeInTheDocument(),
+    )
+    expect(screen.getByText('Overall accuracy')).toBeInTheDocument()
+    expect(
+      screen.getByRole('img', { name: /^Hit timing timeline/ }),
+    ).toBeInTheDocument()
   })
 })

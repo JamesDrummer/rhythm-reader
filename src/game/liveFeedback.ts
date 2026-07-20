@@ -32,3 +32,16 @@ export function resultForHit(
 ): NoteScoreResult | undefined {
   return record.noteResults.find((result) => result.hitIndex === hitIndex)
 }
+
+/**
+ * Only matched hits get an immediate callout. An unmatched hit may still be
+ * followed by a valid strike inside the note's Good window, so showing a red
+ * Miss here would mark the moment as failed too early. The settled note miss
+ * is revealed by visibleNoteFeedback once that window closes.
+ */
+export function calloutRatingForHit(
+  record: ScoreRecord,
+  hitIndex: number,
+): HitRating | null {
+  return resultForHit(record, hitIndex)?.rating ?? null
+}

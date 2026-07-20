@@ -1,11 +1,4 @@
-import {
-  ArrowLeft,
-  Headphones,
-  Play,
-  RotateCcw,
-  Square,
-  Star,
-} from 'lucide-react'
+import { ArrowLeft, Headphones, Play, Square } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import {
@@ -22,7 +15,7 @@ import {
   findPlayAlongExercise,
   PLAY_ALONG_EXERCISES,
 } from '@/game/playAlongExercises'
-import { resultForHit, visibleNoteFeedback } from '@/game/liveFeedback'
+import { calloutRatingForHit, visibleNoteFeedback } from '@/game/liveFeedback'
 import {
   applyDeviceLatencyOffset,
   KeyboardInput,
@@ -33,7 +26,7 @@ import {
   type AudioTimeline,
   type InputHit,
 } from '@/input'
-import type { Exercise, NoteEvent } from '@/model'
+import type { Exercise, ExerciseMode, NoteEvent } from '@/model'
 import {
   Notation,
   type NotationClock,
@@ -47,6 +40,7 @@ import {
   type HitRating,
   type ScoreRecord,
 } from '@/scoring'
+import { ResultsScreen } from '@/results'
 
 interface AudioEngine {
   context: AudioContext
@@ -103,13 +97,19 @@ function feedbackLabel(rating: HitRating): string {
   return rating === 'perfect' ? 'Perfect' : rating === 'good' ? 'Good' : 'Miss'
 }
 
-function inputStatus(phase: GamePhase): string {
+function inputStatus(phase: GamePhase, gameMode: ExerciseMode): string {
   if (phase === 'countIn') return 'Get ready — input starts after four.'
-  if (phase === 'playing') return 'Play the notes as the line reaches them.'
+  if (phase === 'playing') {
+    return gameMode === 'memorise'
+      ? 'From memory — keep the pulse relaxed.'
+      : 'Play the notes as the line reaches them.'
+  }
   if (phase === 'grace') return 'Hold on — catching the final note.'
   if (phase === 'listening') return 'Listen to the rhythm and follow the score.'
   if (phase === 'loading') return 'Preparing the drum sounds…'
-  return 'Press Start when you are ready.'
+  return gameMode === 'memorise'
+    ? 'Study the notation for as long as you need, then press Ready.'
+    : 'Press Start when you are ready.'
 }
 
 function ExerciseNotFound() {
@@ -135,86 +135,13 @@ function ExerciseNotFound() {
   )
 }
 
-function ResultsStub({
-  exercise,
-  onRetry,
-  score,
-}: {
-  exercise: Exercise
-  onRetry: () => void
-  score: ScoreRecord
-}) {
-  const roundedAccuracy = Math.round(score.overallAccuracyPercent)
-
-  return (
-    <section
-      aria-labelledby="results-title"
-      className="mx-auto max-w-2xl overflow-hidden rounded-2xl border bg-white shadow-sm"
-    >
-      <div className="border-b bg-bhda-purple px-6 py-8 text-center text-white sm:px-10 sm:py-10">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/75">
-          Exercise complete
-        </p>
-        <h1 className="mt-3 text-3xl font-bold sm:text-4xl" id="results-title">
-          {exercise.title}
-        </h1>
-      </div>
-
-      <div className="px-6 py-8 text-center sm:px-10 sm:py-10">
-        <p className="text-6xl font-bold tabular-nums text-bhda-purple sm:text-7xl">
-          {roundedAccuracy}%
-        </p>
-        <p className="mt-2 text-sm font-semibold uppercase tracking-[0.16em] text-black/55">
-          Overall accuracy
-        </p>
-
-        <div
-          aria-label={`${score.stars} out of 3 stars`}
-          className="mt-6 flex justify-center gap-2"
-        >
-          {[1, 2, 3].map((star) => (
-            <Star
-              aria-hidden="true"
-              className={
-                star <= score.stars
-                  ? 'size-9 fill-bhda-purple text-bhda-purple'
-                  : 'size-9 text-black/15'
-              }
-              key={star}
-              strokeWidth={1.8}
-            />
-          ))}
-        </div>
-
-        <p className="mx-auto mt-6 max-w-md text-sm leading-6 text-black/60">
-          Your detailed timing breakdown arrives in the next build. For now,
-          have another go and see if you can add a star.
-        </p>
-
-        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <Button className="h-12 px-6" onClick={onRetry}>
-            <RotateCcw aria-hidden="true" className="size-4" />
-            Retry
-          </Button>
-          <Button asChild className="h-12 px-6" variant="outline">
-            <Link to="/">
-              <ArrowLeft aria-hidden="true" className="size-4" />
-              Back to levels
-            </Link>
-          </Button>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 export function PlayPage() {
   const { exerciseId = '' } = useParams()
   const exercise = findPlayAlongExercise(exerciseId)
 
   if (!exercise) return <ExerciseNotFound />
 
-  return <PlayableExercise exercise={exercise} />
+  return <PlayableExercise exercise={exercise} key={exercise.id} />
 }
 
 function PlayableExercise({ exercise }: { exercise: Exercise }) {
@@ -239,6 +166,13 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
   const [score, setScore] = useState<ScoreRecord | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [inputsEnabled, setInputsEnabled] = useState(false)
+  const [selectedMode, setSelectedMode] = useState<ExerciseMode>(
+    exercise.modes.includes('playAlong') ? 'playAlong' : exercise.modes[0],
+  )
+  const [isPlayingLayered, setIsPlayingLayered] = useState(false)
+  const [layeredPlaybackError, setLayeredPlaybackError] = useState<
+    string | null
+  >(null)
   const timingWindow = TIMING_WINDOWS_MS[exercise.tier]
   const keyboardMapping = useMemo(() => loadKeyboardMapping(), [])
 
@@ -333,13 +267,22 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
 
     setInputsActive(false)
     const finalScore = scoreExercise(exercise, timingWindow, hitsRef.current)
-    syncLiveFeedback(finalScore, Number.POSITIVE_INFINITY)
+    if (selectedMode === 'playAlong') {
+      syncLiveFeedback(finalScore, Number.POSITIVE_INFINITY)
+    }
     runIdRef.current += 1
     engine.transport.stop()
     setScore(finalScore)
     setCountInBeat(null)
     setGamePhase('results')
-  }, [exercise, setGamePhase, setInputsActive, syncLiveFeedback, timingWindow])
+  }, [
+    exercise,
+    selectedMode,
+    setGamePhase,
+    setInputsActive,
+    syncLiveFeedback,
+    timingWindow,
+  ])
 
   useEffect(() => {
     inputHandlerRef.current = (rawHit) => {
@@ -374,12 +317,21 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
       setHitCount(nextHits.length)
 
       const currentScore = scoreExercise(exercise, timingWindow, nextHits)
-      const hitResult = resultForHit(currentScore, nextHits.length - 1)
-      hitCalloutIdRef.current += 1
-      setLatestHit({
-        id: hitCalloutIdRef.current,
-        rating: hitResult?.rating ?? 'miss',
-      })
+      if (selectedMode === 'memorise') {
+        setLatestHit(null)
+        return
+      }
+
+      const calloutRating = calloutRatingForHit(
+        currentScore,
+        nextHits.length - 1,
+      )
+      if (calloutRating) {
+        hitCalloutIdRef.current += 1
+        setLatestHit({ id: hitCalloutIdRef.current, rating: calloutRating })
+      } else {
+        setLatestHit(null)
+      }
       syncLiveFeedback(currentScore, attemptHit.timeMs)
     }
   })
@@ -464,7 +416,9 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
           timingWindow,
           hitsRef.current,
         )
-        syncLiveFeedback(currentScore, elapsedAttemptMs)
+        if (selectedMode === 'playAlong') {
+          syncLiveFeedback(currentScore, elapsedAttemptMs)
+        }
 
         if (
           now >= timing.exerciseEndTime &&
@@ -488,13 +442,14 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
     exercise,
     finaliseAttempt,
     phase,
+    selectedMode,
     setGamePhase,
     setInputsActive,
     syncLiveFeedback,
     timingWindow,
   ])
 
-  const startTransport = async (mode: TransportMode) => {
+  const startTransport = async (mode: Exclude<TransportMode, 'layered'>) => {
     const runId = runIdRef.current + 1
     runIdRef.current = runId
     setInputsActive(false)
@@ -580,6 +535,10 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
   }
 
   const retry = () => {
+    runIdRef.current += 1
+    engineRef.current?.transport.stop()
+    setIsPlayingLayered(false)
+    setLayeredPlaybackError(null)
     setScore(null)
     hitsRef.current = []
     setHitCount(0)
@@ -587,8 +546,66 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
     setGamePhase('ready')
   }
 
+  const startLayeredPlayback = async () => {
+    if (!score) return
+    const runId = runIdRef.current + 1
+    runIdRef.current = runId
+    engineRef.current?.transport.stop()
+    setLayeredPlaybackError(null)
+
+    try {
+      const engine = await prepareAudio()
+      if (!mountedRef.current || runIdRef.current !== runId) return
+      setIsPlayingLayered(true)
+      engine.transport.startLayered(exercise, score.rawHits, {
+        onExerciseEnd: () => {
+          if (runIdRef.current === runId) setIsPlayingLayered(false)
+        },
+        onError: (error) => {
+          if (runIdRef.current !== runId) return
+          setIsPlayingLayered(false)
+          setLayeredPlaybackError(
+            error instanceof Error
+              ? error.message
+              : 'The layered playback stopped unexpectedly.',
+          )
+        },
+      })
+    } catch (error) {
+      if (!mountedRef.current || runIdRef.current !== runId) return
+      setIsPlayingLayered(false)
+      setLayeredPlaybackError(
+        error instanceof Error
+          ? error.message
+          : 'The layered playback could not be started.',
+      )
+    }
+  }
+
+  const stopLayeredPlayback = () => {
+    runIdRef.current += 1
+    engineRef.current?.transport.stop()
+    setIsPlayingLayered(false)
+  }
+
   if (phase === 'results' && score) {
-    return <ResultsStub exercise={exercise} onRetry={retry} score={score} />
+    const exerciseIndex = PLAY_ALONG_EXERCISES.findIndex(
+      ({ id }) => id === exercise.id,
+    )
+    const nextExercise =
+      PLAY_ALONG_EXERCISES[(exerciseIndex + 1) % PLAY_ALONG_EXERCISES.length]
+    return (
+      <ResultsScreen
+        exerciseTitle={exercise.title}
+        isPlayingLayered={isPlayingLayered}
+        layeredPlaybackError={layeredPlaybackError}
+        nextExerciseHref={`/play/${nextExercise.id}`}
+        onLayeredPlayback={() => void startLayeredPlayback()}
+        onRetry={retry}
+        onStopLayeredPlayback={stopLayeredPlayback}
+        score={score}
+      />
+    )
   }
 
   const attemptInProgress = ['countIn', 'playing', 'grace'].includes(phase)
@@ -611,7 +628,7 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
       <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-bhda-purple">
-            Play Along
+            {selectedMode === 'memorise' ? 'Memorise & Perform' : 'Play Along'}
           </p>
           <h1
             className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl"
@@ -630,12 +647,37 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
         </div>
       </div>
 
+      {exercise.modes.length > 1 && (
+        <fieldset
+          className="mt-6 flex flex-wrap gap-2"
+          disabled={phase !== 'ready'}
+        >
+          <legend className="sr-only">Game mode</legend>
+          {exercise.modes.map((mode) => (
+            <Button
+              aria-pressed={selectedMode === mode}
+              className={
+                selectedMode === mode
+                  ? 'border-bhda-purple text-bhda-purple'
+                  : undefined
+              }
+              key={mode}
+              onClick={() => setSelectedMode(mode)}
+              type="button"
+              variant="outline"
+            >
+              {mode === 'memorise' ? 'Memorise & Perform' : 'Play Along'}
+            </Button>
+          ))}
+        </fieldset>
+      )}
+
       <div className="mt-7 overflow-hidden rounded-2xl border bg-white shadow-sm">
         <div className="flex min-h-14 items-center justify-between gap-4 border-b px-4 py-3 sm:px-6">
           <p aria-live="polite" className="text-sm font-semibold text-black/65">
-            {errorMessage ?? inputStatus(phase)}
+            {errorMessage ?? inputStatus(phase, selectedMode)}
           </p>
-          {attemptInProgress && (
+          {attemptInProgress && selectedMode === 'playAlong' && (
             <p className="shrink-0 text-xs font-semibold uppercase tracking-[0.16em] text-bhda-purple">
               {hitCount} {hitCount === 1 ? 'hit' : 'hits'}
             </p>
@@ -643,12 +685,26 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
         </div>
 
         <div className="relative p-3 sm:p-5">
-          <Notation
-            className="shadow-none"
-            clock={notationClock}
-            exercise={exercise}
-            overlayRef={overlayRef}
-          />
+          {selectedMode === 'memorise' && phase !== 'ready' ? (
+            <div className="grid min-h-64 place-items-center rounded-xl bg-bhda-background px-6 py-12 text-center">
+              <div>
+                <p className="text-2xl font-bold text-bhda-purple">
+                  From memory…
+                </p>
+                <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-black/60">
+                  Keep the rhythm in your head, stay relaxed, and trust the
+                  pulse.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <Notation
+              className="shadow-none"
+              clock={notationClock}
+              exercise={exercise}
+              overlayRef={overlayRef}
+            />
+          )}
 
           {phase === 'countIn' && countInBeat !== null && (
             <div
@@ -669,7 +725,7 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
             </div>
           )}
 
-          {latestHit && attemptInProgress && (
+          {latestHit && attemptInProgress && selectedMode === 'playAlong' && (
             <div
               aria-live="polite"
               className={`hit-callout hit-callout-${latestHit.rating}`}
@@ -700,17 +756,19 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
       </div>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-        {exercise.listenFirstAllowed && phase !== 'listening' && (
-          <Button
-            className="h-12 px-6"
-            disabled={controlsDisabled}
-            onClick={() => void startTransport('playback')}
-            variant="outline"
-          >
-            <Headphones aria-hidden="true" className="size-4" />
-            Listen first
-          </Button>
-        )}
+        {selectedMode === 'playAlong' &&
+          exercise.listenFirstAllowed &&
+          phase !== 'listening' && (
+            <Button
+              className="h-12 px-6"
+              disabled={controlsDisabled}
+              onClick={() => void startTransport('playback')}
+              variant="outline"
+            >
+              <Headphones aria-hidden="true" className="size-4" />
+              Listen first
+            </Button>
+          )}
         {phase === 'listening' && (
           <Button
             className="h-12 px-6"
@@ -728,7 +786,11 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
             onClick={() => void startTransport('attempt')}
           >
             <Play aria-hidden="true" className="size-4 fill-current" />
-            {phase === 'loading' ? 'Preparing…' : 'Start'}
+            {phase === 'loading'
+              ? 'Preparing…'
+              : selectedMode === 'memorise'
+                ? 'Ready'
+                : 'Start'}
           </Button>
         )}
       </div>

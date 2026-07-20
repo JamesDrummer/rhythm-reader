@@ -6,7 +6,12 @@ import {
   type SchedulerTimer,
   type TransportCallbacks,
 } from './Transport'
-import type { AudioVoice, ScheduledVoice, TransportVoicePlayer } from './types'
+import type {
+  AudioVoice,
+  PlayAtOptions,
+  ScheduledVoice,
+  TransportVoicePlayer,
+} from './types'
 
 class ManualTimer implements SchedulerTimer {
   callback: (() => void) | null = null
@@ -28,10 +33,18 @@ class FakePlayer implements TransportVoicePlayer {
   currentTime = 10
   isReady = true
   isUnlocked = true
-  readonly played: { voice: AudioVoice; time: number }[] = []
+  readonly played: {
+    options?: PlayAtOptions
+    time: number
+    voice: AudioVoice
+  }[] = []
 
-  playAt(voice: AudioVoice, time: number): ScheduledVoice {
-    this.played.push({ voice, time })
+  playAt(
+    voice: AudioVoice,
+    time: number,
+    options?: PlayAtOptions,
+  ): ScheduledVoice {
+    this.played.push({ voice, time, options })
     return { stop: vi.fn() }
   }
 }
@@ -136,5 +149,39 @@ describe('Transport', () => {
       audioTime: player.currentTime,
       exerciseTick: 240,
     })
+  })
+
+  it('layers the correct rhythm with distinctly panned recorded hits', () => {
+    const player = new FakePlayer()
+    const timer = new ManualTimer()
+    const transport = new Transport(player, timer)
+    const timing = transport.startLayered(AUDIO_DEMO_EXERCISE, [
+      { voice: 'kick', timeMs: 3_025 },
+      { voice: 'snare', timeMs: 9_100 },
+    ])
+
+    runUntil(player, timer, timing.playbackEndTime + 0.01)
+
+    const studentHits = player.played.filter(
+      ({ options }) => options?.layer === 'student',
+    )
+    const correctHits = player.played.filter(
+      ({ options }) => options?.layer === 'correct',
+    )
+
+    expect(correctHits).toHaveLength(AUDIO_DEMO_EXERCISE.events.length)
+    expect(studentHits).toEqual([
+      {
+        voice: 'kick',
+        time: timing.countInStartTime + 3.025,
+        options: { layer: 'student' },
+      },
+      {
+        voice: 'snare',
+        time: timing.countInStartTime + 9.1,
+        options: { layer: 'student' },
+      },
+    ])
+    expect(timing.playbackEndTime).toBeGreaterThan(timing.exerciseEndTime)
   })
 })
