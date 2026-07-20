@@ -45,6 +45,23 @@ describe('expected note timing', () => {
 })
 
 describe('timing-window boundaries', () => {
+  it('scores a first-note hit exactly one Good window early as Good', () => {
+    const firstExpectedTimeMs =
+      deriveExpectedNotes(exercise())[0].expectedTimeMs
+    const record = scoreExercise(exercise(), beginner, [
+      {
+        voice: 'snare',
+        timeMs: firstExpectedTimeMs - beginner.goodMs,
+      },
+    ])
+
+    expect(record.noteResults[0]).toMatchObject({
+      rating: 'good',
+      errorMs: -beginner.goodMs,
+    })
+    expect(record.extraHits).toEqual([])
+  })
+
   it.each([
     [-80, 'perfect'],
     [80, 'perfect'],

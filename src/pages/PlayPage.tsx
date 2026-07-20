@@ -54,6 +54,32 @@ interface AudioEngine {
   transport: Transport
 }
 
+interface AudioEngineRef {
+  current: AudioEngine | null
+}
+
+function createInputSources(engineRef: AudioEngineRef) {
+  const audioTimeline: AudioTimeline = {
+    get currentTime() {
+      return engineRef.current?.context.currentTime ?? 0
+    },
+    getOutputTimestamp() {
+      const context = engineRef.current?.context
+      return (
+        context?.getOutputTimestamp?.() ?? {
+          contextTime: context?.currentTime ?? 0,
+          performanceTime: performance.now(),
+        }
+      )
+    },
+  }
+
+  return {
+    keyboard: new KeyboardInput(audioTimeline),
+    touch: new TouchPadInput(audioTimeline),
+  }
+}
+
 type GamePhase =
   | 'ready'
   | 'loading'
@@ -212,7 +238,7 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
   const [hitCount, setHitCount] = useState(0)
   const [score, setScore] = useState<ScoreRecord | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [audioEngine, setAudioEngine] = useState<AudioEngine | null>(null)
+  const [inputsEnabled, setInputsEnabled] = useState(false)
   const timingWindow = TIMING_WINDOWS_MS[exercise.tier]
   const keyboardMapping = useMemo(() => loadKeyboardMapping(), [])
 
@@ -221,46 +247,26 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
     setPhase(nextPhase)
   }, [])
 
-  const audioTimeline = useMemo<AudioTimeline>(
-    () => ({
-      get currentTime() {
-        return audioEngine?.context.currentTime ?? 0
-      },
-      getOutputTimestamp() {
-        const context = audioEngine?.context
-        return (
-          context?.getOutputTimestamp?.() ?? {
-            contextTime: context?.currentTime ?? 0,
-            performanceTime: performance.now(),
-          }
-        )
-      },
-    }),
-    [audioEngine],
-  )
-  const inputSources = useMemo(
-    () => ({
-      keyboard: new KeyboardInput(audioTimeline),
-      touch: new TouchPadInput(audioTimeline),
-    }),
-    [audioTimeline],
-  )
+  // The factory stores the ref for event-time getters; it does not read it now.
+  // eslint-disable-next-line react-hooks/refs
+  const inputSources = useMemo(() => createInputSources(engineRef), [])
   const notationClock = useMemo<NotationClock>(
     () => ({
       getElapsedTicks: () => {
-        const position = audioEngine?.transport.getPosition()
+        const position = engineRef.current?.transport.getPosition()
         return position && position.phase !== 'idle'
           ? position.exerciseTick
           : -1
       },
     }),
-    [audioEngine],
+    [],
   )
 
   const setInputsActive = useCallback(
     (active: boolean) => {
       if (inputActiveRef.current === active) return
       inputActiveRef.current = active
+      setInputsEnabled(active)
       if (active) {
         inputSources.keyboard.start()
         inputSources.touch.start()
@@ -312,7 +318,6 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
       const player = new SamplePlayer(context)
       engine = { context, player, transport: new Transport(player) }
       engineRef.current = engine
-      setAudioEngine(engine)
     }
 
     if (!engine.player.isUnlocked) await engine.player.unlock()
@@ -424,6 +429,16 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
 
       const now = engine.context.currentTime
       const mode = transportModeRef.current
+      const inputActivationTime =
+        timing.exerciseStartTime - timingWindow.goodMs / 1_000
+
+      if (
+        mode === 'attempt' &&
+        !inputActiveRef.current &&
+        now >= inputActivationTime
+      ) {
+        setInputsActive(true)
+      }
 
       if (now < timing.exerciseStartTime) {
         if (mode === 'attempt') {
@@ -578,7 +593,6 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
 
   const attemptInProgress = ['countIn', 'playing', 'grace'].includes(phase)
   const controlsDisabled = phase === 'loading' || attemptInProgress
-  const touchPadsEnabled = phase === 'playing' || phase === 'grace'
   const showTouchPads = phase === 'loading' || attemptInProgress
 
   return (
@@ -722,10 +736,7 @@ function PlayableExercise({ exercise }: { exercise: Exercise }) {
       {showTouchPads && (
         <div className="touch-only touch-pad-dock">
           <div className="mx-auto w-full max-w-4xl">
-            <TouchPads
-              disabled={!touchPadsEnabled}
-              source={inputSources.touch}
-            />
+            <TouchPads disabled={!inputsEnabled} source={inputSources.touch} />
           </div>
         </div>
       )}
