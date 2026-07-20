@@ -42,7 +42,9 @@ function LevelCard({
   return (
     <article
       aria-labelledby={`${level.id}-title`}
-      className="rounded-xl border bg-white p-5 shadow-sm sm:p-6"
+      className={`rounded-xl border bg-white p-5 shadow-sm sm:p-6${
+        unlocked ? '' : ' opacity-70'
+      }`}
     >
       <div className="flex items-start justify-between gap-4">
         <div>
