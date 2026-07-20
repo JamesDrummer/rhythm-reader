@@ -25,3 +25,4 @@ export {
   type ScheduledVoice,
   type TransportVoicePlayer,
 } from './types'
+export { createAudioContext } from './createAudioContext'

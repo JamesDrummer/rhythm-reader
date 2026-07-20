@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { SamplePlayer, Transport, type TransportMode } from '@/audio'
+import {
+  createAudioContext,
+  SamplePlayer,
+  Transport,
+  type TransportMode,
+} from '@/audio'
 import { AUDIO_DEMO_EXERCISE } from '@/audio/demoExercise'
 import { PageIntro } from '@/components/PageIntro'
 import { Button } from '@/components/ui/button'
@@ -24,22 +29,6 @@ const demoExerciseTicks =
 const ONE_SYSTEM_DEMO_EXERCISE = {
   ...AUDIO_DEMO_EXERCISE,
   notationSystems: 1 as const,
-}
-
-function createAudioContext(): AudioContext {
-  const AudioContextConstructor =
-    window.AudioContext ??
-    (
-      window as typeof window & {
-        webkitAudioContext?: typeof AudioContext
-      }
-    ).webkitAudioContext
-
-  if (!AudioContextConstructor) {
-    throw new Error('This browser does not support the Web Audio API.')
-  }
-
-  return new AudioContextConstructor()
 }
 
 export function PlayPage() {

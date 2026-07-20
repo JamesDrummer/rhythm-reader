@@ -34,6 +34,12 @@ export const AUDIO_SCHEDULER = {
   startDelaySeconds: 0.05,
 } as const
 
+export const CALIBRATION = {
+  tempo: 90,
+  tapCount: 16,
+  discardCount: 4,
+} as const
+
 export type StarRating = 0 | 1 | 2 | 3
 
 export interface ExerciseProgress {
