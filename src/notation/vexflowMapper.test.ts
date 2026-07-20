@@ -43,4 +43,17 @@ describe('renderExerciseNotation', () => {
       SIX_EIGHT_PROOF_EXERCISE.events.length,
     )
   })
+
+  it('rejects unsupported notation durations with the offending tick length', () => {
+    const unsupportedExercise = {
+      ...AUDIO_DEMO_EXERCISE,
+      id: 'unsupported-duration',
+      bars: 1,
+      events: [{ voice: 'snare' as const, tick: 0, duration: 80 }],
+    }
+
+    expect(() => render(unsupportedExercise)).toThrow(
+      'Unsupported notation duration: 80 ticks',
+    )
+  })
 })
