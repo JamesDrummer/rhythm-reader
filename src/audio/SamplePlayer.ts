@@ -16,6 +16,33 @@ export const DEFAULT_SAMPLE_URLS: Record<AudioVoice, string> = {
   clickRegular: `${baseUrl}audio/click-regular.wav`,
 }
 
+let sampleFilePreloadPromise: Promise<void> | null = null
+
+async function loadSampleFiles(fetchSample: typeof fetch): Promise<void> {
+  await Promise.all(
+    Object.values(DEFAULT_SAMPLE_URLS).map(async (url) => {
+      const response = await fetchSample(url, { cache: 'force-cache' })
+      if (!response.ok) throw new Error(`Could not load audio sample: ${url}`)
+      await response.arrayBuffer()
+    }),
+  )
+}
+
+/** Warms the browser cache without creating or unlocking an AudioContext. */
+export function preloadSampleFiles(
+  fetchSample: typeof fetch = fetch,
+): Promise<void> {
+  if (fetchSample !== fetch) return loadSampleFiles(fetchSample)
+
+  sampleFilePreloadPromise ??= loadSampleFiles(fetchSample).catch(
+    (error: unknown) => {
+      sampleFilePreloadPromise = null
+      throw error
+    },
+  )
+  return sampleFilePreloadPromise
+}
+
 const VOICE_LEVELS: Record<AudioVoice, number> = {
   kick: 0.7,
   snare: 0.55,
@@ -26,14 +53,16 @@ const VOICE_LEVELS: Record<AudioVoice, number> = {
 
 export class AudioLockedError extends Error {
   constructor() {
-    super('Audio is locked. Unlock it from a tap or click before playback.')
+    super(
+      'Your browser blocked the audio. Tap the start button once more to enable sound.',
+    )
     this.name = 'AudioLockedError'
   }
 }
 
 export class SamplesNotLoadedError extends Error {
   constructor() {
-    super('Audio samples have not finished loading.')
+    super('The drum sounds are still loading. Please try once more.')
     this.name = 'SamplesNotLoadedError'
   }
 }

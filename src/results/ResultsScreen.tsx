@@ -155,7 +155,7 @@ export function ResultsScreen({
         {layeredPlaybackError && (
           <p
             aria-live="polite"
-            className="mt-3 text-sm font-semibold text-red-700"
+            className="mt-3 rounded-lg bg-black/5 px-4 py-3 text-sm font-semibold text-black/70"
           >
             {layeredPlaybackError}
           </p>

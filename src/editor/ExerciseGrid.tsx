@@ -35,7 +35,7 @@ export function ExerciseGrid({
   } satisfies CSSProperties
 
   return (
-    <div className="overflow-x-auto pb-2">
+    <div className="w-full max-w-full overflow-x-auto pb-2 [contain:layout_paint]">
       <div className="min-w-max">
         <div className="flex">
           <div className="w-20 shrink-0" />

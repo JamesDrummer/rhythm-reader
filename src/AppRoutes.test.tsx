@@ -11,6 +11,7 @@ const routes = [
   { path: '/editor', heading: 'Exercise editor' },
   { path: '/settings', heading: 'Settings' },
   { path: '/calibrate', heading: 'Latency calibration' },
+  { path: '/help', heading: 'How Rhythm Reader works' },
 ] as const
 
 describe('app routes', () => {

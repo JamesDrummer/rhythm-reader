@@ -15,3 +15,7 @@ The five one-shot samples in `public/audio/` come from [Sample Pi](https://githu
 The source FLAC files were downloaded from the Sample Pi `main` branch on 20 July 2026 and converted with FFmpeg to mono, 44.1 kHz, signed 16-bit PCM WAV. The accented click uses the same `elec_tick` recording as the regular click, pitch-shifted up seven semitones so beat 1 is distinct without changing timbre. No other processing is applied. WAV was chosen to maximise reliable `decodeAudioData` support in Chrome and iPad Safari.
 
 The CC0 dedication permits copying, modification, distribution and commercial use without attribution. The source details above are retained so the provenance remains auditable.
+
+## Brand typeface
+
+Montserrat is bundled locally through `@fontsource-variable/montserrat`. The package mirrors the Google Fonts files and is licensed under the SIL Open Font License 1.1. Bundling the Latin variable file keeps the BHDA typeface consistent while avoiding an external stylesheet on the critical rendering path.

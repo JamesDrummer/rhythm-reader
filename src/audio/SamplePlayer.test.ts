@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { AudioLockedError, SamplePlayer } from './SamplePlayer'
+import {
+  AudioLockedError,
+  preloadSampleFiles,
+  SamplePlayer,
+} from './SamplePlayer'
 
 function createAudioContext() {
   let state: AudioContextState = 'suspended'
@@ -45,6 +49,20 @@ function createAudioContext() {
 }
 
 describe('SamplePlayer', () => {
+  it('warms every default sample file without creating an audio context', async () => {
+    const fetchSample = vi.fn(() =>
+      Promise.resolve(new Response(new ArrayBuffer(8))),
+    )
+
+    await preloadSampleFiles(fetchSample)
+
+    expect(fetchSample).toHaveBeenCalledTimes(5)
+    expect(fetchSample).toHaveBeenCalledWith(
+      '/audio/kick.wav',
+      expect.objectContaining({ cache: 'force-cache' }),
+    )
+  })
+
   it('refuses playback until audio has been gesture-unlocked', async () => {
     const { context } = createAudioContext()
     const fetchSample = vi.fn(() =>

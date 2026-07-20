@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/montserrat/files/montserrat-latin-wght-normal.woff2')
+    format('woff2-variations');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,7 +22,7 @@
   }
 
   body {
-    @apply m-0 min-w-[320px] overflow-x-hidden bg-bhda-background text-bhda-text antialiased;
+    @apply m-0 overflow-x-hidden bg-bhda-background text-bhda-text antialiased;
   }
 
   button,
@@ -88,6 +97,12 @@
     background: rgb(245 245 245 / 96%);
     padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
     backdrop-filter: blur(12px);
+  }
+}
+
+@media (max-width: 600px) {
+  .desktop-only {
+    display: none;
   }
 }
 

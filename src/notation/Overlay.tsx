@@ -7,7 +7,11 @@ import {
   useState,
 } from 'react'
 import type { Exercise, NoteEvent } from '@/model'
-import { buildPositionAnchors, interpolatePlayheadX } from './playhead'
+import {
+  buildPositionAnchors,
+  interpolatePlayheadPosition,
+  type PlayheadPosition,
+} from './playhead'
 import type {
   NotationClock,
   NotationLayout,
@@ -47,7 +51,7 @@ export const Overlay = forwardRef<OverlayHandle, OverlayProps>(function Overlay(
   ref,
 ) {
   const [feedback, setFeedback] = useState<Record<string, FeedbackMarker>>({})
-  const [playheadX, setPlayheadX] = useState<number | null>(null)
+  const [playhead, setPlayhead] = useState<PlayheadPosition | null>(null)
   const markerId = useRef(0)
   const anchors = useMemo(
     () => buildPositionAnchors(exercise, layout),
@@ -82,13 +86,13 @@ export const Overlay = forwardRef<OverlayHandle, OverlayProps>(function Overlay(
 
   useEffect(() => {
     if (!clock) {
-      setPlayheadX(null)
+      setPlayhead(null)
       return
     }
 
     let frame = 0
     const update = () => {
-      setPlayheadX(interpolatePlayheadX(clock.getElapsedTicks(), anchors))
+      setPlayhead(interpolatePlayheadPosition(clock.getElapsedTicks(), anchors))
       frame = window.requestAnimationFrame(update)
     }
 
@@ -107,6 +111,12 @@ export const Overlay = forwardRef<OverlayHandle, OverlayProps>(function Overlay(
         const marker = feedback[eventKey(event)]
         if (!marker) return null
         const colour = FEEDBACK_COLOURS[marker.feedback]
+        const row = layout.barLayouts.find(
+          (bar, index) =>
+            event.tick >= bar.startTick &&
+            (event.tick < bar.endTick ||
+              index === layout.barLayouts.length - 1),
+        )
 
         return (
           <g key={`${eventKey(event)}:${marker.id}`}>
@@ -137,7 +147,10 @@ export const Overlay = forwardRef<OverlayHandle, OverlayProps>(function Overlay(
                 fontWeight="700"
                 textAnchor="middle"
                 x={x}
-                y={Math.min(y - 18, layout.staffBounds.top - 8)}
+                y={Math.min(
+                  y - 18,
+                  (row?.staffTop ?? layout.staffBounds.top) - 8,
+                )}
               >
                 {FEEDBACK_LABELS[marker.feedback]}
               </text>
@@ -146,15 +159,15 @@ export const Overlay = forwardRef<OverlayHandle, OverlayProps>(function Overlay(
         )
       })}
 
-      {playheadX !== null && (
+      {playhead !== null && (
         <line
           stroke="#614E90"
           strokeLinecap="round"
           strokeWidth="3"
-          x1={playheadX}
-          x2={playheadX}
-          y1={layout.staffBounds.top - 18}
-          y2={layout.staffBounds.bottom + 18}
+          x1={playhead.x}
+          x2={playhead.x}
+          y1={(playhead.staffTop ?? layout.staffBounds.top) - 18}
+          y2={(playhead.staffBottom ?? layout.staffBounds.bottom) + 18}
         />
       )}
     </svg>

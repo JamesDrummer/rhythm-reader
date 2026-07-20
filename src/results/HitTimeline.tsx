@@ -57,10 +57,11 @@ export function HitTimeline({ score }: { score: ScoreRecord }) {
 
   return (
     <div>
-      <div className="overflow-x-auto rounded-xl border bg-bhda-background p-3">
+      <div className="rounded-xl border bg-bhda-background p-2 sm:p-3">
         <svg
           aria-labelledby="hit-timeline-title hit-timeline-description"
-          className="block h-auto w-full min-w-[620px]"
+          className="block h-auto w-full"
+          preserveAspectRatio="xMidYMid meet"
           role="img"
           viewBox={`0 0 ${VIEW_WIDTH} ${height}`}
         >

@@ -101,13 +101,13 @@ function feedbackLabel(rating: HitRating): string {
 }
 
 function inputStatus(phase: GamePhase, gameMode: ExerciseMode): string {
-  if (phase === 'countIn') return 'Get ready — input starts after four.'
+  if (phase === 'countIn') return 'Get ready. Input starts after four.'
   if (phase === 'playing') {
     return gameMode === 'memorise'
-      ? 'From memory — keep the pulse relaxed.'
+      ? 'From memory. Keep the pulse relaxed.'
       : 'Play the notes as the line reaches them.'
   }
-  if (phase === 'grace') return 'Hold on — catching the final note.'
+  if (phase === 'grace') return 'Hold on. Catching the final note.'
   if (phase === 'listening') return 'Listen to the rhythm and follow the score.'
   if (phase === 'loading') return 'Preparing the drum sounds…'
   return gameMode === 'memorise'

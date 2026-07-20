@@ -1,6 +1,6 @@
 export { Notation } from './Notation'
 export { Overlay } from './Overlay'
-export { interpolatePlayheadX } from './playhead'
+export { interpolatePlayheadPosition, interpolatePlayheadX } from './playhead'
 export { renderExerciseNotation } from './vexflowMapper'
 export type {
   LayoutBox,
@@ -11,4 +11,4 @@ export type {
   NoteLayout,
   OverlayHandle,
 } from './types'
-export type { PositionAnchor } from './playhead'
+export type { PlayheadPosition, PositionAnchor } from './playhead'

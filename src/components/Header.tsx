@@ -1,4 +1,4 @@
-import { Settings } from 'lucide-react'
+import { CircleHelp, Settings } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 
@@ -12,11 +12,18 @@ export function Header() {
         >
           Rhythm Reader
         </Link>
-        <Button asChild size="icon" variant="ghost">
-          <Link aria-label="Open settings" title="Settings" to="/settings">
-            <Settings aria-hidden="true" className="size-5" />
-          </Link>
-        </Button>
+        <nav aria-label="Main navigation" className="flex items-center gap-1">
+          <Button asChild size="icon" variant="ghost">
+            <Link aria-label="Open help" title="Help" to="/help">
+              <CircleHelp aria-hidden="true" className="size-5" />
+            </Link>
+          </Button>
+          <Button asChild size="icon" variant="ghost">
+            <Link aria-label="Open settings" title="Settings" to="/settings">
+              <Settings aria-hidden="true" className="size-5" />
+            </Link>
+          </Button>
+        </nav>
       </div>
     </header>
   )

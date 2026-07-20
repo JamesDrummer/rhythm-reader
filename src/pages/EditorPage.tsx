@@ -720,7 +720,7 @@ export function EditorPage() {
                 {previewing ? 'Stop' : 'Play preview'}
               </Button>
             </div>
-            <div className="mt-5 overflow-x-auto">
+            <div className="mt-5 w-full max-w-full overflow-x-auto [contain:layout_paint]">
               {grid.events.length > 0 ? (
                 <div className="min-w-[42rem]">
                   <Notation exercise={previewExercise} clock={notationClock} />

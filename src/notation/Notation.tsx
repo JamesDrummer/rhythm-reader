@@ -16,7 +16,20 @@ export function Notation({
 
   useLayoutEffect(() => {
     if (!outputRef.current) return
-    setLayout(renderExerciseNotation(outputRef.current, exercise))
+    const output = outputRef.current
+    const render = () => {
+      const narrow = output.clientWidth > 0 && output.clientWidth < 480
+      setLayout(
+        renderExerciseNotation(output, exercise, narrow ? 1 : exercise.bars),
+      )
+    }
+
+    render()
+    if (typeof ResizeObserver === 'undefined') return
+
+    const observer = new ResizeObserver(render)
+    observer.observe(output)
+    return () => observer.disconnect()
   }, [exercise])
 
   return (

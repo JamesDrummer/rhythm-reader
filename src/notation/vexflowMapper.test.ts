@@ -108,6 +108,20 @@ describe('renderExerciseNotation', () => {
     )
   })
 
+  it('stacks bars for a narrow layout without shrinking each bar', () => {
+    const layout = renderExerciseNotation(
+      document.createElement('div'),
+      AUDIO_DEMO_EXERCISE,
+      1,
+    )
+
+    expect(layout.height).toBeGreaterThan(216)
+    expect(layout.barLayouts[1].startX).toBe(layout.barLayouts[0].startX)
+    expect(layout.barLayouts[1].staffTop).toBeGreaterThan(
+      layout.barLayouts[0].staffBottom,
+    )
+  })
+
   it('rejects unsupported notation durations with the offending tick length', () => {
     const unsupportedExercise = {
       ...AUDIO_DEMO_EXERCISE,

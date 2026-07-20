@@ -478,16 +478,25 @@ function renderBar(
 export function renderExerciseNotation(
   container: HTMLDivElement,
   exercise: Exercise,
+  barsPerLine = exercise.bars,
 ): NotationLayout {
   container.replaceChildren()
 
-  const width = exercise.bars * BAR_WIDTH + HORIZONTAL_PADDING * 2
+  const safeBarsPerLine = Math.max(
+    1,
+    Math.min(exercise.bars, Math.floor(barsPerLine)),
+  )
+  const rowCount = Math.ceil(exercise.bars / safeBarsPerLine)
+  const width =
+    Math.min(exercise.bars, safeBarsPerLine) * BAR_WIDTH +
+    HORIZONTAL_PADDING * 2
+  const height = rowCount * SCORE_HEIGHT
   const renderer = new Renderer(container, Renderer.Backends.SVG)
-  renderer.resize(width, SCORE_HEIGHT)
+  renderer.resize(width, height)
   const context = renderer.getContext()
 
   if (context instanceof SVGContext) {
-    context.setViewBox(0, 0, width, SCORE_HEIGHT)
+    context.setViewBox(0, 0, width, height)
     context.svg.setAttribute('preserveAspectRatio', 'xMidYMid meet')
     context.svg.setAttribute('aria-hidden', 'true')
     context.svg.style.display = 'block'
@@ -500,12 +509,14 @@ export function renderExerciseNotation(
   const staves: Stave[] = []
 
   for (let bar = 0; bar < exercise.bars; bar += 1) {
+    const row = Math.floor(bar / safeBarsPerLine)
+    const column = bar % safeBarsPerLine
     const stave = new Stave(
-      HORIZONTAL_PADDING + bar * BAR_WIDTH,
-      STAVE_Y,
+      HORIZONTAL_PADDING + column * BAR_WIDTH,
+      STAVE_Y + row * SCORE_HEIGHT,
       BAR_WIDTH,
     )
-    if (bar === 0) {
+    if (column === 0) {
       stave
         .addClef('percussion')
         .addTimeSignature(
@@ -538,12 +549,22 @@ export function renderExerciseNotation(
     ...staves.slice(1).map((stave) => stave.getNoteStartX()),
     staves.at(-1)?.getNoteEndX() ?? width - HORIZONTAL_PADDING,
   ]
+  const barTicks = ticksPerBar(exercise.timeSignature)
+  const barLayouts = staves.map((stave, index) => ({
+    startTick: index * barTicks,
+    endTick: (index + 1) * barTicks,
+    startX: stave.getNoteStartX(),
+    endX: stave.getNoteEndX(),
+    staffTop: stave.getTopLineTopY(),
+    staffBottom: stave.getBottomLineBottomY(),
+  }))
 
   return {
     width,
-    height: SCORE_HEIGHT,
+    height,
     noteLayouts,
     barBoundaries,
+    barLayouts,
     staffBounds: {
       top: staves[0]?.getTopLineTopY() ?? STAVE_Y,
       bottom: staves[0]?.getBottomLineBottomY() ?? STAVE_Y + 60,

@@ -21,6 +21,14 @@ export interface NotationLayout {
   noteLayouts: NoteLayout[]
   /** Exercise start, each internal barline, and exercise end. */
   barBoundaries: number[]
+  barLayouts: {
+    startTick: number
+    endTick: number
+    startX: number
+    endX: number
+    staffTop: number
+    staffBottom: number
+  }[]
   staffBounds: {
     top: number
     bottom: number

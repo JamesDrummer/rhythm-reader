@@ -1,6 +1,7 @@
 import { CircleCheck, Headphones, LockKeyhole, Play, Star } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { preloadSampleFiles } from '@/audio'
 import { useCatalogue } from '@/content'
 import { Button } from '@/components/ui/button'
 import {
@@ -41,9 +42,7 @@ function LevelCard({
   return (
     <article
       aria-labelledby={`${level.id}-title`}
-      className={`rounded-xl border bg-white p-5 shadow-sm sm:p-6 ${
-        unlocked ? '' : 'opacity-70'
-      }`}
+      className="rounded-xl border bg-white p-5 shadow-sm sm:p-6"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -184,6 +183,12 @@ export function LevelSelectPage() {
     emptySnapshot(levels),
   )
   const [progressError, setProgressError] = useState<string | null>(null)
+
+  useEffect(() => {
+    void preloadSampleFiles().catch(() => {
+      // The start button retries the load and provides recovery copy if needed.
+    })
+  }, [])
 
   useEffect(() => {
     let active = true

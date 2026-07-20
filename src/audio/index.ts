@@ -1,6 +1,7 @@
 export {
   AudioLockedError,
   DEFAULT_SAMPLE_URLS,
+  preloadSampleFiles,
   SamplePlayer,
   SamplesNotLoadedError,
 } from './SamplePlayer'

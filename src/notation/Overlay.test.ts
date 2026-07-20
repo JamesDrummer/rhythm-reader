@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { interpolatePlayheadX } from './playhead'
+import { interpolatePlayheadPosition, interpolatePlayheadX } from './playhead'
 
 describe('interpolatePlayheadX', () => {
   const anchors = [
@@ -17,5 +17,27 @@ describe('interpolatePlayheadX', () => {
   it('clamps at the rendered exercise boundaries', () => {
     expect(interpolatePlayheadX(0, anchors)).toBe(100)
     expect(interpolatePlayheadX(1_440, anchors)).toBe(350)
+  })
+
+  it('moves to the next staff row at a stacked bar boundary', () => {
+    const stackedAnchors = [
+      { tick: 0, x: 100, staffTop: 50, staffBottom: 100 },
+      { tick: 479.999, x: 450, staffTop: 50, staffBottom: 100 },
+      { tick: 480, x: 100, staffTop: 266, staffBottom: 316 },
+      { tick: 960, x: 450, staffTop: 266, staffBottom: 316 },
+    ]
+
+    expect(interpolatePlayheadPosition(479.999, stackedAnchors)).toMatchObject({
+      x: 450,
+      staffTop: 50,
+    })
+    expect(interpolatePlayheadPosition(480, stackedAnchors)).toMatchObject({
+      x: 100,
+      staffTop: 266,
+    })
+    expect(interpolatePlayheadPosition(720, stackedAnchors)).toMatchObject({
+      x: 275,
+      staffTop: 266,
+    })
   })
 })

@@ -215,7 +215,7 @@ describe('Play Along page lifecycle', () => {
 
     await user.click(await screen.findByRole('button', { name: 'Start' }))
     expect(
-      await screen.findByText('Get ready — input starts after four.'),
+      await screen.findByText('Get ready. Input starts after four.'),
     ).toBeInTheDocument()
   })
 
@@ -234,7 +234,7 @@ describe('Play Along page lifecycle', () => {
     await user.click(await screen.findByRole('button', { name: 'Start' }))
     await waitFor(() =>
       expect(
-        screen.getByText('Get ready — input starts after four.'),
+        screen.getByText('Get ready. Input starts after four.'),
       ).toBeInTheDocument(),
     )
 
@@ -263,7 +263,7 @@ describe('Play Along page lifecycle', () => {
     await user.click(startButton)
     await waitFor(() =>
       expect(
-        screen.getByText('Get ready — input starts after four.'),
+        screen.getByText('Get ready. Input starts after four.'),
       ).toBeInTheDocument(),
     )
 
@@ -286,7 +286,7 @@ describe('Play Along page lifecycle', () => {
     await user.click(await screen.findByRole('button', { name: 'Start' }))
     await waitFor(() =>
       expect(
-        screen.getByText('Get ready — input starts after four.'),
+        screen.getByText('Get ready. Input starts after four.'),
       ).toBeInTheDocument(),
     )
 
