@@ -20,6 +20,18 @@ const VOICE_LABELS: Record<Voice, string> = {
   hihat: 'Hi-hat',
 }
 
+const MODIFIER_KEYS = new Set([
+  'ShiftLeft',
+  'ShiftRight',
+  'ControlLeft',
+  'ControlRight',
+  'AltLeft',
+  'AltRight',
+  'MetaLeft',
+  'MetaRight',
+  'CapsLock',
+])
+
 function signedMilliseconds(value: number): string {
   const rounded = Math.round(value)
   return `${rounded > 0 ? '+' : ''}${rounded} ms`
@@ -42,14 +54,23 @@ export function SettingsPage() {
     if (!listeningVoice) return
 
     const captureKey = (event: KeyboardEvent) => {
+      if (MODIFIER_KEYS.has(event.code)) return
+
       event.preventDefault()
+      window.removeEventListener('keydown', captureKey)
+
+      if (event.code === 'Escape') {
+        setListeningVoice(null)
+        return
+      }
+
       const next = remapVoice(mapping, listeningVoice, event.code)
       saveKeyboardMapping(next)
       setMapping(next)
       setListeningVoice(null)
     }
 
-    window.addEventListener('keydown', captureKey, { once: true })
+    window.addEventListener('keydown', captureKey)
     return () => window.removeEventListener('keydown', captureKey)
   }, [listeningVoice, mapping])
 
