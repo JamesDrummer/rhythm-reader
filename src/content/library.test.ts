@@ -131,6 +131,39 @@ describe('built-in exercise library', () => {
     }
   })
 
+  it('introduces eighth notes with quarters before any eighth-note rests', () => {
+    const eighthNoteIntroduction = BUILT_IN_LEVELS[2]
+    expect(eighthNoteIntroduction).toMatchObject({
+      id: 'level-3-eighth-note-steps',
+      title: 'Eighth notes with quarters',
+    })
+    expect(
+      new Set(
+        eighthNoteIntroduction.exercises[0].events.map(
+          ({ duration }) => duration,
+        ),
+      ),
+    ).toEqual(new Set([240]))
+
+    for (const exercise of eighthNoteIntroduction.exercises) {
+      expect(new Set(exercise.events.map(({ voice }) => voice))).toEqual(
+        new Set(['snare']),
+      )
+      expect(
+        deriveRestPositions(
+          exercise.events,
+          generateBinaryGrid(exercise.timeSignature, 'eighth', exercise.bars),
+        ),
+      ).toEqual([])
+    }
+
+    for (const exercise of eighthNoteIntroduction.exercises.slice(1)) {
+      expect(new Set(exercise.events.map(({ duration }) => duration))).toEqual(
+        new Set([240, 480]),
+      )
+    }
+  })
+
   it('separates mixed note values, single-voice rests and kit rests', () => {
     const combinations = BUILT_IN_LEVELS[3]
     expect(combinations.id).toBe('level-4-quarter-eighth-combinations')

@@ -166,8 +166,8 @@
   },
   {
     "id": "level-3-eighth-note-steps",
-    "title": "Eighth-note steps",
-    "description": "Split each beat neatly in two, then read short eighth-note phrases and rests.",
+    "title": "Eighth notes with quarters",
+    "description": "Split each beat neatly in two, then combine eighth-note pairs with the quarter notes you already know.",
     "order": 3,
     "exercises": [
       {
@@ -190,12 +190,13 @@
       },
       {
         "id": "eighth-note-first-halves",
-        "title": "Beat then space",
+        "title": "Eighth notes on beat one",
         "tempo": 70,
         "timeSignature": { "beats": 4, "beatValue": 4 },
         "bars": 1,
         "groups": [
-          { "voice": "snare", "duration": 240, "ticks": [0, 480, 960, 1440] }
+          { "voice": "snare", "duration": 480, "ticks": [480, 960, 1440] },
+          { "voice": "snare", "duration": 240, "ticks": [0, 240] }
         ],
         "notationSystems": 2,
         "tier": "beginner",
@@ -204,12 +205,13 @@
       },
       {
         "id": "eighth-note-offbeats",
-        "title": "Find the offbeats",
+        "title": "Eighth notes on beat two",
         "tempo": 70,
         "timeSignature": { "beats": 4, "beatValue": 4 },
         "bars": 1,
         "groups": [
-          { "voice": "snare", "duration": 240, "ticks": [240, 720, 1200, 1680] }
+          { "voice": "snare", "duration": 480, "ticks": [0, 960, 1440] },
+          { "voice": "snare", "duration": 240, "ticks": [480, 720] }
         ],
         "notationSystems": 2,
         "tier": "beginner",
@@ -218,16 +220,13 @@
       },
       {
         "id": "eighth-note-short-groups",
-        "title": "Short eighth-note groups",
+        "title": "Two eighth-note pairs",
         "tempo": 72,
         "timeSignature": { "beats": 4, "beatValue": 4 },
         "bars": 1,
         "groups": [
-          {
-            "voice": "snare",
-            "duration": 240,
-            "ticks": [0, 240, 720, 960, 1200, 1680]
-          }
+          { "voice": "snare", "duration": 480, "ticks": [480, 960] },
+          { "voice": "snare", "duration": 240, "ticks": [0, 240, 1440, 1680] }
         ],
         "notationSystems": 2,
         "tier": "beginner",
@@ -236,18 +235,20 @@
       },
       {
         "id": "eighth-note-phrase",
-        "title": "Two-bar eighth phrase",
+        "title": "Two-bar quarter and eighth phrase",
         "tempo": 74,
         "timeSignature": { "beats": 4, "beatValue": 4 },
         "bars": 2,
         "groups": [
           {
             "voice": "snare",
+            "duration": 480,
+            "ticks": [0, 960, 1440, 2400, 2880]
+          },
+          {
+            "voice": "snare",
             "duration": 240,
-            "ticks": [
-              0, 240, 480, 960, 1200, 1440, 1680, 2160, 2400, 2640, 2880, 3360,
-              3600
-            ]
+            "ticks": [480, 720, 1920, 2160, 3360, 3600]
           }
         ],
         "notationSystems": 2,
