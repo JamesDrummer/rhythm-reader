@@ -42,6 +42,14 @@ export interface Level {
   title: string
   description: string
   order: number
+  guide?: Array<{
+    text: string
+    example?: {
+      bars: 1 | 2
+      events: NoteEvent[]
+      notationSystems?: 1 | 2
+    }
+  }>
   exercises: Exercise[]
   /** Runtime catalogue metadata. Omitted from built-in/exported JSON. */
   custom?: boolean

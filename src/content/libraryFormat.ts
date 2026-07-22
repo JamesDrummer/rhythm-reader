@@ -4,6 +4,7 @@ import {
   type ExerciseMode,
   type Level,
   type NoteEvent,
+  validateExercise,
 } from '@/model'
 import { assertValidLevels } from './validation'
 
@@ -18,6 +19,9 @@ export interface LibraryExercise extends Omit<Exercise, 'events'> {
 export interface LibraryLevel extends Omit<Level, 'exercises' | 'custom'> {
   exercises: LibraryExercise[]
 }
+
+type GuideSection = NonNullable<Level['guide']>[number]
+type GuideExample = NonNullable<GuideSection['example']>
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -58,6 +62,98 @@ function parseTuplet(value: unknown, path: string): NoteEvent['tuplet'] {
     num: numberAt(value, 'num', path),
     den: numberAt(value, 'den', path),
   }
+}
+
+function parseNoteEvent(value: unknown, path: string): NoteEvent {
+  if (!isRecord(value)) fail(path, 'must be an event object')
+  if (
+    value.voice !== 'kick' &&
+    value.voice !== 'snare' &&
+    value.voice !== 'hihat'
+  ) {
+    fail(`${path}.voice`, 'must be kick, snare or hihat')
+  }
+
+  return {
+    voice: value.voice,
+    tick: numberAt(value, 'tick', path),
+    duration: numberAt(value, 'duration', path),
+    ...(value.tuplet !== undefined
+      ? { tuplet: parseTuplet(value.tuplet, `${path}.tuplet`) }
+      : {}),
+  }
+}
+
+function parseGuideExample(value: unknown, path: string): GuideExample {
+  if (!isRecord(value)) fail(path, 'must be a notation example object')
+  if (value.bars !== 1 && value.bars !== 2) {
+    fail(`${path}.bars`, 'must be 1 or 2')
+  }
+  if (!Array.isArray(value.events)) {
+    fail(`${path}.events`, 'must be an array')
+  }
+  if (
+    value.notationSystems !== undefined &&
+    value.notationSystems !== 1 &&
+    value.notationSystems !== 2
+  ) {
+    fail(`${path}.notationSystems`, 'must be 1 or 2')
+  }
+
+  const example: GuideExample = {
+    bars: value.bars,
+    events: value.events.map((event, eventIndex) =>
+      parseNoteEvent(event, `${path}.events[${eventIndex}]`),
+    ),
+    ...(value.notationSystems
+      ? { notationSystems: value.notationSystems }
+      : {}),
+  }
+  const issues = validateExercise({
+    id: path,
+    title: 'Guide example',
+    tempo: 60,
+    timeSignature: { beats: 4, beatValue: 4 },
+    bars: example.bars,
+    events: example.events,
+    ...(example.notationSystems
+      ? { notationSystems: example.notationSystems }
+      : {}),
+    tier: 'beginner',
+    listenFirstAllowed: false,
+    modes: ['playAlong'],
+  })
+  if (issues.length > 0) {
+    throw new Error(
+      issues
+        .map(
+          ({ message, path: issuePath }) => `${path}.${issuePath}: ${message}`,
+        )
+        .join('\n'),
+    )
+  }
+  return example
+}
+
+function parseGuide(value: unknown, path: string): Level['guide'] {
+  if (value === undefined) return undefined
+  if (!Array.isArray(value)) fail(path, 'must be an array')
+
+  return value.map((section, sectionIndex): GuideSection => {
+    const sectionPath = `${path}[${sectionIndex}]`
+    if (!isRecord(section)) fail(sectionPath, 'must be a guide section object')
+    return {
+      text: stringAt(section, 'text', sectionPath),
+      ...(section.example !== undefined
+        ? {
+            example: parseGuideExample(
+              section.example,
+              `${sectionPath}.example`,
+            ),
+          }
+        : {}),
+    }
+  })
 }
 
 function parseExercise(value: unknown, path: string): Exercise {
@@ -187,6 +283,9 @@ export function parseLibraryJson(json: string): Level[] {
       title: stringAt(level, 'title', path),
       description: stringAt(level, 'description', path),
       order: numberAt(level, 'order', path),
+      ...(level.guide !== undefined
+        ? { guide: parseGuide(level.guide, `${path}.guide`) }
+        : {}),
       exercises: level.exercises.map((exercise, exerciseIndex) =>
         parseExercise(exercise, `${path}.exercises[${exerciseIndex}]`),
       ),
@@ -230,6 +329,7 @@ export function toLibraryFormat(levels: readonly Level[]): LibraryLevel[] {
     title: level.title,
     description: level.description,
     order: level.order,
+    ...(level.guide ? { guide: level.guide } : {}),
     exercises: level.exercises.map(({ events, ...exercise }) => ({
       ...exercise,
       groups: groupEvents(events),

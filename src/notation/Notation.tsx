@@ -13,6 +13,7 @@ export function Notation({
 }: NotationProps) {
   const outputRef = useRef<HTMLDivElement>(null)
   const [layout, setLayout] = useState<NotationLayout | null>(null)
+  const hasOverlay = clock !== undefined || overlayRef !== undefined
 
   useLayoutEffect(() => {
     if (!outputRef.current) return
@@ -42,7 +43,7 @@ export function Notation({
       role="img"
     >
       <div ref={outputRef} />
-      {layout && (
+      {layout && hasOverlay && (
         <Overlay
           clock={clock}
           exercise={exercise}

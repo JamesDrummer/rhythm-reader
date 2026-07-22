@@ -98,6 +98,59 @@ describe('LevelDetailPage', () => {
     )
   })
 
+  it('shows a reading guide and engraves its example on a locked preview', async () => {
+    const guidedLevel: Level = {
+      ...BUILT_IN_LEVELS[1],
+      guide: [
+        {
+          text: 'Count four steady beats and read the snare on beats one and three.',
+          example: {
+            bars: 1,
+            events: [
+              { voice: 'snare', tick: 0, duration: 480 },
+              { voice: 'snare', tick: 960, duration: 480 },
+            ],
+            notationSystems: 1,
+          },
+        },
+      ],
+    }
+    const source: ExerciseSource = {
+      loadLevels: () => Promise.resolve([BUILT_IN_LEVELS[0], guidedLevel]),
+    }
+
+    renderPage(guidedLevel.id, undefined, source)
+
+    expect(
+      await screen.findByRole('heading', {
+        level: 2,
+        name: 'How to read this level',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getByText(guidedLevel.guide![0].text)).toBeInTheDocument()
+    expect(screen.getByText('Locked')).toBeInTheDocument()
+    const notation = screen.getByRole('img', { name: 'Reading example 1' })
+    expect(notation.querySelector('svg')).toBeInTheDocument()
+    expect(notation.querySelectorAll('svg')).toHaveLength(1)
+  })
+
+  it('does not show a reading guide card when the level has no guide', async () => {
+    renderPage(BUILT_IN_LEVELS[0].id)
+
+    expect(
+      await screen.findByRole('heading', {
+        level: 1,
+        name: BUILT_IN_LEVELS[0].title,
+      }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('heading', {
+        level: 2,
+        name: 'How to read this level',
+      }),
+    ).toBeNull()
+  })
+
   it('loads custom levels through the configured exercise source', async () => {
     const customLevel: Level = {
       ...BUILT_IN_LEVELS[0],

@@ -11,13 +11,37 @@ import { Link, useParams } from 'react-router-dom'
 import { ProgressSummary } from '@/components/ProgressSummary'
 import { Button } from '@/components/ui/button'
 import { useCatalogue } from '@/content'
-import type { ExerciseMode } from '@/model'
+import type { Exercise, ExerciseMode, Level } from '@/model'
+import { Notation } from '@/notation'
 import { useProgressSnapshot } from '@/progress/useProgressSnapshot'
 import { useAppServices } from '@/services/useAppServices'
 
 const MODE_LABELS: Record<ExerciseMode, string> = {
   playAlong: 'Play Along',
   memorise: 'Memorise',
+}
+
+type GuideExample = NonNullable<NonNullable<Level['guide']>[number]['example']>
+
+function guideExampleExercise(
+  level: Level,
+  example: GuideExample,
+  sectionIndex: number,
+): Exercise {
+  return {
+    id: `${level.id}-guide-${sectionIndex + 1}`,
+    title: `${level.title} reading example ${sectionIndex + 1}`,
+    tempo: 60,
+    timeSignature: { beats: 4, beatValue: 4 },
+    bars: example.bars,
+    events: example.events,
+    ...(example.notationSystems
+      ? { notationSystems: example.notationSystems }
+      : {}),
+    tier: 'beginner',
+    listenFirstAllowed: false,
+    modes: ['playAlong'],
+  }
 }
 
 function LevelUnavailable({ loading }: { loading: boolean }) {
@@ -141,6 +165,32 @@ export function LevelDetailPage() {
           </p>
         )}
       </div>
+
+      {level.guide && level.guide.length > 0 && (
+        <div className="mt-6 rounded-xl border bg-bhda-surface p-5 shadow-sm sm:p-6">
+          <h2 className="text-xl font-bold">How to read this level</h2>
+          <div className="mt-5 space-y-6">
+            {level.guide.map((section, sectionIndex) => (
+              <section key={sectionIndex}>
+                <p className="text-base leading-7 text-bhda-text/70">
+                  {section.text}
+                </p>
+                {section.example && (
+                  <Notation
+                    className="mt-4 border shadow-none"
+                    exercise={guideExampleExercise(
+                      level,
+                      section.example,
+                      sectionIndex,
+                    )}
+                    label={`Reading example ${sectionIndex + 1}`}
+                  />
+                )}
+              </section>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="mt-6 rounded-xl border bg-bhda-surface p-5 shadow-sm sm:p-6">
         <h2 className="text-xl font-bold">Exercises</h2>

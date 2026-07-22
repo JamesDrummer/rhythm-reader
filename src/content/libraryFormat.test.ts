@@ -8,6 +8,19 @@ const mixedLevel: Level = {
   description: 'Binary and ternary reading.',
   order: 100,
   custom: true,
+  guide: [
+    {
+      text: 'Count each beat, then place the off-beat notes halfway between.',
+      example: {
+        bars: 1,
+        events: [
+          { voice: 'hihat', tick: 0, duration: 240 },
+          { voice: 'hihat', tick: 240, duration: 240 },
+        ],
+        notationSystems: 1,
+      },
+    },
+  ],
   exercises: [
     {
       id: 'custom-mixed-exercise',
@@ -35,9 +48,12 @@ const mixedLevel: Level = {
 describe('built-in library JSON format', () => {
   it('round-trips custom content as grouped built-in definitions', () => {
     const json = serialiseLibrary([mixedLevel])
+    const exported = JSON.parse(json) as Array<{
+      exercises: Array<Record<string, unknown>>
+    }>
 
     expect(json).toContain('"groups"')
-    expect(json).not.toContain('"events"')
+    expect(exported[0].exercises[0]).not.toHaveProperty('events')
     expect(json).not.toContain('"custom"')
     expect(parseLibraryJson(json)).toEqual([
       { ...mixedLevel, custom: undefined },
@@ -73,5 +89,25 @@ describe('built-in library JSON format', () => {
         ]),
       ),
     ).toThrow('levels[0].exercises[0].groups[0].voice')
+  })
+
+  it('reports invalid guide example events at their library path', () => {
+    const invalidGuideLevel: Level = {
+      ...mixedLevel,
+      custom: undefined,
+      guide: [
+        {
+          text: 'This example runs beyond its bar.',
+          example: {
+            bars: 1,
+            events: [{ voice: 'snare', tick: 1800, duration: 240 }],
+          },
+        },
+      ],
+    }
+
+    expect(() =>
+      parseLibraryJson(serialiseLibrary([invalidGuideLevel])),
+    ).toThrow('levels[0].guide[0].example.events[0]')
   })
 })
