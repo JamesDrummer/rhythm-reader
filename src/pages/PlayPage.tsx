@@ -42,7 +42,7 @@ import {
   type ScoreRecord,
 } from '@/scoring'
 import { ResultsScreen } from '@/results'
-import { deriveLevelProgress, type ProgressSnapshot } from '@/progress'
+import { useProgressSnapshot } from '@/progress/useProgressSnapshot'
 import { useAppServices } from '@/services/useAppServices'
 
 interface AudioEngine {
@@ -162,43 +162,15 @@ function ExerciseLocked({ levelId }: { levelId: string }) {
 
 export function PlayPage() {
   const { exerciseId = '' } = useParams()
-  const { catalogueScope, exerciseSource, progressScope, progressStore } =
-    useAppServices()
+  const { catalogueScope, exerciseSource } = useAppServices()
   const { levels, loading } = useCatalogue(exerciseSource, catalogueScope)
   const catalogueExercise = findCatalogueExercise(levels, exerciseId)
-  const [loadedProgress, setLoadedProgress] = useState<{
-    catalogue: readonly import('@/model').Level[]
-    snapshot: ProgressSnapshot
-  } | null>(null)
-
-  useEffect(() => {
-    let active = true
-    void progressStore
-      .load(progressScope, levels)
-      .then((snapshot) => {
-        if (active) setLoadedProgress({ catalogue: levels, snapshot })
-      })
-      .catch(() => {
-        if (active) {
-          setLoadedProgress({
-            catalogue: levels,
-            snapshot: {
-              exercises: {},
-              levels: deriveLevelProgress(levels, {}),
-            },
-          })
-        }
-      })
-    return () => {
-      active = false
-    }
-  }, [levels, progressScope, progressStore])
-
-  const progressLoading = loadedProgress?.catalogue !== levels
+  const { loading: progressLoading, snapshot: progress } =
+    useProgressSnapshot(levels)
 
   if (loading || progressLoading) return <ExerciseNotFound loading />
   if (!catalogueExercise) return <ExerciseNotFound loading={false} />
-  if (!loadedProgress.snapshot.levels[catalogueExercise.level.id]?.unlocked) {
+  if (!progress.levels[catalogueExercise.level.id]?.unlocked) {
     return <ExerciseLocked levelId={catalogueExercise.level.id} />
   }
 

@@ -1,22 +1,13 @@
 import { ArrowRight, CircleCheck, LockKeyhole, Star } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { preloadSampleFiles } from '@/audio'
+import { ProgressSummary } from '@/components/ProgressSummary'
 import { useCatalogue } from '@/content'
-import {
-  deriveLevelProgress,
-  type LevelProgressState,
-  type ProgressSnapshot,
-} from '@/progress'
+import type { LevelProgressState, ProgressSnapshot } from '@/progress'
+import { useProgressSnapshot } from '@/progress/useProgressSnapshot'
 import { useAppServices } from '@/services/useAppServices'
 import type { Level } from '@/model'
-
-function emptySnapshot(levels: readonly Level[]): ProgressSnapshot {
-  return {
-    exercises: {},
-    levels: deriveLevelProgress(levels, {}),
-  }
-}
 
 function LevelCard({
   level,
@@ -29,9 +20,6 @@ function LevelCard({
 }) {
   const state = progress.levels[level.id]
   const unlocked = state?.unlocked ?? false
-  const completionPercent = state
-    ? (state.completedExercises / state.exerciseCount) * 100
-    : 0
   const destination = `/levels/${encodeURIComponent(level.id)}`
 
   return (
@@ -71,34 +59,11 @@ function LevelCard({
           {level.description}
         </p>
 
-        <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2">
-          <div className="col-start-1 row-start-1 flex justify-between gap-3 text-sm font-semibold">
-            <span>Progress</span>
-            <span className="tabular-nums">
-              {state?.completedExercises ?? 0}/{level.exercises.length} complete
-            </span>
-          </div>
-          <div
-            aria-label={`${Math.round(completionPercent)}% complete`}
-            className="col-start-1 row-start-2 h-2 min-w-0 overflow-hidden rounded-full bg-bhda-text/10"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(completionPercent)}
-          >
-            <div
-              className="h-full rounded-full bg-bhda-purple"
-              style={{ width: `${completionPercent}%` }}
-            />
-          </div>
-          <span className="col-start-2 row-start-2 flex shrink-0 items-center gap-2 text-sm font-semibold tabular-nums">
-            <Star
-              aria-hidden="true"
-              className="size-5 fill-bhda-accent text-bhda-accent"
-            />
-            {state?.totalStars ?? 0}/{level.exercises.length * 3} stars
-          </span>
-        </div>
+        <ProgressSummary
+          className="mt-5"
+          exerciseCount={level.exercises.length}
+          progress={state}
+        />
 
         {!unlocked && state && (
           <p className="mt-5 rounded-lg bg-bhda-text/5 px-4 py-3 text-sm leading-6">
@@ -123,37 +88,19 @@ function LevelCard({
 
 export function LevelSelectPage() {
   const { hash } = useLocation()
-  const { catalogueScope, exerciseSource, progressScope, progressStore } =
-    useAppServices()
+  const { catalogueScope, exerciseSource } = useAppServices()
   const { error: catalogueError, levels } = useCatalogue(
     exerciseSource,
     catalogueScope,
   )
-  const [progress, setProgress] = useState<ProgressSnapshot>(() =>
-    emptySnapshot(levels),
-  )
-  const [progressError, setProgressError] = useState<string | null>(null)
+  const { error: progressError, snapshot: progress } =
+    useProgressSnapshot(levels)
 
   useEffect(() => {
     void preloadSampleFiles().catch(() => {
       // The start button retries the load and provides recovery copy if needed.
     })
   }, [])
-
-  useEffect(() => {
-    let active = true
-    void progressStore
-      .load(progressScope, levels)
-      .then((snapshot) => {
-        if (active) setProgress(snapshot)
-      })
-      .catch(() => {
-        if (active) setProgressError('Your saved progress could not be loaded.')
-      })
-    return () => {
-      active = false
-    }
-  }, [levels, progressScope, progressStore])
 
   useEffect(() => {
     if (!hash.startsWith('#level-')) return

@@ -6,24 +6,18 @@ import {
   Play,
   Star,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { ProgressSummary } from '@/components/ProgressSummary'
 import { Button } from '@/components/ui/button'
 import { useCatalogue } from '@/content'
-import type { ExerciseMode, Level } from '@/model'
-import { deriveLevelProgress, type ProgressSnapshot } from '@/progress'
+import type { ExerciseMode } from '@/model'
+import { useProgressSnapshot } from '@/progress/useProgressSnapshot'
 import { useAppServices } from '@/services/useAppServices'
 
 const MODE_LABELS: Record<ExerciseMode, string> = {
   playAlong: 'Play Along',
   memorise: 'Memorise',
-}
-
-function emptySnapshot(levels: readonly Level[]): ProgressSnapshot {
-  return {
-    exercises: {},
-    levels: deriveLevelProgress(levels, {}),
-  }
 }
 
 function LevelUnavailable({ loading }: { loading: boolean }) {
@@ -54,63 +48,33 @@ function LevelUnavailable({ loading }: { loading: boolean }) {
 
 export function LevelDetailPage() {
   const { levelId = '' } = useParams()
-  const { catalogueScope, exerciseSource, progressScope, progressStore } =
-    useAppServices()
+  const { catalogueScope, exerciseSource } = useAppServices()
   const {
     error: catalogueError,
     levels,
     loading,
   } = useCatalogue(exerciseSource, catalogueScope)
-  const [loadedProgress, setLoadedProgress] = useState<{
-    catalogue: readonly Level[]
-    snapshot: ProgressSnapshot
-  } | null>(null)
-  const [progressError, setProgressError] = useState<string | null>(null)
-
-  useEffect(() => {
-    let active = true
-    void progressStore
-      .load(progressScope, levels)
-      .then((snapshot) => {
-        if (active) {
-          setProgressError(null)
-          setLoadedProgress({ catalogue: levels, snapshot })
-        }
-      })
-      .catch(() => {
-        if (active) {
-          setProgressError('Your saved progress could not be loaded.')
-          setLoadedProgress({
-            catalogue: levels,
-            snapshot: emptySnapshot(levels),
-          })
-        }
-      })
-    return () => {
-      active = false
-    }
-  }, [levels, progressScope, progressStore])
+  const {
+    error: progressError,
+    loading: progressLoading,
+    snapshot: progress,
+  } = useProgressSnapshot(levels)
 
   useEffect(() => {
     document.documentElement.scrollTop = 0
     document.body.scrollTop = 0
   }, [levelId])
 
-  const progressLoading = loadedProgress?.catalogue !== levels
   if (loading || progressLoading) return <LevelUnavailable loading />
 
   const levelIndex = levels.findIndex(({ id }) => id === levelId)
   if (levelIndex < 0) return <LevelUnavailable loading={false} />
 
   const level = levels[levelIndex]
-  const progress = loadedProgress.snapshot
   const state = progress.levels[level.id]
   const unlocked = state?.unlocked ?? false
   const previousLevelProgress =
     levelIndex > 0 ? progress.levels[levels[levelIndex - 1].id] : undefined
-  const completionPercent = state
-    ? (state.completedExercises / state.exerciseCount) * 100
-    : 0
 
   return (
     <section className="mx-auto w-full max-w-3xl" aria-labelledby="page-title">
@@ -152,34 +116,11 @@ export function LevelDetailPage() {
           {level.description}
         </p>
 
-        <div className="mt-6 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2">
-          <div className="col-start-1 row-start-1 flex justify-between gap-3 text-sm font-semibold">
-            <span>Progress</span>
-            <span className="tabular-nums">
-              {state?.completedExercises ?? 0}/{level.exercises.length} complete
-            </span>
-          </div>
-          <div
-            aria-label={`${Math.round(completionPercent)}% complete`}
-            className="col-start-1 row-start-2 h-2 min-w-0 overflow-hidden rounded-full bg-bhda-text/10"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(completionPercent)}
-          >
-            <div
-              className="h-full rounded-full bg-bhda-purple"
-              style={{ width: `${completionPercent}%` }}
-            />
-          </div>
-          <span className="col-start-2 row-start-2 flex shrink-0 items-center gap-2 text-sm font-semibold tabular-nums">
-            <Star
-              aria-hidden="true"
-              className="size-5 fill-bhda-accent text-bhda-accent"
-            />
-            {state?.totalStars ?? 0}/{level.exercises.length * 3} stars
-          </span>
-        </div>
+        <ProgressSummary
+          className="mt-6"
+          exerciseCount={level.exercises.length}
+          progress={state}
+        />
 
         {!unlocked && state && (
           <p className="mt-6 rounded-lg bg-bhda-text/5 px-4 py-3 text-sm leading-6">
