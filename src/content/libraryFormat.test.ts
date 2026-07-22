@@ -19,6 +19,15 @@ const mixedLevel: Level = {
         ],
         notationSystems: 1,
       },
+      key: [
+        {
+          label: 'Quarter-note snare',
+          bars: 1,
+          events: [{ voice: 'snare', tick: 0, duration: 480 }],
+          notationSystems: 1,
+          noteLabels: [{ eventIndex: 0, text: 'Beat one' }],
+        },
+      ],
     },
   ],
   exercises: [
@@ -109,5 +118,29 @@ describe('built-in library JSON format', () => {
     expect(() =>
       parseLibraryJson(serialiseLibrary([invalidGuideLevel])),
     ).toThrow('levels[0].guide[0].example.events[0]')
+  })
+
+  it('reports out-of-range guide key note labels at their library path', () => {
+    const invalidGuideLevel: Level = {
+      ...mixedLevel,
+      custom: undefined,
+      guide: [
+        {
+          text: 'This key label references a missing event.',
+          key: [
+            {
+              label: 'Quarter-note snare',
+              bars: 1,
+              events: [{ voice: 'snare', tick: 0, duration: 480 }],
+              noteLabels: [{ eventIndex: 1, text: 'Missing note' }],
+            },
+          ],
+        },
+      ],
+    }
+
+    expect(() =>
+      parseLibraryJson(serialiseLibrary([invalidGuideLevel])),
+    ).toThrow('levels[0].guide[0].key[0].noteLabels[0].eventIndex')
   })
 })

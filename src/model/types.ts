@@ -49,6 +49,16 @@ export interface Level {
       events: NoteEvent[]
       notationSystems?: 1 | 2
     }
+    key?: Array<{
+      label: string
+      bars: 1
+      events: NoteEvent[]
+      notationSystems?: 1 | 2
+      noteLabels?: Array<{
+        eventIndex: number
+        text: string
+      }>
+    }>
   }>
   exercises: Exercise[]
   /** Runtime catalogue metadata. Omitted from built-in/exported JSON. */

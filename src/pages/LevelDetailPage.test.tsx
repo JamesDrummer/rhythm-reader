@@ -112,6 +112,15 @@ describe('LevelDetailPage', () => {
             ],
             notationSystems: 1,
           },
+          key: [
+            {
+              label: 'Quarter-note snare',
+              bars: 1,
+              events: [{ voice: 'snare', tick: 0, duration: 480 }],
+              notationSystems: 1,
+              noteLabels: [{ eventIndex: 0, text: 'Beat one' }],
+            },
+          ],
         },
       ],
     }
@@ -132,6 +141,14 @@ describe('LevelDetailPage', () => {
     const notation = screen.getByRole('img', { name: 'Reading example 1' })
     expect(notation.querySelector('svg')).toBeInTheDocument()
     expect(notation.querySelectorAll('svg')).toHaveLength(1)
+    expect(screen.getByText('Quarter-note snare')).toBeInTheDocument()
+    expect(screen.getByText('Beat one')).toBeInTheDocument()
+    const keyNotation = screen.getByRole('img', {
+      name: 'Quarter-note snare notation',
+    })
+    expect(
+      keyNotation.querySelector('[data-note-label-index="0"]'),
+    ).toBeInTheDocument()
   })
 
   it('does not show a reading guide card when the level has no guide', async () => {

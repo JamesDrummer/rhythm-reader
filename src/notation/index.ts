@@ -6,6 +6,7 @@ export type {
   LayoutBox,
   NotationClock,
   NotationLayout,
+  NotationNoteLabel,
   NotationProps,
   NoteFeedback,
   NoteLayout,

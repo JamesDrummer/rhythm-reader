@@ -21,22 +21,25 @@ const MODE_LABELS: Record<ExerciseMode, string> = {
   memorise: 'Memorise',
 }
 
-type GuideExample = NonNullable<NonNullable<Level['guide']>[number]['example']>
+type GuideSection = NonNullable<Level['guide']>[number]
+type GuideExample = NonNullable<GuideSection['example']>
+type GuideKey = NonNullable<GuideSection['key']>[number]
 
-function guideExampleExercise(
+function guideNotationExercise(
   level: Level,
-  example: GuideExample,
-  sectionIndex: number,
+  notation: GuideExample | GuideKey,
+  idSuffix: string,
+  title: string,
 ): Exercise {
   return {
-    id: `${level.id}-guide-${sectionIndex + 1}`,
-    title: `${level.title} reading example ${sectionIndex + 1}`,
+    id: `${level.id}-${idSuffix}`,
+    title,
     tempo: 60,
     timeSignature: { beats: 4, beatValue: 4 },
-    bars: example.bars,
-    events: example.events,
-    ...(example.notationSystems
-      ? { notationSystems: example.notationSystems }
+    bars: notation.bars,
+    events: notation.events,
+    ...(notation.notationSystems
+      ? { notationSystems: notation.notationSystems }
       : {}),
     tier: 'beginner',
     listenFirstAllowed: false,
@@ -178,13 +181,44 @@ export function LevelDetailPage() {
                 {section.example && (
                   <Notation
                     className="mt-4 border shadow-none"
-                    exercise={guideExampleExercise(
+                    exercise={guideNotationExercise(
                       level,
                       section.example,
-                      sectionIndex,
+                      `guide-${sectionIndex + 1}`,
+                      `${level.title} reading example ${sectionIndex + 1}`,
                     )}
                     label={`Reading example ${sectionIndex + 1}`}
                   />
+                )}
+                {section.key && section.key.length > 0 && (
+                  <div
+                    aria-label="Notation key"
+                    className="mt-4 flex flex-wrap gap-4"
+                    role="list"
+                  >
+                    {section.key.map((entry, keyIndex) => (
+                      <figure
+                        className="w-full min-w-0 sm:w-56"
+                        key={`${entry.label}-${keyIndex}`}
+                        role="listitem"
+                      >
+                        <Notation
+                          className="border shadow-none"
+                          exercise={guideNotationExercise(
+                            level,
+                            entry,
+                            `guide-${sectionIndex + 1}-key-${keyIndex + 1}`,
+                            entry.label,
+                          )}
+                          label={`${entry.label} notation`}
+                          noteLabels={entry.noteLabels}
+                        />
+                        <figcaption className="mt-2 text-center text-sm font-semibold text-bhda-text/70">
+                          {entry.label}
+                        </figcaption>
+                      </figure>
+                    ))}
+                  </div>
                 )}
               </section>
             ))}

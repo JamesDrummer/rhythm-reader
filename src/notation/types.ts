@@ -47,10 +47,16 @@ export interface OverlayHandle {
   clearFeedback(event?: NoteEvent): void
 }
 
+export interface NotationNoteLabel {
+  eventIndex: number
+  text: string
+}
+
 export interface NotationProps {
   exercise: Exercise
   clock?: NotationClock
   overlayRef?: Ref<OverlayHandle>
+  noteLabels?: readonly NotationNoteLabel[]
   className?: string
   label?: string
 }
