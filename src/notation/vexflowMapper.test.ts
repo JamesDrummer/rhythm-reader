@@ -114,6 +114,76 @@ describe('renderExerciseNotation', () => {
     }
   })
 
+  it('links simultaneous hi-hat and snare notes in the two-system hands voice', () => {
+    const hihatEvents = Array.from({ length: 8 }, (_, index) => ({
+      voice: 'hihat' as const,
+      tick: index * (PPQ / 2),
+      duration: PPQ / 2,
+    }))
+    const hihatOnly: Exercise = {
+      ...AUDIO_DEMO_EXERCISE,
+      id: 'two-system-hihat-only',
+      bars: 1,
+      notationSystems: 2,
+      events: hihatEvents,
+    }
+    const withBackbeat: Exercise = {
+      ...hihatOnly,
+      id: 'two-system-hihat-backbeat',
+      events: [
+        ...hihatEvents,
+        { voice: 'snare', tick: PPQ, duration: PPQ },
+        { voice: 'snare', tick: PPQ * 3, duration: PPQ },
+      ],
+    }
+    const hihatOnlyRender = renderAttached(hihatOnly)
+    const backbeatRender = renderAttached(withBackbeat)
+
+    try {
+      const hihatTickables =
+        hihatOnlyRender.container.querySelectorAll('.vf-stavenote').length
+      const backbeatTickables =
+        backbeatRender.container.querySelectorAll('.vf-stavenote').length
+      const backbeatLayouts = backbeatRender.layout.noteLayouts.filter(
+        ({ event }) => event.voice === 'snare',
+      )
+
+      expect(backbeatTickables).toBe(hihatTickables)
+      expect(
+        backbeatRender.container.querySelectorAll('.vf-rest'),
+      ).toHaveLength(0)
+      expect(backbeatLayouts).toHaveLength(2)
+      for (const snare of backbeatLayouts) {
+        const simultaneousHihat = backbeatRender.layout.noteLayouts.find(
+          ({ event }) =>
+            event.voice === 'hihat' && event.tick === snare.event.tick,
+        )
+        expect(Math.round(snare.x)).toBe(Math.round(simultaneousHihat?.x ?? -1))
+      }
+    } finally {
+      hihatOnlyRender.container.remove()
+      backbeatRender.container.remove()
+    }
+  })
+
+  it('keeps interlocking hand notes when one written duration overlaps the next hit', () => {
+    const exercise: Exercise = {
+      ...AUDIO_DEMO_EXERCISE,
+      id: 'two-system-interlocking-hands',
+      bars: 1,
+      notationSystems: 2,
+      events: [
+        { voice: 'hihat', tick: 0, duration: PPQ / 2 },
+        { voice: 'snare', tick: PPQ / 4, duration: PPQ / 4 },
+        { voice: 'hihat', tick: PPQ / 2, duration: PPQ / 2 },
+      ],
+    }
+
+    expect(render(exercise).noteLayouts.map(({ event }) => event.tick)).toEqual(
+      [0, 120, 240],
+    )
+  })
+
   it('renders grouped 6/8 without error', () => {
     const layout = render(SIX_EIGHT_PROOF_EXERCISE)
 

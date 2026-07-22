@@ -126,39 +126,6 @@ function beamGroups(timeSignature: TimeSignature): Fraction[] {
   )
 }
 
-function canShareHandLane(events: readonly NoteEvent[]): boolean {
-  const handEvents = events
-    .filter((event) => event.voice !== 'kick')
-    .toSorted((left, right) => left.tick - right.tick)
-  let occupiedUntil = -1
-
-  for (let index = 0; index < handEvents.length;) {
-    const tick = handEvents[index].tick
-    const simultaneous: NoteEvent[] = []
-
-    while (index < handEvents.length && handEvents[index].tick === tick) {
-      simultaneous.push(handEvents[index])
-      index += 1
-    }
-
-    if (
-      tick < occupiedUntil ||
-      new Set(simultaneous.map((event) => event.duration)).size > 1 ||
-      new Set(
-        simultaneous.map((event) =>
-          event.tuplet ? `${event.tuplet.num}:${event.tuplet.den}` : 'straight',
-        ),
-      ).size > 1
-    ) {
-      return false
-    }
-
-    occupiedUntil = tick + simultaneous[0].duration
-  }
-
-  return true
-}
-
 function createLanes(exercise: Exercise): Lane[] {
   const lanes: Lane[] = []
   const presentVoices = new Set(exercise.events.map((event) => event.voice))
@@ -178,31 +145,13 @@ function createLanes(exercise: Exercise): Lane[] {
   }
 
   if (presentVoices.has('hihat') || presentVoices.has('snare')) {
-    if (canShareHandLane(exercise.events)) {
-      lanes.push({
-        id: 'hands',
-        voices: ['snare', 'hihat'],
-        stemDirection: Stem.UP,
-        restLine: 4,
-      })
-    } else {
-      if (presentVoices.has('hihat')) {
-        lanes.push({
-          id: 'hihat',
-          voices: ['hihat'],
-          stemDirection: Stem.UP,
-          restLine: 4,
-        })
-      }
-      if (presentVoices.has('snare')) {
-        lanes.push({
-          id: 'snare',
-          voices: ['snare'],
-          stemDirection: Stem.UP,
-          restLine: 3.5,
-        })
-      }
-    }
+    lanes.push({
+      id: 'hands',
+      voices: ['snare', 'hihat'],
+      stemDirection: Stem.UP,
+      restLine: 4,
+      mergeToShortestDuration: true,
+    })
   }
 
   if (presentVoices.has('kick')) {
@@ -326,9 +275,22 @@ function buildTimeline(
 
     const eventsAtTick = localEvents.get(cursor)
     if (eventsAtTick?.length) {
-      const duration = mergeToShortestDuration
+      const writtenDuration = mergeToShortestDuration
         ? Math.min(...eventsAtTick.map((event) => event.duration))
         : eventsAtTick[0].duration
+      const nextEvent = [...localEvents.keys()]
+        .filter((tick) => tick > cursor)
+        .toSorted((left, right) => left - right)[0]
+      const nextTuplet = tuplets.find(
+        (candidate) => candidate.start > cursor,
+      )?.start
+      const nextPosition = Math.min(
+        nextEvent ?? barTicks,
+        nextTuplet ?? barTicks,
+      )
+      const duration = mergeToShortestDuration
+        ? Math.min(writtenDuration, nextPosition - cursor)
+        : writtenDuration
       entries.push({ tick: cursor, duration, events: eventsAtTick })
       cursor += duration
       continue
