@@ -75,6 +75,7 @@ Project: Rhythm Reader \| Status: Ready for build \| Owner: James Bracey \| Last
 	6. More voices at once
 - **Level design principle:** introduce low-impact ingredients before high-impact ones. The opening arc is quarter notes and rests on one voice → the same material across multiple voices → introduce 8th notes on one voice → combine quarter notes with pairs of 8th notes → layer voices → introduce 8th-note rests on one voice → combine quarter rests with 8th notes → apply 8th-note rests around the kit → combine quarter and 8th-note rests around the kit. The 16th-note arc then introduces 16ths alone → combines 8ths and 16ths → adds quarter notes → deliberately adds quarter rests, then 8th-note rests, then 16th-note rests → applies the complete binary vocabulary around the kit → and finally introduces triplets and mixed rhythms. Each new stage gets the `listenFirstAllowed` flag on its first two exercises.
 - v1 ships with **17 built-in levels of 5 exercises each (85 exercises)**, following this principle. Binary rests grow progressively from full-beat quarter rests to half-beat 8th rests and finally isolated 16th rests; a smaller rest value must not appear before its teaching stage.
+- The level overview (`/`) is a compact, single-column progression of summary cards. Exercise details live at `/levels/:levelId`; locked levels may be deliberately opened as previews, but their exercises have no Play actions and `/play/:exerciseId` remains independently guarded.
 - High-score tables are deferred until accounts exist.
 ## 2.7 Exercise editor (teacher tool)
 - Built into the app (a route like `/editor`), designed for James only, but no auth in v1.
@@ -163,7 +164,7 @@ Setup:
 - Vite + React 19 + TypeScript strict mode
 - Tailwind CSS + shadcn/ui, themed with BHDA branding: primary purple #614E90, text #000000, background #F5F5F5, font Montserrat via Google Fonts. Define these as Tailwind custom colours under a `bhda` key.
 - ESLint + Prettier, Vitest for testing
-- React Router with routes: / (level select), /play/:exerciseId, /editor, /settings, /calibrate
+- React Router with routes: / (level select), /levels/:levelId (level detail and locked preview), /play/:exerciseId, /editor, /settings, /calibrate
 - A responsive app shell: header with the app name "Rhythm Reader" and settings icon, main content area. Mobile-first, must look right on desktop, iPad landscape, and a 375px phone.
 - Placeholder pages for each route.
 - All copy in British English.
@@ -291,7 +292,7 @@ Implement content structure and progression (spec section 2.6, config from src/c
 
 - ExerciseSource interface: BuiltInSource (JSON files in the repo) + CustomSource (localStorage) merged into one catalogue of Levels.
 - ProgressStore interface with a localStorage implementation: best score/stars per exercise, completion, unlock state. Design both interfaces so server-backed implementations can replace them later (portal integration) - no assumption of a single anonymous user baked into call sites.
-- Level select screen (/): levels as cards with lock state, star totals, progress; exercises listed with best stars and available modes. Locked levels show what's needed to unlock. BHDA-branded, friendly copy.
+- Level select screen (/): compact linked level cards with lock state, star totals and progress, with no exercise rows. A dedicated `/levels/:levelId` screen lists best stars and available modes for that level. Locked level pages preview the exercises and exact unlock requirement but never show Play actions. BHDA-branded, friendly copy.
 - Unlock logic per config: all exercises in the level completed AND total stars >= 2 × exercise count.
 - Author the built-in library: 17 levels x 5 exercises (85 exercises total) following the level design principle in spec 2.6. The ordered arc is quarter-note foundations → around the kit → 8th-note steps → quarter notes with pairs of 8ths → layered 8ths → 8th-note rests on one voice → quarter rests with 8th notes → 8th-note rests around the kit → quarter and 8th rests around the kit → 16th-note foundations → 8ths with 16ths → quarters, 8ths and 16ths → mixed values with quarter rests → mixed values with 8th rests → mixed values with 16th rests → mixed binary rhythms around the kit → triplets and mixed rhythms. Tempos reset slightly for each new reading challenge, then rise within the level. Mark the first two exercises of each new stage `listenFirstAllowed: true`; tighten tiers within later levels. Memorise mode is enabled from level 2 onwards.
 

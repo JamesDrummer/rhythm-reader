@@ -43,15 +43,22 @@ describe('LevelSelectPage', () => {
     renderPage(new LocalStorageProgressStore(localStorage))
 
     const cards = await screen.findAllByRole('article')
-    expect(cards).toHaveLength(6)
+    expect(cards).toHaveLength(BUILT_IN_LEVELS.length)
     expect(within(cards[0]).getByText('Unlocked')).toBeInTheDocument()
-    expect(
-      within(cards[0]).getAllByRole('link', { name: 'Play' }),
-    ).toHaveLength(5)
+    expect(within(cards[0]).getByRole('link')).toHaveAttribute(
+      'href',
+      `/levels/${BUILT_IN_LEVELS[0].id}`,
+    )
+    expect(screen.queryByText('Quarter note pulse')).toBeNull()
+    expect(screen.queryByRole('link', { name: 'Play' })).toBeNull()
+    expect(within(cards[0]).getByRole('progressbar')).toHaveClass(
+      'col-start-1',
+      'row-start-2',
+    )
 
     for (const card of cards.slice(1)) {
       expect(within(card).getByText('Locked')).toBeInTheDocument()
-      expect(within(card).queryByRole('link', { name: 'Play' })).toBeNull()
+      expect(within(card).getByText('Preview level')).toBeInTheDocument()
     }
   })
 
@@ -72,8 +79,10 @@ describe('LevelSelectPage', () => {
       expect(within(cards[1]).getByText('Unlocked')).toBeInTheDocument(),
     )
     expect(within(cards[0]).getByText('10/15 stars')).toBeInTheDocument()
-    expect(
-      within(cards[1]).getAllByRole('link', { name: 'Play' }),
-    ).toHaveLength(5)
+    expect(within(cards[1]).getByText('Open level')).toBeInTheDocument()
+    expect(within(cards[1]).getByRole('link')).toHaveAttribute(
+      'href',
+      `/levels/${BUILT_IN_LEVELS[1].id}`,
+    )
   })
 })

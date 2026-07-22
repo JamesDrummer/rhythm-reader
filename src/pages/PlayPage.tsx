@@ -138,7 +138,7 @@ function ExerciseNotFound({ loading }: { loading: boolean }) {
   )
 }
 
-function ExerciseLocked() {
+function ExerciseLocked({ levelId }: { levelId: string }) {
   return (
     <section className="mx-auto max-w-3xl" aria-labelledby="page-title">
       <p className="text-sm font-semibold uppercase tracking-[0.18em] text-bhda-purple">
@@ -151,9 +151,9 @@ function ExerciseLocked() {
         Earn more stars in the earlier levels to open it.
       </p>
       <Button asChild className="mt-8" variant="outline">
-        <Link to="/">
+        <Link to={`/levels/${encodeURIComponent(levelId)}`}>
           <ArrowLeft aria-hidden="true" className="size-4" />
-          Back to levels
+          Back to level
         </Link>
       </Button>
     </section>
@@ -199,7 +199,7 @@ export function PlayPage() {
   if (loading || progressLoading) return <ExerciseNotFound loading />
   if (!catalogueExercise) return <ExerciseNotFound loading={false} />
   if (!loadedProgress.snapshot.levels[catalogueExercise.level.id]?.unlocked) {
-    return <ExerciseLocked />
+    return <ExerciseLocked levelId={catalogueExercise.level.id} />
   }
 
   return (
@@ -689,8 +689,12 @@ function PlayableExercise({
         exerciseTitle={exercise.title}
         isPlayingLayered={isPlayingLayered}
         layeredPlaybackError={layeredPlaybackError}
-        nextExerciseHref={nextExercise ? `/play/${nextExercise.id}` : '/'}
-        nextExerciseLabel={nextExercise ? 'Next exercise' : 'Back to levels'}
+        nextExerciseHref={
+          nextExercise
+            ? `/play/${nextExercise.id}`
+            : `/levels/${encodeURIComponent(catalogueExercise.level.id)}`
+        }
+        nextExerciseLabel={nextExercise ? 'Next exercise' : 'Back to level'}
         onLayeredPlayback={() => void startLayeredPlayback()}
         onRetry={retry}
         onStopLayeredPlayback={stopLayeredPlayback}
@@ -709,11 +713,11 @@ function PlayableExercise({
       className="play-touch-spacing mx-auto w-full max-w-4xl"
     >
       <Link
-        className="inline-flex items-center gap-2 rounded-md text-sm font-semibold text-black/60 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-purple focus-visible:ring-offset-4"
-        to="/"
+        className="inline-flex items-center gap-2 rounded-md text-sm font-semibold text-bhda-text/60 hover:text-bhda-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-accent focus-visible:ring-offset-4"
+        to={`/levels/${encodeURIComponent(catalogueExercise.level.id)}`}
       >
         <ArrowLeft aria-hidden="true" className="size-4" />
-        Back to levels
+        Back to level
       </Link>
 
       <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">

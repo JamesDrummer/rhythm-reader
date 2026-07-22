@@ -200,6 +200,10 @@ describe('Play Along page lifecycle', () => {
     expect(
       screen.getByText('Earn more stars in the earlier levels to open it.'),
     ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Back to level' })).toHaveAttribute(
+      'href',
+      `/levels/${BUILT_IN_LEVELS[1].id}`,
+    )
     expect(screen.queryByRole('button', { name: 'Start' })).toBeNull()
   })
 
@@ -213,7 +217,12 @@ describe('Play Along page lifecycle', () => {
       </MemoryRouter>,
     )
 
-    await user.click(await screen.findByRole('button', { name: 'Start' }))
+    const startButton = await screen.findByRole('button', { name: 'Start' })
+    expect(screen.getByRole('link', { name: 'Back to level' })).toHaveAttribute(
+      'href',
+      `/levels/${BUILT_IN_LEVELS[0].id}`,
+    )
+    await user.click(startButton)
     expect(
       await screen.findByText('Get ready. Input starts after four.'),
     ).toBeInTheDocument()
@@ -350,5 +359,28 @@ describe('Play Along page lifecycle', () => {
     expect(
       screen.getByRole('img', { name: /^Hit timing timeline/ }),
     ).toBeInTheDocument()
+  })
+
+  it('returns to the level page after the final exercise', async () => {
+    const user = userEvent.setup()
+    const level = BUILT_IN_LEVELS[0]
+    const finalExercise = level.exercises.at(-1)!
+    render(
+      <MemoryRouter initialEntries={[`/play/${finalExercise.id}`]}>
+        <Routes>
+          <Route path="play/:exerciseId" element={<PlayPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    await user.click(await screen.findByRole('button', { name: 'Start' }))
+    act(() => {
+      audio.advanceTo(20)
+      transport.finish()
+    })
+
+    expect(
+      await screen.findByRole('link', { name: /Back to level/ }),
+    ).toHaveAttribute('href', `/levels/${level.id}`)
   })
 })

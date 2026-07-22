@@ -20,6 +20,11 @@ const LevelSelectPage = lazy(() =>
     default: module.LevelSelectPage,
   })),
 )
+const LevelDetailPage = lazy(() =>
+  import('@/pages/LevelDetailPage').then((module) => ({
+    default: module.LevelDetailPage,
+  })),
+)
 const NotFoundPage = lazy(() =>
   import('@/pages/NotFoundPage').then((module) => ({
     default: module.NotFoundPage,
@@ -48,6 +53,7 @@ export function AppRoutes() {
       <Routes>
         <Route element={<AppShell />}>
           <Route index element={<LevelSelectPage />} />
+          <Route path="levels/:levelId" element={<LevelDetailPage />} />
           <Route path="play/:exerciseId" element={<PlayPage />} />
           <Route path="editor" element={<EditorPage />} />
           <Route path="settings" element={<SettingsPage />} />

@@ -7,6 +7,10 @@ afterEach(cleanup)
 
 const routes = [
   { path: '/', heading: 'Ready for your next rhythm?' },
+  {
+    path: '/levels/level-1-quarter-note-foundations',
+    heading: 'Quarter-note foundations',
+  },
   { path: '/play/quarter-notes', heading: 'Quarter note pulse' },
   { path: '/editor', heading: 'Exercise editor' },
   { path: '/settings', heading: 'Settings' },
