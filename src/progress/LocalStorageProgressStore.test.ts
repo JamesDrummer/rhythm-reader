@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { BUILT_IN_LEVELS } from '@/content'
-import { LocalStorageProgressStore } from './LocalStorageProgressStore'
+import {
+  LocalStorageProgressStore,
+  PROGRESS_STORAGE_PREFIX,
+} from './LocalStorageProgressStore'
 
 const learner = { learnerId: 'test-learner' }
 
@@ -93,5 +96,44 @@ describe('LocalStorageProgressStore', () => {
       bestAccuracyPercent: 92,
       bestStars: 3,
     })
+  })
+
+  it('preserves existing exercise results after later levels are reordered', async () => {
+    const existingLevel = BUILT_IN_LEVELS.find((level) =>
+      level.exercises.some(({ id }) => id === 'sixteenth-note-groups'),
+    )
+    const existingExercise = existingLevel?.exercises.find(
+      ({ id }) => id === 'sixteenth-note-groups',
+    )
+
+    if (!existingLevel || !existingExercise) {
+      throw new Error('Expected the existing sixteenth-note exercise')
+    }
+    localStorage.setItem(
+      `${PROGRESS_STORAGE_PREFIX}:${learner.learnerId}`,
+      JSON.stringify({
+        exercises: {
+          [existingExercise.id]: {
+            exerciseId: existingExercise.id,
+            completed: true,
+            bestAccuracyPercent: 91,
+            bestStars: 3,
+            attempts: 4,
+          },
+        },
+      }),
+    )
+
+    const progress = await new LocalStorageProgressStore(localStorage).load(
+      learner,
+      BUILT_IN_LEVELS,
+    )
+
+    expect(progress.exercises[existingExercise.id]).toMatchObject({
+      bestAccuracyPercent: 91,
+      bestStars: 3,
+      attempts: 4,
+    })
+    expect(progress.levels[existingLevel.id].unlocked).toBe(false)
   })
 })

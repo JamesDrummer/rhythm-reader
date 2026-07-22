@@ -258,10 +258,113 @@
     ]
   },
   {
-    "id": "level-4-layered-eighths",
+    "id": "level-4-quarter-eighth-combinations",
+    "title": "Quarters and eighth-note pairs",
+    "description": "Switch confidently between one note per beat and two equal notes per beat.",
+    "order": 4,
+    "exercises": [
+      {
+        "id": "quarter-eighth-notes-at-the-end",
+        "title": "Eighth notes at the end",
+        "tempo": 70,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [0, 480, 960] },
+          { "voice": "snare", "duration": 240, "ticks": [1440, 1680] }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-eighth-pairs-two-and-four",
+        "title": "Pairs on two and four",
+        "tempo": 72,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [0, 960] },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [480, 720, 1440, 1680]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-eighth-pairs-one-and-three",
+        "title": "Pairs on one and three",
+        "tempo": 74,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [480, 1440] },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [0, 240, 960, 1200]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-eighth-more-pairs",
+        "title": "More eighth-note pairs",
+        "tempo": 76,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [960] },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [0, 240, 480, 720, 1440, 1680]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-eighth-two-bar-phrase",
+        "title": "Two-bar mixed-value phrase",
+        "tempo": 78,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 2,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 480,
+            "ticks": [0, 1440, 2400, 2880]
+          },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [480, 720, 960, 1200, 1920, 2160, 3360, 3600]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      }
+    ]
+  },
+  {
+    "id": "level-5-layered-eighths",
     "title": "Layered eighths",
     "description": "Keep the eighth-note pulse steady while kick and snare rhythms sit underneath it.",
-    "order": 4,
+    "order": 5,
     "exercises": [
       {
         "id": "eighth-note-hihat-layer",
@@ -375,10 +478,441 @@
     ]
   },
   {
-    "id": "level-5-sixteenths-syncopation",
-    "title": "Sixteenths and syncopation",
-    "description": "Divide the beat into four, then stay grounded when notes land between the main pulses.",
-    "order": 5,
+    "id": "level-6-eighth-note-rests",
+    "title": "Eighth-note rests",
+    "description": "Keep the pulse steady while notes and spaces move between the two halves of each beat.",
+    "order": 6,
+    "exercises": [
+      {
+        "id": "eighth-rests-after-two-and-four",
+        "title": "Rest after two and four",
+        "tempo": 76,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [0, 240, 480, 960, 1200, 1440]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "eighth-rests-after-one-and-three",
+        "title": "Rest after one and three",
+        "tempo": 78,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [0, 480, 720, 960, 1440, 1680]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "eighth-rests-mixed-spaces",
+        "title": "Mixed eighth-note spaces",
+        "tempo": 80,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [0, 240, 720, 960, 1440]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "eighth-rests-offbeat-answers",
+        "title": "Offbeat answers",
+        "tempo": 82,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [0, 720, 960, 1200, 1680]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "eighth-rests-two-bar-phrase",
+        "title": "Two-bar rest phrase",
+        "tempo": 84,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 2,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [0, 240, 720, 960, 1440, 2160, 2400, 2880, 3120, 3600]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      }
+    ]
+  },
+  {
+    "id": "level-7-quarter-rests-with-eighths",
+    "title": "Quarter rests with eighth notes",
+    "description": "Keep counting through full-beat silences while eighth-note phrases continue around them.",
+    "order": 7,
+    "exercises": [
+      {
+        "id": "quarter-rests-with-eighths-rest-on-beat-three",
+        "title": "Rest on beat three",
+        "tempo": 74,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [0, 240, 480, 720, 1440, 1680]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-rests-with-eighths-rest-before-the-phrase",
+        "title": "Rest before the phrase",
+        "tempo": 76,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [480, 720, 960, 1200, 1440, 1680]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-rests-with-eighths-quarters-join-the-rests",
+        "title": "Quarters join the rests",
+        "tempo": 78,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [960] },
+          { "voice": "snare", "duration": 240, "ticks": [0, 240, 1440, 1680] }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-rests-with-eighths-mixed-notes-and-silence",
+        "title": "Mixed notes and silence",
+        "tempo": 80,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [0] },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [480, 720, 1440, 1680]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-rests-with-eighths-two-bar-quarter-rest-phrase",
+        "title": "Two-bar quarter-rest phrase",
+        "tempo": 82,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 2,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [480, 2880] },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [0, 240, 1440, 1680, 2400, 2640, 3360, 3600]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      }
+    ]
+  },
+  {
+    "id": "level-8-kit-eighth-note-rests",
+    "title": "Eighth-note rests around the kit",
+    "description": "Read the gaps across the kit, then let the hands and feet fill each other's spaces.",
+    "order": 8,
+    "exercises": [
+      {
+        "id": "kit-rests-together",
+        "title": "Kit rests together",
+        "tempo": 78,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "hihat",
+            "duration": 240,
+            "ticks": [0, 240, 480, 960, 1200, 1440]
+          },
+          { "voice": "snare", "duration": 240, "ticks": [480, 1440] },
+          { "voice": "kick", "duration": 240, "ticks": [0, 960] }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "kit-rests-shared-gaps",
+        "title": "Shared gaps in the groove",
+        "tempo": 80,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "hihat",
+            "duration": 240,
+            "ticks": [0, 480, 720, 960, 1440, 1680]
+          },
+          { "voice": "snare", "duration": 240, "ticks": [480, 1440] },
+          { "voice": "kick", "duration": 240, "ticks": [0, 960] }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "kit-rests-kick-fills-gaps",
+        "title": "Kick fills the gaps",
+        "tempo": 82,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "hihat",
+            "duration": 240,
+            "ticks": [0, 240, 480, 960, 1200, 1440]
+          },
+          { "voice": "snare", "duration": 240, "ticks": [480, 1440] },
+          { "voice": "kick", "duration": 240, "ticks": [0, 720, 960, 1680] }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "kit-rests-hands-feet-trade",
+        "title": "Hands and feet trade",
+        "tempo": 84,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "hihat",
+            "duration": 240,
+            "ticks": [0, 480, 720, 960, 1440, 1680]
+          },
+          { "voice": "snare", "duration": 240, "ticks": [480, 1440] },
+          { "voice": "kick", "duration": 240, "ticks": [0, 240, 960, 1200] }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "kit-rests-two-bar-phrase",
+        "title": "Two-bar broken groove",
+        "tempo": 86,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 2,
+        "groups": [
+          {
+            "voice": "hihat",
+            "duration": 240,
+            "ticks": [
+              0, 240, 480, 960, 1200, 1440, 1920, 2400, 2640, 2880, 3360, 3600
+            ]
+          },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [480, 1440, 2400, 3360]
+          },
+          {
+            "voice": "kick",
+            "duration": 240,
+            "ticks": [0, 720, 960, 1680, 1920, 2160, 2880, 3120]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      }
+    ]
+  },
+  {
+    "id": "level-9-quarter-eighth-rests-around-kit",
+    "title": "Quarter and eighth rests around the kit",
+    "description": "Read full-beat and half-beat silences as the hands and feet move around one another.",
+    "order": 9,
+    "exercises": [
+      {
+        "id": "quarter-eighth-rests-around-kit-shared-whole-beat-gap",
+        "title": "Shared whole-beat gap",
+        "tempo": 76,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "hihat",
+            "duration": 240,
+            "ticks": [0, 240, 480, 720, 1440, 1680]
+          },
+          { "voice": "snare", "duration": 240, "ticks": [480, 1440] },
+          { "voice": "kick", "duration": 240, "ticks": [0, 1440] }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-eighth-rests-around-kit-kick-through-the-hand-rest",
+        "title": "Kick through the hand rest",
+        "tempo": 78,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "hihat",
+            "duration": 240,
+            "ticks": [0, 240, 480, 720, 1440, 1680]
+          },
+          { "voice": "snare", "duration": 240, "ticks": [480, 1440] },
+          { "voice": "kick", "duration": 240, "ticks": [0, 960] }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-eighth-rests-around-kit-hands-through-the-kick-rest",
+        "title": "Hands through the kick rest",
+        "tempo": 80,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "hihat",
+            "duration": 240,
+            "ticks": [0, 480, 720, 960, 1440, 1680]
+          },
+          { "voice": "snare", "duration": 240, "ticks": [480, 1440] },
+          { "voice": "kick", "duration": 240, "ticks": [0, 480, 1440] }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-eighth-rests-around-kit-hands-and-feet-exchange-rests",
+        "title": "Hands and feet exchange rests",
+        "tempo": 82,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "hihat",
+            "duration": 240,
+            "ticks": [0, 240, 960, 1440, 1680]
+          },
+          { "voice": "snare", "duration": 240, "ticks": [1440] },
+          { "voice": "kick", "duration": 240, "ticks": [0, 480, 1440] }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-eighth-rests-around-kit-two-bar-mixed-rest-groove",
+        "title": "Two-bar mixed-rest groove",
+        "tempo": 84,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 2,
+        "groups": [
+          {
+            "voice": "hihat",
+            "duration": 240,
+            "ticks": [
+              0, 240, 480, 720, 1440, 1680, 1920, 2160, 2880, 3360, 3600
+            ]
+          },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [480, 1440, 3360]
+          },
+          {
+            "voice": "kick",
+            "duration": 240,
+            "ticks": [0, 960, 1920, 2400, 3360]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      }
+    ]
+  },
+  {
+    "id": "level-10-sixteenth-note-foundations",
+    "title": "Sixteenth-note foundations",
+    "description": "Divide each beat into four and keep the strokes even through familiar full-beat gaps.",
+    "order": 10,
     "exercises": [
       {
         "id": "sixteenth-note-groups",
@@ -420,6 +954,116 @@
         "modes": ["playAlong", "memorise"]
       },
       {
+        "id": "sixteenth-foundations-bursts-on-two-and-four",
+        "title": "Bursts on two and four",
+        "tempo": 78,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [480, 600, 720, 840, 1440, 1560, 1680, 1800]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "sixteenth-foundations-three-beat-sixteenth-phrase",
+        "title": "Three-beat sixteenth phrase",
+        "tempo": 80,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [
+              0, 120, 240, 360, 480, 600, 720, 840, 1440, 1560, 1680, 1800
+            ]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "sixteenth-foundations-two-bar-sixteenth-phrase",
+        "title": "Two-bar sixteenth phrase",
+        "tempo": 82,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 2,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [
+              0, 120, 240, 360, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800,
+              2400, 2520, 2640, 2760, 2880, 3000, 3120, 3240, 3360, 3480, 3600,
+              3720
+            ]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      }
+    ]
+  },
+  {
+    "id": "level-11-eighth-sixteenth-combinations",
+    "title": "Eighths and sixteenths",
+    "description": "Switch cleanly between two and four notes per beat without adding rests or quarter notes yet.",
+    "order": 11,
+    "exercises": [
+      {
+        "id": "sixteenth-eighths-sixteenths-first",
+        "title": "Sixteenths first",
+        "tempo": 72,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 120, "ticks": [0, 120, 240, 360] },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [480, 720, 960, 1200, 1440, 1680]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "sixteenth-eighths-sixteenths-on-beat-two",
+        "title": "Sixteenths on beat two",
+        "tempo": 74,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [480, 600, 720, 840]
+          },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [0, 240, 960, 1200, 1440, 1680]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
         "id": "sixteenth-eighth-combinations",
         "title": "Eighths meet sixteenths",
         "tempo": 78,
@@ -431,7 +1075,446 @@
             "duration": 120,
             "ticks": [0, 120, 240, 360, 960, 1080, 1200, 1320]
           },
-          { "voice": "snare", "duration": 240, "ticks": [480, 720, 1440, 1680] }
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [480, 720, 1440, 1680]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "sixteenth-eighths-pairs-then-sixteenths",
+        "title": "Pairs then sixteenths",
+        "tempo": 80,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 240, "ticks": [0, 240, 480, 720] },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [960, 1080, 1200, 1320, 1440, 1560, 1680, 1800]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "sixteenth-eighths-two-bar-switches",
+        "title": "Two-bar subdivision switches",
+        "tempo": 82,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 2,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [
+              0, 120, 240, 360, 1440, 1560, 1680, 1800, 2400, 2520, 2640, 2760,
+              2880, 3000, 3120, 3240
+            ]
+          },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [480, 720, 960, 1200, 1920, 2160, 3360, 3600]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      }
+    ]
+  },
+  {
+    "id": "level-12-quarter-eighth-sixteenth-combinations",
+    "title": "Quarters, eighths and sixteenths",
+    "description": "Combine one, two and four notes per beat before bringing silence back into the phrase.",
+    "order": 12,
+    "exercises": [
+      {
+        "id": "quarter-eighth-sixteenth-quarter-to-sixteenths",
+        "title": "Quarter to sixteenths",
+        "tempo": 70,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [0] },
+          { "voice": "snare", "duration": 240, "ticks": [480, 720, 960, 1200] },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [1440, 1560, 1680, 1800]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-eighth-sixteenth-quarters-and-sixteenths",
+        "title": "Quarters and sixteenths",
+        "tempo": 72,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [0, 960] },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [480, 600, 720, 840, 1440, 1560, 1680, 1800]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-eighth-sixteenth-three-note-values",
+        "title": "Three note values",
+        "tempo": 74,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 240, "ticks": [0, 240] },
+          { "voice": "snare", "duration": 480, "ticks": [480, 1440] },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [960, 1080, 1200, 1320]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-eighth-sixteenth-mixed-value-turns",
+        "title": "Mixed-value turns",
+        "tempo": 76,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 120, "ticks": [0, 120, 240, 360] },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [480, 720, 1440, 1680]
+          },
+          { "voice": "snare", "duration": 480, "ticks": [960] }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "quarter-eighth-sixteenth-two-bar-mixed-value-phrase",
+        "title": "Two-bar mixed-value phrase",
+        "tempo": 78,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 2,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [0, 1440, 2880] },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [480, 720, 1920, 2160, 3360, 3600]
+          },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [960, 1080, 1200, 1320, 2400, 2520, 2640, 2760]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      }
+    ]
+  },
+  {
+    "id": "level-13-mixed-quarter-rests",
+    "title": "Mixed values with quarter rests",
+    "description": "Combine all three sounding note values with full-beat quarter rests.",
+    "order": 13,
+    "exercises": [
+      {
+        "id": "mixed-quarter-rests-quarter-rest-in-the-middle",
+        "title": "Quarter rest in the middle",
+        "tempo": 70,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 120, "ticks": [0, 120, 240, 360] },
+          { "voice": "snare", "duration": 240, "ticks": [960, 1200] },
+          { "voice": "snare", "duration": 480, "ticks": [1440] }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-quarter-rests-start-with-silence",
+        "title": "Start with silence",
+        "tempo": 72,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [480] },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [960, 1080, 1200, 1320]
+          },
+          { "voice": "snare", "duration": 240, "ticks": [1440, 1680] }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-quarter-rests-rest-before-beat-four",
+        "title": "Rest before beat four",
+        "tempo": 74,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 240, "ticks": [0, 240] },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [480, 600, 720, 840]
+          },
+          { "voice": "snare", "duration": 480, "ticks": [1440] }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-quarter-rests-quarter-and-rest-turns",
+        "title": "Quarter and rest turns",
+        "tempo": 76,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [0] },
+          { "voice": "snare", "duration": 240, "ticks": [960, 1200] },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [1440, 1560, 1680, 1800]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-quarter-rests-two-bar-quarter-rest-phrase",
+        "title": "Two-bar quarter-rest phrase",
+        "tempo": 78,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 2,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [0, 120, 240, 360, 2400, 2520, 2640, 2760]
+          },
+          {
+            "voice": "snare",
+            "duration": 240,
+            "ticks": [480, 720, 3360, 3600]
+          },
+          { "voice": "snare", "duration": 480, "ticks": [1440, 2880] }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      }
+    ]
+  },
+  {
+    "id": "level-14-mixed-eighth-rests",
+    "title": "Mixed values with eighth rests",
+    "description": "Add half-beat rests to the mixed-value vocabulary while keeping every silence inside its beat.",
+    "order": 14,
+    "exercises": [
+      {
+        "id": "mixed-eighth-rests-rest-on-the-offbeat",
+        "title": "Rest on the offbeat",
+        "tempo": 68,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 240, "ticks": [0, 960, 1200] },
+          { "voice": "snare", "duration": 480, "ticks": [480] },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [1440, 1560, 1680, 1800]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-eighth-rests-enter-on-the-offbeat",
+        "title": "Enter on the offbeat",
+        "tempo": 70,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 240, "ticks": [240, 1440, 1680] },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [480, 600, 720, 840]
+          },
+          { "voice": "snare", "duration": 480, "ticks": [960] }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-eighth-rests-eighth-and-quarter-rests",
+        "title": "Eighth and quarter rests",
+        "tempo": 72,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 120, "ticks": [0, 120, 240, 360] },
+          { "voice": "snare", "duration": 240, "ticks": [480] },
+          { "voice": "snare", "duration": 480, "ticks": [1440] }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-eighth-rests-mixed-rest-positions",
+        "title": "Mixed rest positions",
+        "tempo": 74,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "snare", "duration": 480, "ticks": [0] },
+          { "voice": "snare", "duration": 240, "ticks": [720] },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [960, 1080, 1200, 1320]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-eighth-rests-two-bar-eighth-rest-phrase",
+        "title": "Two-bar eighth-rest phrase",
+        "tempo": 76,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 2,
+        "groups": [
+          { "voice": "snare", "duration": 240, "ticks": [0, 1920, 2160, 2640] },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [480, 600, 720, 840, 2880, 3000, 3120, 3240]
+          },
+          { "voice": "snare", "duration": 480, "ticks": [960, 3360] }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      }
+    ]
+  },
+  {
+    "id": "level-15-mixed-sixteenth-rests",
+    "title": "Mixed values with sixteenth rests",
+    "description": "Complete the binary-rest vocabulary with single sixteenth-note gaps in mixed phrases.",
+    "order": 15,
+    "exercises": [
+      {
+        "id": "mixed-sixteenth-rests-rest-on-the-a",
+        "title": "Rest on the ‘a’",
+        "tempo": 68,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [0, 120, 240, 1440, 1560, 1680, 1800]
+          },
+          { "voice": "snare", "duration": 480, "ticks": [480] },
+          { "voice": "snare", "duration": 240, "ticks": [960, 1200] }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-sixteenth-rests-enter-on-the-e",
+        "title": "Enter on the ‘e’",
+        "tempo": 70,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [120, 240, 360, 1440, 1560, 1680, 1800]
+          },
+          { "voice": "snare", "duration": 240, "ticks": [480, 720] },
+          { "voice": "snare", "duration": 480, "ticks": [960] }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-sixteenth-rests-sixteenth-rests-move",
+        "title": "Sixteenth rests move",
+        "tempo": 72,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [0, 240, 360, 480, 600, 720, 840, 960, 1080, 1320]
+          },
+          { "voice": "snare", "duration": 480, "ticks": [1440] }
         ],
         "notationSystems": 2,
         "tier": "intermediate",
@@ -450,6 +1533,116 @@
             "duration": 120,
             "ticks": [120, 360, 480, 720, 1080, 1320, 1560, 1800]
           }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-sixteenth-rests-two-bar-complete-rest-phrase",
+        "title": "Two-bar complete-rest phrase",
+        "tempo": 84,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 2,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [
+              0, 120, 360, 1560, 1680, 1800, 2400, 2640, 2760, 3360, 3480, 3600
+            ]
+          },
+          { "voice": "snare", "duration": 480, "ticks": [480] },
+          { "voice": "snare", "duration": 240, "ticks": [960, 1920, 2160] }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      }
+    ]
+  },
+  {
+    "id": "level-16-mixed-binary-rhythms-around-kit",
+    "title": "Mixed binary rhythms around the kit",
+    "description": "Apply quarter, eighth and sixteenth-note rhythms and rests across the hands and feet.",
+    "order": 16,
+    "exercises": [
+      {
+        "id": "mixed-binary-kit-sixteenth-turns-around-the-kit",
+        "title": "Sixteenth turns around the kit",
+        "tempo": 74,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "kick", "duration": 120, "ticks": [0, 960] },
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [120, 360, 600, 840, 1080, 1320, 1560, 1800]
+          },
+          {
+            "voice": "hihat",
+            "duration": 120,
+            "ticks": [240, 480, 720, 1200, 1440, 1680]
+          }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-binary-kit-eighth-and-sixteenth-turns",
+        "title": "Eighth and sixteenth turns",
+        "tempo": 76,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          {
+            "voice": "snare",
+            "duration": 120,
+            "ticks": [0, 120, 240, 360, 1080, 1320]
+          },
+          { "voice": "kick", "duration": 120, "ticks": [960, 1200] },
+          { "voice": "hihat", "duration": 240, "ticks": [480, 720, 1440, 1680] }
+        ],
+        "notationSystems": 2,
+        "tier": "beginner",
+        "listenFirstAllowed": true,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-binary-kit-three-value-kit-phrase",
+        "title": "Three-value kit phrase",
+        "tempo": 80,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "kick", "duration": 480, "ticks": [0] },
+          { "voice": "hihat", "duration": 240, "ticks": [480, 720] },
+          { "voice": "snare", "duration": 120, "ticks": [960, 1200] },
+          { "voice": "hihat", "duration": 120, "ticks": [1080, 1320] },
+          { "voice": "snare", "duration": 480, "ticks": [1440] }
+        ],
+        "notationSystems": 2,
+        "tier": "intermediate",
+        "listenFirstAllowed": false,
+        "modes": ["playAlong", "memorise"]
+      },
+      {
+        "id": "mixed-binary-kit-hands-and-feet-exchange-rests",
+        "title": "Hands and feet exchange rests",
+        "tempo": 82,
+        "timeSignature": { "beats": 4, "beatValue": 4 },
+        "bars": 1,
+        "groups": [
+          { "voice": "hihat", "duration": 240, "ticks": [0] },
+          { "voice": "hihat", "duration": 120, "ticks": [480, 600, 720, 840] },
+          { "voice": "snare", "duration": 120, "ticks": [1560, 1680, 1800] },
+          { "voice": "kick", "duration": 480, "ticks": [480, 1440] },
+          { "voice": "kick", "duration": 120, "ticks": [960, 1080, 1200] }
         ],
         "notationSystems": 2,
         "tier": "intermediate",
@@ -490,10 +1683,10 @@
     ]
   },
   {
-    "id": "level-6-triplets-mixed-rhythms",
+    "id": "level-17-triplets-mixed-rhythms",
     "title": "Triplets and mixed rhythms",
     "description": "Feel three equal parts in a beat, then switch confidently between triplet and straight subdivisions.",
-    "order": 6,
+    "order": 17,
     "exercises": [
       {
         "id": "triplet-eighth-introduction",

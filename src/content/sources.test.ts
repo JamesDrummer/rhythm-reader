@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Level } from '@/model'
-import { BuiltInSource } from './BuiltInSource'
+import { BUILT_IN_LEVELS, BuiltInSource } from './BuiltInSource'
 import { CustomSource } from './CustomSource'
 import { parseLibraryJson, serialiseLibrary } from './libraryFormat'
 import { MergedExerciseSource } from './MergedExerciseSource'
@@ -51,7 +51,7 @@ describe('exercise sources', () => {
       custom,
     ]).loadLevels(scope)
 
-    expect(catalogue).toHaveLength(7)
+    expect(catalogue).toHaveLength(BUILT_IN_LEVELS.length + 1)
     expect(catalogue.at(-1)?.id).toBe(customLevel.id)
     expect(
       catalogue
