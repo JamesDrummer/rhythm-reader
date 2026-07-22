@@ -38,6 +38,21 @@ function snapshotLayout(layout: NotationLayout) {
   }
 }
 
+function expectThemeAwareEngraving(container: HTMLDivElement) {
+  const engraving = container.querySelectorAll(
+    '.vf-stave, .vf-stavenote, .vf-stem, .vf-beam, .vf-tuplet',
+  )
+  expect(engraving.length).toBeGreaterThan(0)
+  const unthemed = [...engraving].filter(
+    (element) =>
+      !element.closest('[fill="currentColor"], [stroke="currentColor"]'),
+  )
+  expect(unthemed.map((element) => element.outerHTML)).toEqual([])
+  expect(container.innerHTML).not.toMatch(
+    /(?:fill|stroke)="(?:black|#000000)"/i,
+  )
+}
+
 describe('renderExerciseNotation', () => {
   it('snapshots renderer-agnostic layout for every exercise event', () => {
     const layout = render(AUDIO_DEMO_EXERCISE)
@@ -107,6 +122,22 @@ describe('renderExerciseNotation', () => {
       SIX_EIGHT_PROOF_EXERCISE.events.length,
     )
   })
+
+  it.each([1, 2] as const)(
+    'uses the theme notation colour throughout a %s-system score',
+    (notationSystems) => {
+      const { container } = renderAttached({
+        ...AUDIO_DEMO_EXERCISE,
+        notationSystems,
+      })
+
+      try {
+        expectThemeAwareEngraving(container)
+      } finally {
+        container.remove()
+      }
+    },
+  )
 
   it('stacks bars for a narrow layout without shrinking each bar', () => {
     const layout = renderExerciseNotation(

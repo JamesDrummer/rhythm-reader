@@ -44,7 +44,7 @@ import { useAppServices } from '@/services/useAppServices'
 
 const NEW_LEVEL_VALUE = '__new_level__'
 const FIELD_CLASS =
-  'mt-2 h-11 w-full rounded-md border bg-white px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-purple'
+  'mt-2 h-11 w-full rounded-md border bg-bhda-surface px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-accent'
 
 interface DraftSettings {
   title: string
@@ -478,7 +478,7 @@ export function EditorPage() {
     <section className="mx-auto w-full max-w-5xl" aria-labelledby="page-title">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-widest text-bhda-purple">
+          <p className="text-sm font-semibold uppercase tracking-widest text-bhda-accent">
             Teacher tool
           </p>
           <h1
@@ -487,7 +487,7 @@ export function EditorPage() {
           >
             Exercise editor
           </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-black/70">
+          <p className="mt-3 max-w-2xl text-base leading-7 text-bhda-text/70">
             Build a rhythm beat by beat, check the notation, then save it
             straight to this device.
           </p>
@@ -501,7 +501,7 @@ export function EditorPage() {
       {(status || error) && (
         <p
           aria-live="polite"
-          className="mt-6 rounded-xl border bg-white px-4 py-3 text-sm leading-6"
+          className="mt-6 rounded-xl border bg-bhda-surface px-4 py-3 text-sm leading-6"
         >
           {error ?? status}
         </p>
@@ -511,7 +511,7 @@ export function EditorPage() {
         className="mt-8 grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)]"
         onSubmit={(event) => void handleSave(event)}
       >
-        <aside className="rounded-xl border bg-white p-5 shadow-sm">
+        <aside className="rounded-xl border bg-bhda-surface p-5 shadow-sm">
           <h2 className="text-lg font-bold">Settings</h2>
           <div className="mt-5 space-y-5">
             <label className="block text-sm font-semibold">
@@ -673,16 +673,16 @@ export function EditorPage() {
         </aside>
 
         <div className="min-w-0 space-y-6">
-          <div className="rounded-xl border bg-white p-4 shadow-sm sm:p-5">
+          <div className="rounded-xl border bg-bhda-surface p-4 shadow-sm sm:p-5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <h2 className="text-lg font-bold">Step grid</h2>
-                <p className="mt-1 text-sm leading-6 text-black/60">
+                <p className="mt-1 text-sm leading-6 text-bhda-text/60">
                   Set each beat to 16ths or triplet 8ths, then tap cells to add
                   hits.
                 </p>
               </div>
-              <p className="text-xs leading-5 text-black/55">
+              <p className="text-xs leading-5 text-bhda-text/55">
                 Changing resolution removes hits that no longer fit that beat.
               </p>
             </div>
@@ -699,11 +699,11 @@ export function EditorPage() {
             </div>
           </div>
 
-          <div className="rounded-xl border bg-white p-4 shadow-sm sm:p-5">
+          <div className="rounded-xl border bg-bhda-surface p-4 shadow-sm sm:p-5">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <h2 className="text-lg font-bold">Live notation preview</h2>
-                <p className="mt-1 text-sm text-black/60">
+                <p className="mt-1 text-sm text-bhda-text/60">
                   Uses the same renderer and playback transport as the game.
                 </p>
               </div>
@@ -726,7 +726,7 @@ export function EditorPage() {
                   <Notation exercise={previewExercise} clock={notationClock} />
                 </div>
               ) : (
-                <div className="rounded-xl bg-black/5 px-5 py-12 text-center text-sm text-black/60">
+                <div className="rounded-xl bg-bhda-text/5 px-5 py-12 text-center text-sm text-bhda-text/60">
                   Add a hit to see the engraved notation.
                 </div>
               )}
@@ -741,7 +741,7 @@ export function EditorPage() {
             <h2 className="text-2xl font-bold" id="manage-heading">
               Custom exercises
             </h2>
-            <p className="mt-2 text-sm leading-6 text-black/60">
+            <p className="mt-2 text-sm leading-6 text-bhda-text/60">
               Edit the library on this device, or move it with
               built-in-compatible JSON.
             </p>
@@ -768,7 +768,7 @@ export function EditorPage() {
         </div>
 
         {customLevels.length === 0 ? (
-          <div className="mt-6 rounded-xl border bg-white p-6 text-sm leading-6 shadow-sm">
+          <div className="mt-6 rounded-xl border bg-bhda-surface p-6 text-sm leading-6 shadow-sm">
             No custom exercises yet. Add hits to the grid above and save your
             first one.
           </div>
@@ -776,7 +776,7 @@ export function EditorPage() {
           <div className="mt-6 space-y-5">
             {customLevels.map((level) => (
               <article
-                className="rounded-xl border bg-white p-5 shadow-sm"
+                className="rounded-xl border bg-bhda-surface p-5 shadow-sm"
                 key={level.id}
               >
                 <h3 className="text-lg font-bold">{level.title}</h3>
@@ -788,7 +788,7 @@ export function EditorPage() {
                     >
                       <div>
                         <p className="font-semibold">{exercise.title}</p>
-                        <p className="mt-1 text-sm text-black/55">
+                        <p className="mt-1 text-sm text-bhda-text/55">
                           {exercise.bars} bar{exercise.bars === 1 ? '' : 's'} ·{' '}
                           {exercise.tempo} bpm · {exercise.tier}
                         </p>

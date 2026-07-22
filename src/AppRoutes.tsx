@@ -41,7 +41,7 @@ const SettingsPage = lazy(() =>
 
 function RouteLoading() {
   return (
-    <p aria-live="polite" className="text-sm font-semibold text-black/60">
+    <p aria-live="polite" className="text-sm font-semibold text-bhda-text/60">
       Loading Rhythm Reader…
     </p>
   )

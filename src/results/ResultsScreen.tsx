@@ -68,18 +68,18 @@ export function ResultsScreen({
 
   return (
     <section aria-labelledby="results-title" className="mx-auto max-w-3xl">
-      <div className="rounded-xl border bg-white px-5 py-8 text-center shadow-sm sm:px-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-bhda-purple">
+      <div className="rounded-xl border bg-bhda-surface px-5 py-8 text-center shadow-sm sm:px-8">
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-bhda-accent">
           Exercise complete
         </p>
         <h1 className="mt-2 text-3xl font-bold" id="results-title">
           {exerciseTitle}
         </h1>
 
-        <p className="mt-6 text-6xl font-bold tabular-nums text-bhda-purple sm:text-7xl">
+        <p className="mt-6 text-6xl font-bold tabular-nums text-bhda-accent sm:text-7xl">
           {Math.round(score.overallAccuracyPercent)}%
         </p>
-        <p className="mt-2 text-sm font-semibold text-black/55">
+        <p className="mt-2 text-sm font-semibold text-bhda-text/55">
           Overall accuracy
         </p>
 
@@ -93,8 +93,8 @@ export function ResultsScreen({
                 aria-hidden="true"
                 className={
                   star <= score.stars
-                    ? 'size-9 fill-bhda-purple text-bhda-purple'
-                    : 'size-9 text-black/15'
+                    ? 'size-9 fill-bhda-accent text-bhda-accent'
+                    : 'size-9 text-bhda-text/15'
                 }
                 key={star}
                 strokeWidth={1.8}
@@ -104,18 +104,18 @@ export function ResultsScreen({
           {score.stars === 3 && (
             <Sparkles
               aria-hidden="true"
-              className="size-6 text-bhda-purple motion-safe:animate-pulse"
+              className="size-6 text-bhda-accent motion-safe:animate-pulse"
               data-testid="three-star-celebration"
             />
           )}
         </div>
 
-        <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-black/65">
+        <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-bhda-text/65">
           {encouragement(score.stars)}
         </p>
       </div>
 
-      <div className="mt-6 rounded-xl border bg-white p-5 shadow-sm sm:p-6">
+      <div className="mt-6 rounded-xl border bg-bhda-surface p-5 shadow-sm sm:p-6">
         <h2 className="text-xl font-bold">Your timing by voice</h2>
         <div className="mt-4 divide-y">
           {activeVoices.map((voice) => {
@@ -126,7 +126,7 @@ export function ResultsScreen({
                 <span className="tabular-nums">
                   {Math.round(result.accuracyPercent)}%
                 </span>{' '}
-                <span className="text-black/55">
+                <span className="text-bhda-text/55">
                   · {timingTendency(result)}
                 </span>
               </p>
@@ -135,9 +135,9 @@ export function ResultsScreen({
         </div>
       </div>
 
-      <div className="mt-6 rounded-xl border bg-white p-5 shadow-sm sm:p-6">
+      <div className="mt-6 rounded-xl border bg-bhda-surface p-5 shadow-sm sm:p-6">
         <h2 className="text-xl font-bold">Where your hits landed</h2>
-        <p className="mt-2 text-sm leading-6 text-black/60">
+        <p className="mt-2 text-sm leading-6 text-bhda-text/60">
           Left of the hollow dot is early; right is late. Bar numbers are shown
           across the top.
         </p>
@@ -146,16 +146,16 @@ export function ResultsScreen({
         </div>
       </div>
 
-      <div className="mt-6 rounded-xl border bg-white p-5 shadow-sm sm:p-6">
+      <div className="mt-6 rounded-xl border bg-bhda-surface p-5 shadow-sm sm:p-6">
         <h2 className="text-xl font-bold">Hear the difference</h2>
-        <p className="mt-2 text-sm leading-6 text-black/60">
+        <p className="mt-2 text-sm leading-6 text-bhda-text/60">
           The correct rhythm stays centred. Your hits sit slightly to the right
           so any timing gaps are easy to hear.
         </p>
         {layeredPlaybackError && (
           <p
             aria-live="polite"
-            className="mt-3 rounded-lg bg-black/5 px-4 py-3 text-sm font-semibold text-black/70"
+            className="mt-3 rounded-lg bg-bhda-text/5 px-4 py-3 text-sm font-semibold text-bhda-text/70"
           >
             {layeredPlaybackError}
           </p>

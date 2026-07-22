@@ -20,9 +20,15 @@ import type {
 } from './types'
 
 const FEEDBACK_COLOURS: Record<NoteFeedback, string> = {
-  perfect: '#2E7D32',
-  good: '#B26A00',
-  miss: '#C62828',
+  perfect: 'rgb(var(--bhda-perfect))',
+  good: 'rgb(var(--bhda-good))',
+  miss: 'rgb(var(--bhda-miss))',
+}
+
+const FEEDBACK_TEXT_COLOURS: Record<NoteFeedback, string> = {
+  perfect: 'rgb(var(--bhda-perfect))',
+  good: 'rgb(var(--bhda-good-text))',
+  miss: 'rgb(var(--bhda-miss))',
 }
 
 const FEEDBACK_LABELS: Record<NoteFeedback, string> = {
@@ -141,7 +147,7 @@ export const Overlay = forwardRef<OverlayHandle, OverlayProps>(function Overlay(
                 type="translate"
               />
               <text
-                fill={colour}
+                fill={FEEDBACK_TEXT_COLOURS[marker.feedback]}
                 fontFamily="Montserrat, sans-serif"
                 fontSize="14"
                 fontWeight="700"
@@ -161,7 +167,7 @@ export const Overlay = forwardRef<OverlayHandle, OverlayProps>(function Overlay(
 
       {playhead !== null && (
         <line
-          stroke="#614E90"
+          stroke="rgb(var(--bhda-accent))"
           strokeLinecap="round"
           strokeWidth="3"
           x1={playhead.x}

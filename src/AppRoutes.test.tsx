@@ -2,6 +2,7 @@ import { cleanup, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it } from 'vitest'
 import { AppRoutes } from './AppRoutes'
+import { ThemeProvider } from '@/theme'
 
 afterEach(cleanup)
 
@@ -23,9 +24,11 @@ describe('app routes', () => {
     'renders the placeholder for $path',
     async ({ heading, path }) => {
       render(
-        <MemoryRouter initialEntries={[path]}>
-          <AppRoutes />
-        </MemoryRouter>,
+        <ThemeProvider>
+          <MemoryRouter initialEntries={[path]}>
+            <AppRoutes />
+          </MemoryRouter>
+        </ThemeProvider>,
       )
 
       expect(

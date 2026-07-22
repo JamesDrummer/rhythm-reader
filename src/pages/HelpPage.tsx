@@ -25,7 +25,7 @@ export function HelpPage() {
           <h2 className="text-xl font-bold" id="controls-heading">
             Play the drums
           </h2>
-          <p className="mt-2 text-sm leading-6 text-black/70">
+          <p className="mt-2 text-sm leading-6 text-bhda-text/70">
             On a keyboard, use the keys below. On a touch screen, use the three
             pads that appear during an exercise. Rhythm Reader listens from the
             end of the count-in until the final note has had time to land.
@@ -37,7 +37,7 @@ export function HelpPage() {
                 key={voice}
               >
                 <dt className="font-semibold">{VOICE_LABELS[voice]}</dt>
-                <dd className="text-right font-semibold text-black/60">
+                <dd className="text-right font-semibold text-bhda-text/60">
                   {mapping[voice].map(keyCodeLabel).join(' or ')}
                 </dd>
               </div>
@@ -52,7 +52,7 @@ export function HelpPage() {
           <h2 className="text-xl font-bold" id="scoring-heading">
             How scoring works
           </h2>
-          <p className="mt-2 text-sm leading-6 text-black/70">
+          <p className="mt-2 text-sm leading-6 text-bhda-text/70">
             Each written note is matched to your nearest hit on the same drum. A
             very close hit is Perfect, a near hit is Good, and a missed note
             scores zero. Extra hits reduce the result a little. Later levels use
@@ -71,7 +71,7 @@ export function HelpPage() {
           <h2 className="text-xl font-bold" id="calibration-heading">
             Why calibration matters
           </h2>
-          <p className="mt-2 text-sm leading-6 text-black/70">
+          <p className="mt-2 text-sm leading-6 text-bhda-text/70">
             Every phone, tablet and computer has a slightly different delay
             between a tap and the sound you hear. The short calibration check
             measures that delay on this device, then Rhythm Reader allows for it
@@ -87,7 +87,7 @@ export function HelpPage() {
           <h2 className="text-xl font-bold" id="about-heading">
             About Rhythm Reader
           </h2>
-          <p className="mt-2 text-sm leading-6 text-black/70">
+          <p className="mt-2 text-sm leading-6 text-bhda-text/70">
             Rhythm Reader is a BHDA practice tool for learning to read drum
             rhythms accurately. Your progress and custom exercises stay in this
             browser on this device.

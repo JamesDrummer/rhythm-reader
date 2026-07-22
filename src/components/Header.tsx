@@ -7,7 +7,7 @@ export function Header() {
     <header className="border-b bg-bhda-background">
       <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
         <Link
-          className="rounded-sm text-base font-bold tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-purple focus-visible:ring-offset-4 focus-visible:ring-offset-bhda-background"
+          className="rounded-sm text-base font-bold tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-accent focus-visible:ring-offset-4 focus-visible:ring-offset-bhda-background"
           to="/"
         >
           Rhythm Reader

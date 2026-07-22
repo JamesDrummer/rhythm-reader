@@ -26,6 +26,10 @@ const SCORE_HEIGHT = 216
 const HORIZONTAL_PADDING = 20
 const BAR_WIDTH = 500
 const STAVE_Y = 64
+const ENGRAVING_STYLE = {
+  fillStyle: 'currentColor',
+  strokeStyle: 'currentColor',
+}
 
 const DRUM_KEYS: Record<Voice, string> = {
   kick: 'f/4',
@@ -358,7 +362,7 @@ function createStaveNote(entry: TimelineEntry, lane: Lane): StaveNote {
     duration: `${duration}${isRest ? 'r' : ''}`,
     clef: 'percussion',
     stemDirection: lane.stemDirection,
-  })
+  }).setStyle(ENGRAVING_STYLE)
 
   if (isRest) note.setKeyLine(0, lane.restLine)
   return note
@@ -439,7 +443,7 @@ function renderBar(
                 : Tuplet.LOCATION_TOP,
             bracketed: group.some(({ entry }) => entry.events.length === 0),
           },
-        ),
+        ).setStyle(ENGRAVING_STYLE),
       )
     }
 
@@ -457,7 +461,7 @@ function renderBar(
           maintainStemDirections: true,
           beamRests: false,
         },
-      ),
+      ).map((beam) => beam.setStyle(ENGRAVING_STYLE)),
     )
     voices.push(voice)
   }
@@ -494,11 +498,15 @@ export function renderExerciseNotation(
   const renderer = new Renderer(container, Renderer.Backends.SVG)
   renderer.resize(width, height)
   const context = renderer.getContext()
+  context.setFillStyle('currentColor')
+  context.setStrokeStyle('currentColor')
 
   if (context instanceof SVGContext) {
     context.setViewBox(0, 0, width, height)
     context.svg.setAttribute('preserveAspectRatio', 'xMidYMid meet')
     context.svg.setAttribute('aria-hidden', 'true')
+    context.svg.setAttribute('fill', 'currentColor')
+    context.svg.setAttribute('stroke', 'currentColor')
     context.svg.style.display = 'block'
     context.svg.style.width = '100%'
     context.svg.style.height = 'auto'
@@ -516,6 +524,8 @@ export function renderExerciseNotation(
       STAVE_Y + row * SCORE_HEIGHT,
       BAR_WIDTH,
     )
+    stave.setStyle(ENGRAVING_STYLE)
+    stave.setDefaultLedgerLineStyle(ENGRAVING_STYLE)
     if (column === 0) {
       stave
         .addClef('percussion')

@@ -36,7 +36,7 @@ export function Notation({
     <div
       aria-label={label}
       className={cn(
-        'relative w-full overflow-hidden rounded-xl bg-white shadow-sm',
+        'relative w-full overflow-hidden rounded-xl bg-bhda-surface text-bhda-notation shadow-sm',
         className,
       )}
       role="img"

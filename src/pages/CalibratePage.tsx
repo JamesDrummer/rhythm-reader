@@ -216,15 +216,15 @@ export function CalibratePage() {
               ? 'Timing check complete'
               : 'Tap with the click'}
           </h2>
-          <p className="mt-2 text-sm leading-6 text-black/70">{message}</p>
+          <p className="mt-2 text-sm leading-6 text-bhda-text/70">{message}</p>
         </div>
 
         {phase === 'complete' && measuredOffset !== null ? (
           <div className="rounded-xl bg-bhda-background p-6 text-center">
-            <p className="text-sm font-semibold text-black/70">
+            <p className="text-sm font-semibold text-bhda-text/70">
               Measured offset
             </p>
-            <p className="mt-2 text-3xl font-bold text-bhda-purple">
+            <p className="mt-2 text-3xl font-bold text-bhda-accent">
               {signedMilliseconds(measuredOffset)}
             </p>
           </div>
@@ -235,7 +235,7 @@ export function CalibratePage() {
                 {tapCount} of {CALIBRATION.tapCount} taps
               </span>
               {isRunning && (
-                <span className="text-bhda-purple">
+                <span className="text-bhda-accent">
                   {tapCount < CALIBRATION.discardCount
                     ? 'Settling in'
                     : 'Measuring'}
@@ -247,7 +247,7 @@ export function CalibratePage() {
               aria-valuemax={CALIBRATION.tapCount}
               aria-valuemin={0}
               aria-valuenow={tapCount}
-              className="mt-3 h-2 overflow-hidden rounded-md bg-black/10"
+              className="mt-3 h-2 overflow-hidden rounded-md bg-bhda-text/10"
               role="progressbar"
             >
               <div
@@ -265,7 +265,7 @@ export function CalibratePage() {
         )}
 
         <div>
-          <p className="text-sm leading-6 text-black/70">
+          <p className="text-sm leading-6 text-bhda-text/70">
             Keyboard: {keyHint}. Touch devices can use the three pads above.
           </p>
           {phase !== 'running' && phase !== 'preparing' && (

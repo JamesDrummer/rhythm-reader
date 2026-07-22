@@ -118,13 +118,13 @@ function inputStatus(phase: GamePhase, gameMode: ExerciseMode): string {
 function ExerciseNotFound({ loading }: { loading: boolean }) {
   return (
     <section className="mx-auto max-w-3xl" aria-labelledby="page-title">
-      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-bhda-purple">
+      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-bhda-accent">
         Play Along
       </p>
       <h1 className="mt-3 text-3xl font-bold" id="page-title">
         {loading ? 'Loading exercise' : 'Exercise not found'}
       </h1>
-      <p className="mt-4 text-black/65">
+      <p className="mt-4 text-bhda-text/65">
         {loading
           ? 'Getting your rhythm ready…'
           : 'Return to the levels page and choose an unlocked exercise.'}
@@ -141,13 +141,13 @@ function ExerciseNotFound({ loading }: { loading: boolean }) {
 function ExerciseLocked({ levelId }: { levelId: string }) {
   return (
     <section className="mx-auto max-w-3xl" aria-labelledby="page-title">
-      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-bhda-purple">
+      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-bhda-accent">
         Level locked
       </p>
       <h1 className="mt-3 text-3xl font-bold" id="page-title">
         This one is still locked.
       </h1>
-      <p className="mt-4 text-black/65">
+      <p className="mt-4 text-bhda-text/65">
         Earn more stars in the earlier levels to open it.
       </p>
       <Button asChild className="mt-8" variant="outline">
@@ -722,7 +722,7 @@ function PlayableExercise({
 
       <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-bhda-purple">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-bhda-accent">
             {selectedMode === 'memorise' ? 'Memorise & Perform' : 'Play Along'}
           </p>
           <h1
@@ -732,11 +732,11 @@ function PlayableExercise({
             {exercise.title}
           </h1>
         </div>
-        <div className="flex gap-2 text-sm font-semibold text-black/55">
-          <span className="rounded-full border bg-white px-3 py-1.5">
+        <div className="flex gap-2 text-sm font-semibold text-bhda-text/55">
+          <span className="rounded-full border bg-bhda-surface px-3 py-1.5">
             {exercise.tempo} bpm
           </span>
-          <span className="rounded-full border bg-white px-3 py-1.5">
+          <span className="rounded-full border bg-bhda-surface px-3 py-1.5">
             {exercise.bars} {exercise.bars === 1 ? 'bar' : 'bars'}
           </span>
         </div>
@@ -753,7 +753,7 @@ function PlayableExercise({
               aria-pressed={selectedMode === mode}
               className={
                 selectedMode === mode
-                  ? 'border-bhda-purple text-bhda-purple'
+                  ? 'border-bhda-accent text-bhda-accent'
                   : undefined
               }
               key={mode}
@@ -767,13 +767,16 @@ function PlayableExercise({
         </fieldset>
       )}
 
-      <div className="mt-7 overflow-hidden rounded-2xl border bg-white shadow-sm">
+      <div className="mt-7 overflow-hidden rounded-2xl border bg-bhda-surface shadow-sm">
         <div className="flex min-h-14 items-center justify-between gap-4 border-b px-4 py-3 sm:px-6">
-          <p aria-live="polite" className="text-sm font-semibold text-black/65">
+          <p
+            aria-live="polite"
+            className="text-sm font-semibold text-bhda-text/65"
+          >
             {errorMessage ?? inputStatus(phase, selectedMode)}
           </p>
           {attemptInProgress && selectedMode === 'playAlong' && (
-            <p className="shrink-0 text-xs font-semibold uppercase tracking-[0.16em] text-bhda-purple">
+            <p className="shrink-0 text-xs font-semibold uppercase tracking-[0.16em] text-bhda-accent">
               {hitCount} {hitCount === 1 ? 'hit' : 'hits'}
             </p>
           )}
@@ -783,10 +786,10 @@ function PlayableExercise({
           {selectedMode === 'memorise' && phase !== 'ready' ? (
             <div className="grid min-h-64 place-items-center rounded-xl bg-bhda-background px-6 py-12 text-center">
               <div>
-                <p className="text-2xl font-bold text-bhda-purple">
+                <p className="text-2xl font-bold text-bhda-accent">
                   From memory…
                 </p>
-                <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-black/60">
+                <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-bhda-text/60">
                   Keep the rhythm in your head, stay relaxed, and trust the
                   pulse.
                 </p>
@@ -804,14 +807,14 @@ function PlayableExercise({
           {phase === 'countIn' && countInBeat !== null && (
             <div
               aria-live="assertive"
-              className="absolute inset-3 grid place-items-center rounded-xl bg-white/80 backdrop-blur-[2px] sm:inset-5"
+              className="absolute inset-3 grid place-items-center rounded-xl bg-bhda-surface/80 backdrop-blur-[2px] sm:inset-5"
             >
               <div className="text-center">
-                <p className="text-sm font-bold uppercase tracking-[0.24em] text-bhda-purple">
+                <p className="text-sm font-bold uppercase tracking-[0.24em] text-bhda-accent">
                   Count in
                 </p>
                 <p
-                  className="count-in-pop mt-1 text-8xl font-bold tabular-nums text-bhda-purple sm:text-9xl"
+                  className="count-in-pop mt-1 text-8xl font-bold tabular-nums text-bhda-accent sm:text-9xl"
                   key={countInBeat}
                 >
                   {countInBeat}
@@ -832,14 +835,14 @@ function PlayableExercise({
         </div>
       </div>
 
-      <div className="desktop-only mt-4 items-center justify-between rounded-xl border bg-white px-5 py-3 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-black/45">
+      <div className="desktop-only mt-4 items-center justify-between rounded-xl border bg-bhda-surface px-5 py-3 shadow-sm">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-bhda-text/60">
           Keyboard
         </p>
         <div className="flex items-center gap-6 text-sm font-semibold">
           {(['kick', 'snare', 'hihat'] as const).map((voice) => (
             <span className="flex items-center gap-2" key={voice}>
-              <kbd className="min-w-8 rounded-md border border-black/15 bg-bhda-background px-2 py-1 text-center text-xs shadow-sm">
+              <kbd className="min-w-8 rounded-md border border-bhda-text/15 bg-bhda-background px-2 py-1 text-center text-xs shadow-sm">
                 {keyboardMapping[voice].map(keyCodeLabel).join(' / ')}
               </kbd>
               {voice === 'hihat'

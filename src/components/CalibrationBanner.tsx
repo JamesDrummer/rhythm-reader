@@ -30,11 +30,11 @@ export function CalibrationBanner() {
   return (
     <aside
       aria-label="Calibration reminder"
-      className="mx-auto mb-6 flex w-full max-w-3xl items-start gap-4 rounded-xl border bg-white p-4 shadow-sm sm:items-center sm:p-6"
+      className="mx-auto mb-6 flex w-full max-w-3xl items-start gap-4 rounded-xl border bg-bhda-surface p-4 shadow-sm sm:items-center sm:p-6"
     >
       <div className="min-w-0 flex-1">
         <h2 className="text-base font-semibold">Make every tap count fairly</h2>
-        <p className="mt-2 text-sm leading-6 text-black/70">
+        <p className="mt-2 text-sm leading-6 text-bhda-text/70">
           A quick timing check helps Rhythm Reader allow for this device's audio
           delay.
         </p>

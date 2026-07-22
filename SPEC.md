@@ -59,6 +59,7 @@ Project: Rhythm Reader \| Status: Ready for build \| Owner: James Bracey \| Last
 - Retry and Next Exercise buttons.
 ## 2.5 Notation
 - Proper percussion staff notation: 5-line stave, percussion clef, standard drum kit mapping (hi-hat = x notehead above top line, snare = third space, kick = bottom space).
+- Notation follows the selected app theme: black `#000000` engraving on the light surface and light `#E8E4EE` engraving on the dark surface. This applies to staff lines, barlines, clef, time signature, noteheads, rests, stems, beams, flags, ledger lines and tuplets; it must not change musical layout or dynamic overlay coordinates.
 - Static bar(s) on screen with a scrolling playhead. No note-highway scrolling.
 - **Notation layout (per exercise):** either **two systems** (hands stems up, kick stems down as separate voices; the default) or **one system** (all voices merged into single stem-up chords, beamed together). When simultaneous notes in a one-system exercise have different written durations, the chord takes the shortest duration (standard kit-chart convention); simultaneous notes may not disagree about tuplets.
 - **v1 rhythmic scope:** quarter notes, 8th notes, 16th notes, 8th-note triplets, and rests. 4/4 only in the UI.
@@ -85,7 +86,8 @@ Project: Rhythm Reader \| Status: Ready for build \| Owner: James Bracey \| Last
 - **Saving (no redeploy needed):** saved exercises write to localStorage and appear immediately as playable Custom Levels on that device. JSON export/import lets James back up exercises or move them between devices. Optionally, exported JSON can be added to the repo's built-in library and deployed for all users.
 - When accounts arrive, custom exercises move server-side and become assignable to individual students.
 ## 2.8 Branding, tone & naming
-- Follow the BHDA Brand Guidelines page: BHDA Purple `#614E90` as the anchor colour, black `#000000` text, `#F5F5F5` background, **Montserrat** (Google Fonts) as the only typeface. No off-brand bright reds/yellows/greens except the semantic feedback colours (green/amber/red) used sparingly for hit feedback.
+- Follow the BHDA Brand Guidelines page: BHDA Purple `#614E90` remains the primary action colour and **Montserrat** (Google Fonts) is the only typeface. Light mode uses black `#000000` text, `#F5F5F5` background and white `#FFFFFF` surfaces. Dark mode uses `#F5F5F5` text, a neutral `#171717` background and purple-tinted `#23202B` surfaces, with `#B7A7DC` as the accessible purple accent. No off-brand bright reds/yellows/greens except the semantic feedback colours (green/amber/red) used sparingly for hit feedback; dark mode may use accessible lighter tints of those semantic colours.
+- Appearance offers Light, Dark and System settings, defaults new devices to System, and persists an explicit choice on that device.
 - Copy is student-facing, friendly, encouraging, **British English** (e.g. "Nice! Your snare was spot on. Hi-hats rushed a little, try staying relaxed."). First person singular where the teacher voice appears.
 - **Name: Rhythm Reader** (chosen 20 July 2026). It is the app title; suggested repo name `rhythm-reader`.
 # 3. Technical Architecture
@@ -162,7 +164,7 @@ Create a new React + Vite + TypeScript project for a browser-based drum rhythm r
 
 Setup:
 - Vite + React 19 + TypeScript strict mode
-- Tailwind CSS + shadcn/ui, themed with BHDA branding: primary purple #614E90, text #000000, background #F5F5F5, font Montserrat via Google Fonts. Define these as Tailwind custom colours under a `bhda` key.
+- Tailwind CSS + shadcn/ui, themed with semantic BHDA colour tokens for Light and Dark modes: primary purple #614E90 in both themes, light text/background/surface #000000/#F5F5F5/#FFFFFF, dark text/background/surface #F5F5F5/#171717/#23202B, and font Montserrat via Google Fonts. Define these as Tailwind custom colours under a `bhda` key.
 - ESLint + Prettier, Vitest for testing
 - React Router with routes: / (level select), /levels/:levelId (level detail and locked preview), /play/:exerciseId, /editor, /settings, /calibrate
 - A responsive app shell: header with the app name "Rhythm Reader" and settings icon, main content area. Mobile-first, must look right on desktop, iPad landscape, and a 375px phone.
@@ -320,7 +322,7 @@ Done when: create a 2-bar exercise mixing 16ths and triplet 8ths in the grid, pr
 Final polish and deployment pass.
 
 - Responsive audit: desktop, iPad landscape (primary touch target), phone portrait. Notation scales legibly; touch pads comfortably reachable; no horizontal scrolling.
-- Branding audit against BHDA guidelines: #614E90 anchor colour used consistently, Montserrat everywhere, #F5F5F5 background, semantic green/amber/red only for feedback. British English copy audit (no Americanisms, no em dashes).
+- Branding audit against BHDA guidelines: #614E90 primary actions used consistently, accessible Light/Dark/System themes, Montserrat everywhere, semantic green/amber/red only for feedback, and theme-aware notation engraving. British English copy audit (no Americanisms, no em dashes).
 - Empty/edge states: no custom exercises yet, calibration never run (gentle nudge), audio blocked, tiny screens.
 - Performance: preload samples on level select; ensure no audio glitches on first exercise start; Lighthouse pass.
 - Add a friendly help/about page: key mappings, how scoring works in plain English, why calibration matters.
@@ -352,7 +354,7 @@ UI rules (non-negotiable):
 - shadcn/ui components with default styling, themed only via the bhda Tailwind colours. Tailwind utilities only; no custom CSS files; do not restyle component internals.
 - Layout: generous whitespace; max content width ~720px centred (the game screen may go wider); spacing on the 4/8px scale only.
 - Type: Montserrat; at most two body text sizes per screen plus one heading size.
-- Colour: #F5F5F5 background, near-black text, #614E90 for primary actions and accents ONLY. Green/amber/red are reserved exclusively for hit feedback. No gradients, no extra colours.
+- Colour: use the semantic BHDA theme tokens only. Light mode uses #F5F5F5 background, white surfaces and near-black text. Dark mode uses a neutral #171717 background, purple-tinted #23202B surfaces and #F5F5F5 text. #614E90 is reserved for primary actions; #614E90 in light mode and #B7A7DC in dark mode are the accent. Green/amber/red are reserved exclusively for hit feedback. No gradients or decorative colours.
 - One primary (filled purple) button per screen; icons from lucide-react only.
 - Cards: rounded-xl, shadcn default shadow. No heavier shadows, no decorative borders.
 - No decorative illustrations, no emoji sprinkled in copy, no invented graphics.

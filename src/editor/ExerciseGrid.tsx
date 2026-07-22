@@ -43,17 +43,17 @@ export function ExerciseGrid({
             {grid.resolutions.map((resolution, beatIndex) => (
               <div
                 className={`px-1 pb-2 ${
-                  beatIndex % 4 === 0 ? 'border-l border-black/20' : ''
+                  beatIndex % 4 === 0 ? 'border-l border-bhda-text/20' : ''
                 }`}
                 key={beatIndex}
               >
-                <label className="block text-xs font-semibold text-black/60">
+                <label className="block text-xs font-semibold text-bhda-text/60">
                   B{Math.floor(beatIndex / 4) + 1} · {(beatIndex % 4) + 1}
                   <select
                     aria-label={`Bar ${Math.floor(beatIndex / 4) + 1}, beat ${
                       (beatIndex % 4) + 1
                     } resolution`}
-                    className="mt-1 h-9 w-full rounded-md border bg-white px-2 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-purple"
+                    className="mt-1 h-9 w-full rounded-md border bg-bhda-surface px-2 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-accent"
                     onChange={(event) =>
                       onResolutionChange(
                         beatIndex,
@@ -76,7 +76,7 @@ export function ExerciseGrid({
 
         {VOICES.map((voice) => (
           <div className="flex" key={voice}>
-            <div className="sticky left-0 z-10 flex w-20 shrink-0 items-center bg-white pr-3 text-sm font-semibold">
+            <div className="sticky left-0 z-10 flex w-20 shrink-0 items-center bg-bhda-surface pr-3 text-sm font-semibold">
               {VOICE_LABELS[voice]}
             </div>
             <div className="grid flex-1" style={beatColumns}>
@@ -85,7 +85,9 @@ export function ExerciseGrid({
                 return (
                   <div
                     className={`grid gap-1 border-t px-1 py-2 ${
-                      beatIndex % 4 === 0 ? 'border-l border-l-black/20' : ''
+                      beatIndex % 4 === 0
+                        ? 'border-l border-l-bhda-text/20'
+                        : ''
                     }`}
                     key={beatIndex}
                     style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
@@ -105,10 +107,10 @@ export function ExerciseGrid({
                         <button
                           aria-label={label}
                           aria-pressed={active}
-                          className={`h-11 min-w-6 rounded-md border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-purple focus-visible:ring-offset-1 ${
+                          className={`h-11 min-w-6 rounded-md border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-accent focus-visible:ring-offset-1 ${
                             active
                               ? 'border-bhda-purple bg-bhda-purple'
-                              : 'bg-black/5 hover:bg-black/10'
+                              : 'bg-bhda-text/5 hover:bg-bhda-text/10'
                           }`}
                           key={subdivisionIndex}
                           onClick={() =>

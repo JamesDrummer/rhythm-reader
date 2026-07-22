@@ -30,7 +30,7 @@ export function TouchPads({ disabled = false, source }: TouchPadsProps) {
         <button
           aria-label={`Play ${label}`}
           className={cn(
-            'min-h-24 touch-none select-none rounded-xl border-2 border-bhda-purple bg-white px-2 py-3 text-bhda-purple shadow-[0_4px_0_#614E90] transition-[transform,background-color,color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-purple focus-visible:ring-offset-2 focus-visible:ring-offset-bhda-background active:translate-y-1 active:bg-bhda-purple active:text-white active:shadow-none sm:min-h-32 sm:px-4 sm:py-4',
+            'min-h-24 touch-none select-none rounded-xl border-2 border-bhda-accent bg-bhda-surface px-2 py-3 text-bhda-accent shadow-[0_4px_0_rgb(var(--bhda-primary))] transition-[transform,background-color,color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bhda-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bhda-background active:translate-y-1 active:border-bhda-purple active:bg-bhda-purple active:text-bhda-on-primary active:shadow-none sm:min-h-32 sm:px-4 sm:py-4',
             disabled && 'cursor-not-allowed opacity-50',
           )}
           disabled={disabled}

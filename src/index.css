@@ -12,8 +12,39 @@
 @tailwind utilities;
 
 @layer base {
+  :root,
+  [data-theme='light'] {
+    color-scheme: light;
+    --bhda-background: 245 245 245;
+    --bhda-surface: 255 255 255;
+    --bhda-text: 0 0 0;
+    --bhda-primary: 97 78 144;
+    --bhda-on-primary: 255 255 255;
+    --bhda-accent: 97 78 144;
+    --bhda-notation: 0 0 0;
+    --bhda-perfect: 46 125 50;
+    --bhda-good: 178 106 0;
+    --bhda-good-text: 153 88 0;
+    --bhda-miss: 198 40 40;
+  }
+
+  [data-theme='dark'] {
+    color-scheme: dark;
+    --bhda-background: 23 23 23;
+    --bhda-surface: 35 32 43;
+    --bhda-text: 245 245 245;
+    --bhda-primary: 97 78 144;
+    --bhda-on-primary: 255 255 255;
+    --bhda-accent: 183 167 220;
+    --bhda-notation: 232 228 238;
+    --bhda-perfect: 124 207 132;
+    --bhda-good: 224 168 91;
+    --bhda-good-text: 224 168 91;
+    --bhda-miss: 255 138 138;
+  }
+
   * {
-    @apply border-black/10;
+    @apply border-bhda-text/10;
   }
 
   html {
@@ -48,7 +79,7 @@
     z-index: 20;
     transform: translateX(-50%);
     border-radius: 9999px;
-    background: white;
+    background: rgb(var(--bhda-surface));
     padding: 0.45rem 0.85rem;
     font-size: 0.875rem;
     font-weight: 700;
@@ -57,15 +88,15 @@
   }
 
   .hit-callout-perfect {
-    color: #2e7d32;
+    color: rgb(var(--bhda-perfect));
   }
 
   .hit-callout-good {
-    color: #b26a00;
+    color: rgb(var(--bhda-good-text));
   }
 
   .hit-callout-miss {
-    color: #c62828;
+    color: rgb(var(--bhda-miss));
   }
 }
 
@@ -93,8 +124,8 @@
     bottom: 0;
     left: 0;
     z-index: 40;
-    border-top: 1px solid rgb(0 0 0 / 10%);
-    background: rgb(245 245 245 / 96%);
+    border-top: 1px solid rgb(var(--bhda-text) / 10%);
+    background: rgb(var(--bhda-surface) / 96%);
     padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
     backdrop-filter: blur(12px);
   }

@@ -15,7 +15,7 @@ export function PageIntro({
 }: PageIntroProps) {
   return (
     <section className="mx-auto w-full max-w-3xl" aria-labelledby="page-title">
-      <p className="text-sm font-semibold uppercase tracking-widest text-bhda-purple">
+      <p className="text-sm font-semibold uppercase tracking-widest text-bhda-accent">
         {eyebrow}
       </p>
       <h1
@@ -24,12 +24,12 @@ export function PageIntro({
       >
         {title}
       </h1>
-      <p className="mt-4 max-w-2xl text-base leading-7 text-black/70">
+      <p className="mt-4 max-w-2xl text-base leading-7 text-bhda-text/70">
         {description}
       </p>
-      <div className="mt-8 rounded-xl border bg-white p-6 shadow-sm sm:p-8">
+      <div className="mt-8 rounded-xl border bg-bhda-surface p-6 shadow-sm sm:p-8">
         {children ?? (
-          <p className="text-sm leading-6 text-black/70">
+          <p className="text-sm leading-6 text-bhda-text/70">
             This area is ready for the next build stage.
           </p>
         )}

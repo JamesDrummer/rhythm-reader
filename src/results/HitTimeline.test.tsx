@@ -44,6 +44,18 @@ describe('HitTimeline', () => {
       'data-rating',
       'miss',
     )
+    expect(screen.getByTestId('actual-kick-3')).toHaveAttribute(
+      'fill',
+      'rgb(var(--bhda-miss))',
+    )
+    expect(screen.getByTestId('actual-kick-3')).toHaveAttribute(
+      'stroke',
+      'rgb(var(--bhda-surface))',
+    )
+    expect(screen.getByTestId('expected-hihat-0')).toHaveAttribute(
+      'fill',
+      'rgb(var(--bhda-background))',
+    )
 
     const earlyX = Number(
       screen.getByTestId('actual-hihat-0').getAttribute('cx'),

@@ -15,15 +15,15 @@ const VOICE_LABELS: Record<Voice, string> = {
 }
 
 const RATING_COLOURS: Record<HitRating, string> = {
-  perfect: '#2E7D32',
-  good: '#B26A00',
-  miss: '#C62828',
+  perfect: 'rgb(var(--bhda-perfect))',
+  good: 'rgb(var(--bhda-good))',
+  miss: 'rgb(var(--bhda-miss))',
 }
 
 const RATING_DOT_CLASSES: Record<HitRating, string> = {
-  perfect: 'bg-green-700',
-  good: 'bg-amber-600',
-  miss: 'bg-red-700',
+  perfect: 'bg-bhda-perfect',
+  good: 'bg-bhda-good',
+  miss: 'bg-bhda-miss',
 }
 
 function activeVoices(score: ScoreRecord): Voice[] {
@@ -76,7 +76,7 @@ export function HitTimeline({ score }: { score: ScoreRecord }) {
             return (
               <g data-testid={`bar-line-${index}`} key={`${timeMs}-${index}`}>
                 <line
-                  stroke="#000000"
+                  stroke="rgb(var(--bhda-text))"
                   strokeOpacity={
                     index === 0 ||
                     index === score.timeline.barLineTimeMs.length - 1
@@ -96,7 +96,7 @@ export function HitTimeline({ score }: { score: ScoreRecord }) {
                 />
                 {index < score.timeline.barLineTimeMs.length - 1 && (
                   <text
-                    fill="#000000"
+                    fill="rgb(var(--bhda-text))"
                     fontSize="10"
                     fontWeight="600"
                     opacity="0.48"
@@ -123,7 +123,7 @@ export function HitTimeline({ score }: { score: ScoreRecord }) {
             return (
               <g key={voice}>
                 <text
-                  fill="#000000"
+                  fill="rgb(var(--bhda-text))"
                   fontSize="12"
                   fontWeight="700"
                   textAnchor="end"
@@ -133,7 +133,7 @@ export function HitTimeline({ score }: { score: ScoreRecord }) {
                   {VOICE_LABELS[voice]}
                 </text>
                 <line
-                  stroke="#000000"
+                  stroke="rgb(var(--bhda-text))"
                   strokeOpacity="0.14"
                   x1={TRACK_START}
                   x2={TRACK_END}
@@ -146,10 +146,10 @@ export function HitTimeline({ score }: { score: ScoreRecord }) {
                     cx={xForTime(score, result.expectedTimeMs)}
                     cy={y}
                     data-testid={`expected-${voice}-${result.noteIndex}`}
-                    fill="#F5F5F5"
+                    fill="rgb(var(--bhda-background))"
                     key={result.noteIndex}
                     r="6"
-                    stroke="#000000"
+                    stroke="rgb(var(--bhda-text))"
                     strokeOpacity="0.48"
                     strokeWidth="1.5"
                   />
@@ -166,7 +166,7 @@ export function HitTimeline({ score }: { score: ScoreRecord }) {
                       fill={RATING_COLOURS[rating]}
                       key={hitIndex}
                       r="4"
-                      stroke="#FFFFFF"
+                      stroke="rgb(var(--bhda-surface))"
                       strokeWidth="1"
                     />
                   )
@@ -177,9 +177,9 @@ export function HitTimeline({ score }: { score: ScoreRecord }) {
         </svg>
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-black/55">
+      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-bhda-text/55">
         <span className="inline-flex items-center gap-2">
-          <span className="size-3 rounded-full border border-black/50 bg-bhda-background" />
+          <span className="size-3 rounded-full border border-bhda-text/50 bg-bhda-background" />
           Correct timing
         </span>
         {(['perfect', 'good', 'miss'] as const).map((rating) => (
