@@ -152,12 +152,19 @@ describe('LevelDetailPage', () => {
   })
 
   it('does not show a reading guide card when the level has no guide', async () => {
-    renderPage(BUILT_IN_LEVELS[0].id)
+    const levelWithoutGuide: Level = {
+      ...BUILT_IN_LEVELS[0],
+      guide: undefined,
+    }
+    const source: ExerciseSource = {
+      loadLevels: () => Promise.resolve([levelWithoutGuide]),
+    }
+    renderPage(levelWithoutGuide.id, undefined, source)
 
     expect(
       await screen.findByRole('heading', {
         level: 1,
-        name: BUILT_IN_LEVELS[0].title,
+        name: levelWithoutGuide.title,
       }),
     ).toBeInTheDocument()
     expect(

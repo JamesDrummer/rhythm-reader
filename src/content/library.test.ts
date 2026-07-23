@@ -389,10 +389,47 @@ describe('built-in exercise library', () => {
     expect(locations.get('triplet-eighth-introduction')).toBe(17)
   })
 
-  it('renders every exercise through the production notation mapper', () => {
-    for (const exercise of BUILT_IN_LEVELS.flatMap(
-      (level) => level.exercises,
-    )) {
+  it('renders every exercise and guide snippet through the production notation mapper', () => {
+    const guideSnippets: Exercise[] = BUILT_IN_LEVELS.flatMap((level) =>
+      (level.guide ?? []).flatMap((section, sectionIndex) => {
+        const snippets = [
+          ...(section.example
+            ? [
+                {
+                  id: `${level.id}-guide-${sectionIndex + 1}`,
+                  notation: section.example,
+                },
+              ]
+            : []),
+          ...(section.key ?? []).map((notation, keyIndex) => ({
+            id: `${level.id}-guide-${sectionIndex + 1}-key-${keyIndex + 1}`,
+            notation,
+          })),
+        ]
+
+        return snippets.map(({ id, notation }): Exercise => ({
+          id,
+          title: id,
+          tempo: 60,
+          timeSignature: { beats: 4, beatValue: 4 },
+          bars: notation.bars,
+          events: notation.events,
+          ...(notation.notationSystems
+            ? { notationSystems: notation.notationSystems }
+            : {}),
+          tier: 'beginner',
+          listenFirstAllowed: false,
+          modes: ['playAlong'],
+        }))
+      }),
+    )
+
+    expect(guideSnippets).toHaveLength(25)
+
+    for (const exercise of [
+      ...BUILT_IN_LEVELS.flatMap((level) => level.exercises),
+      ...guideSnippets,
+    ]) {
       const output = document.createElement('div')
       const layout = renderExerciseNotation(output, exercise)
 
