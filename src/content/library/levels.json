@@ -6,16 +6,17 @@
     "guide": [
       {
         "text": "Music is read left to right, like words. Each bar holds four steady beats: count them out loud, 1 2 3 4. A quarter note (crotchet) means play on that beat. A quarter rest (crotchet rest) means stay silent for that beat, but keep counting. The beat does not stop just because you do.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "snare", "tick": 0, "duration": 480 },
-            { "voice": "snare", "tick": 480, "duration": 480 },
-            { "voice": "snare", "tick": 1440, "duration": 480 }
-          ],
-          "notationSystems": 1
-        },
         "key": [
+          {
+            "label": "Quarter-note foundations",
+            "bars": 1,
+            "events": [
+              { "voice": "snare", "tick": 0, "duration": 480 },
+              { "voice": "snare", "tick": 480, "duration": 480 },
+              { "voice": "snare", "tick": 1440, "duration": 480 }
+            ],
+            "notationSystems": 1
+          },
           {
             "label": "Quarter note (crotchet)",
             "bars": 1,
@@ -121,17 +122,18 @@
     "guide": [
       {
         "text": "Each drum lives on its own line or space. The hi-hat sits at the top with an x-shaped head, the snare sits in the middle, and the kick lives at the bottom. Same rhythms as level 1: your eyes now check which drum as well as when.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "hihat", "tick": 0, "duration": 480 },
-            { "voice": "snare", "tick": 480, "duration": 480 },
-            { "voice": "kick", "tick": 960, "duration": 480 },
-            { "voice": "snare", "tick": 1440, "duration": 480 }
-          ],
-          "notationSystems": 1
-        },
         "key": [
+          {
+            "label": "Around the kit",
+            "bars": 1,
+            "events": [
+              { "voice": "hihat", "tick": 0, "duration": 480 },
+              { "voice": "snare", "tick": 480, "duration": 480 },
+              { "voice": "kick", "tick": 960, "duration": 480 },
+              { "voice": "snare", "tick": 1440, "duration": 480 }
+            ],
+            "notationSystems": 1
+          },
           {
             "label": "The drum key",
             "bars": 1,
@@ -240,19 +242,20 @@
     "guide": [
       {
         "text": "8th notes (quavers) split each beat in half: count 1 & 2 & 3 & 4 &. Two 8ths are worth one quarter note and are joined by a beam. The & lands exactly halfway between beats, so keep your counting even, not rushed.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "snare", "tick": 0, "duration": 240 },
-            { "voice": "snare", "tick": 240, "duration": 240 },
-            { "voice": "snare", "tick": 480, "duration": 480 },
-            { "voice": "snare", "tick": 960, "duration": 240 },
-            { "voice": "snare", "tick": 1200, "duration": 240 },
-            { "voice": "snare", "tick": 1440, "duration": 480 }
-          ],
-          "notationSystems": 1
-        },
         "key": [
+          {
+            "label": "Eighth notes with quarters",
+            "bars": 1,
+            "events": [
+              { "voice": "snare", "tick": 0, "duration": 240 },
+              { "voice": "snare", "tick": 240, "duration": 240 },
+              { "voice": "snare", "tick": 480, "duration": 480 },
+              { "voice": "snare", "tick": 960, "duration": 240 },
+              { "voice": "snare", "tick": 1200, "duration": 240 },
+              { "voice": "snare", "tick": 1440, "duration": 480 }
+            ],
+            "notationSystems": 1
+          },
           {
             "label": "Two 8th notes (quavers), one beat",
             "bars": 1,
@@ -365,18 +368,21 @@
     "guide": [
       {
         "text": "Read one beat at a time: each beat is either a quarter note or a pair of 8ths. Say the counts out loud as you play.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "snare", "tick": 0, "duration": 480 },
-            { "voice": "snare", "tick": 480, "duration": 240 },
-            { "voice": "snare", "tick": 720, "duration": 240 },
-            { "voice": "snare", "tick": 960, "duration": 480 },
-            { "voice": "snare", "tick": 1440, "duration": 240 },
-            { "voice": "snare", "tick": 1680, "duration": 240 }
-          ],
-          "notationSystems": 1
-        }
+        "key": [
+          {
+            "label": "Quarters and eighth-note pairs",
+            "bars": 1,
+            "events": [
+              { "voice": "snare", "tick": 0, "duration": 480 },
+              { "voice": "snare", "tick": 480, "duration": 240 },
+              { "voice": "snare", "tick": 720, "duration": 240 },
+              { "voice": "snare", "tick": 960, "duration": 480 },
+              { "voice": "snare", "tick": 1440, "duration": 240 },
+              { "voice": "snare", "tick": 1680, "duration": 240 }
+            ],
+            "notationSystems": 1
+          }
+        ]
       }
     ],
     "order": 4,
@@ -485,24 +491,27 @@
     "guide": [
       {
         "text": "When voices layer up, keep counting out loud and let each limb join the count one at a time.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "hihat", "tick": 0, "duration": 240 },
-            { "voice": "kick", "tick": 0, "duration": 480 },
-            { "voice": "hihat", "tick": 240, "duration": 240 },
-            { "voice": "hihat", "tick": 480, "duration": 240 },
-            { "voice": "snare", "tick": 480, "duration": 480 },
-            { "voice": "hihat", "tick": 720, "duration": 240 },
-            { "voice": "hihat", "tick": 960, "duration": 240 },
-            { "voice": "kick", "tick": 960, "duration": 480 },
-            { "voice": "hihat", "tick": 1200, "duration": 240 },
-            { "voice": "hihat", "tick": 1440, "duration": 240 },
-            { "voice": "snare", "tick": 1440, "duration": 480 },
-            { "voice": "hihat", "tick": 1680, "duration": 240 }
-          ],
-          "notationSystems": 2
-        }
+        "key": [
+          {
+            "label": "Layered eighths",
+            "bars": 1,
+            "events": [
+              { "voice": "hihat", "tick": 0, "duration": 240 },
+              { "voice": "kick", "tick": 0, "duration": 480 },
+              { "voice": "hihat", "tick": 240, "duration": 240 },
+              { "voice": "hihat", "tick": 480, "duration": 240 },
+              { "voice": "snare", "tick": 480, "duration": 480 },
+              { "voice": "hihat", "tick": 720, "duration": 240 },
+              { "voice": "hihat", "tick": 960, "duration": 240 },
+              { "voice": "kick", "tick": 960, "duration": 480 },
+              { "voice": "hihat", "tick": 1200, "duration": 240 },
+              { "voice": "hihat", "tick": 1440, "duration": 240 },
+              { "voice": "snare", "tick": 1440, "duration": 480 },
+              { "voice": "hihat", "tick": 1680, "duration": 240 }
+            ],
+            "notationSystems": 2
+          }
+        ]
       }
     ],
     "order": 5,
@@ -625,19 +634,20 @@
     "guide": [
       {
         "text": "An 8th rest (quaver rest) silences half a beat. When the rest is on the beat, you play only the &. Count every syllable out loud and whisper the silent ones.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "snare", "tick": 0, "duration": 240 },
-            { "voice": "snare", "tick": 240, "duration": 240 },
-            { "voice": "snare", "tick": 720, "duration": 240 },
-            { "voice": "snare", "tick": 960, "duration": 240 },
-            { "voice": "snare", "tick": 1200, "duration": 240 },
-            { "voice": "snare", "tick": 1680, "duration": 240 }
-          ],
-          "notationSystems": 1
-        },
         "key": [
+          {
+            "label": "Eighth-note rests",
+            "bars": 1,
+            "events": [
+              { "voice": "snare", "tick": 0, "duration": 240 },
+              { "voice": "snare", "tick": 240, "duration": 240 },
+              { "voice": "snare", "tick": 720, "duration": 240 },
+              { "voice": "snare", "tick": 960, "duration": 240 },
+              { "voice": "snare", "tick": 1200, "duration": 240 },
+              { "voice": "snare", "tick": 1680, "duration": 240 }
+            ],
+            "notationSystems": 1
+          },
           {
             "label": "8th rest on the beat, play the &",
             "bars": 1,
@@ -753,18 +763,21 @@
     "guide": [
       {
         "text": "Rests are counted, not skipped. Keep the pulse through every silence.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "snare", "tick": 0, "duration": 240 },
-            { "voice": "snare", "tick": 240, "duration": 240 },
-            { "voice": "snare", "tick": 480, "duration": 240 },
-            { "voice": "snare", "tick": 720, "duration": 240 },
-            { "voice": "snare", "tick": 1440, "duration": 240 },
-            { "voice": "snare", "tick": 1680, "duration": 240 }
-          ],
-          "notationSystems": 1
-        }
+        "key": [
+          {
+            "label": "Quarter rests with eighth notes",
+            "bars": 1,
+            "events": [
+              { "voice": "snare", "tick": 0, "duration": 240 },
+              { "voice": "snare", "tick": 240, "duration": 240 },
+              { "voice": "snare", "tick": 480, "duration": 240 },
+              { "voice": "snare", "tick": 720, "duration": 240 },
+              { "voice": "snare", "tick": 1440, "duration": 240 },
+              { "voice": "snare", "tick": 1680, "duration": 240 }
+            ],
+            "notationSystems": 1
+          }
+        ]
       }
     ],
     "order": 7,
@@ -867,18 +880,21 @@
     "guide": [
       {
         "text": "Same 8th-note rests, now moving around the kit. Read the voice first, then the rhythm.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "hihat", "tick": 0, "duration": 240 },
-            { "voice": "hihat", "tick": 240, "duration": 240 },
-            { "voice": "snare", "tick": 720, "duration": 240 },
-            { "voice": "kick", "tick": 960, "duration": 240 },
-            { "voice": "kick", "tick": 1200, "duration": 240 },
-            { "voice": "hihat", "tick": 1680, "duration": 240 }
-          ],
-          "notationSystems": 2
-        }
+        "key": [
+          {
+            "label": "Eighth-note rests around the kit",
+            "bars": 1,
+            "events": [
+              { "voice": "hihat", "tick": 0, "duration": 240 },
+              { "voice": "hihat", "tick": 240, "duration": 240 },
+              { "voice": "snare", "tick": 720, "duration": 240 },
+              { "voice": "kick", "tick": 960, "duration": 240 },
+              { "voice": "kick", "tick": 1200, "duration": 240 },
+              { "voice": "hihat", "tick": 1680, "duration": 240 }
+            ],
+            "notationSystems": 2
+          }
+        ]
       }
     ],
     "order": 8,
@@ -1002,16 +1018,19 @@
     "guide": [
       {
         "text": "Quarter and 8th rests mixed around the kit. Slow down and count: silence is part of the groove.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "hihat", "tick": 0, "duration": 240 },
-            { "voice": "hihat", "tick": 240, "duration": 240 },
-            { "voice": "snare", "tick": 480, "duration": 480 },
-            { "voice": "kick", "tick": 1680, "duration": 240 }
-          ],
-          "notationSystems": 2
-        }
+        "key": [
+          {
+            "label": "Quarter and eighth rests around the kit",
+            "bars": 1,
+            "events": [
+              { "voice": "hihat", "tick": 0, "duration": 240 },
+              { "voice": "hihat", "tick": 240, "duration": 240 },
+              { "voice": "snare", "tick": 480, "duration": 480 },
+              { "voice": "kick", "tick": 1680, "duration": 240 }
+            ],
+            "notationSystems": 2
+          }
+        ]
       }
     ],
     "order": 9,
@@ -1135,21 +1154,22 @@
     "guide": [
       {
         "text": "16th notes (semiquavers) split each beat into four: count 1 e & a. Four 16ths fit in one quarter note and are joined by a double beam. Slow is your friend: precision first, speed later.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "snare", "tick": 0, "duration": 120 },
-            { "voice": "snare", "tick": 120, "duration": 120 },
-            { "voice": "snare", "tick": 240, "duration": 120 },
-            { "voice": "snare", "tick": 360, "duration": 120 },
-            { "voice": "snare", "tick": 960, "duration": 120 },
-            { "voice": "snare", "tick": 1080, "duration": 120 },
-            { "voice": "snare", "tick": 1200, "duration": 120 },
-            { "voice": "snare", "tick": 1320, "duration": 120 }
-          ],
-          "notationSystems": 1
-        },
         "key": [
+          {
+            "label": "Sixteenth-note foundations",
+            "bars": 1,
+            "events": [
+              { "voice": "snare", "tick": 0, "duration": 120 },
+              { "voice": "snare", "tick": 120, "duration": 120 },
+              { "voice": "snare", "tick": 240, "duration": 120 },
+              { "voice": "snare", "tick": 360, "duration": 120 },
+              { "voice": "snare", "tick": 960, "duration": 120 },
+              { "voice": "snare", "tick": 1080, "duration": 120 },
+              { "voice": "snare", "tick": 1200, "duration": 120 },
+              { "voice": "snare", "tick": 1320, "duration": 120 }
+            ],
+            "notationSystems": 1
+          },
           {
             "label": "Four 16th notes (semiquavers), one beat",
             "bars": 1,
@@ -1276,24 +1296,27 @@
     "guide": [
       {
         "text": "8ths and 16ths side by side. The beam tells you the speed: single beam for 8ths, double beam for 16ths.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "snare", "tick": 0, "duration": 120 },
-            { "voice": "snare", "tick": 120, "duration": 120 },
-            { "voice": "snare", "tick": 240, "duration": 120 },
-            { "voice": "snare", "tick": 360, "duration": 120 },
-            { "voice": "snare", "tick": 480, "duration": 240 },
-            { "voice": "snare", "tick": 720, "duration": 240 },
-            { "voice": "snare", "tick": 960, "duration": 120 },
-            { "voice": "snare", "tick": 1080, "duration": 120 },
-            { "voice": "snare", "tick": 1200, "duration": 120 },
-            { "voice": "snare", "tick": 1320, "duration": 120 },
-            { "voice": "snare", "tick": 1440, "duration": 240 },
-            { "voice": "snare", "tick": 1680, "duration": 240 }
-          ],
-          "notationSystems": 1
-        }
+        "key": [
+          {
+            "label": "Eighths and sixteenths",
+            "bars": 1,
+            "events": [
+              { "voice": "snare", "tick": 0, "duration": 120 },
+              { "voice": "snare", "tick": 120, "duration": 120 },
+              { "voice": "snare", "tick": 240, "duration": 120 },
+              { "voice": "snare", "tick": 360, "duration": 120 },
+              { "voice": "snare", "tick": 480, "duration": 240 },
+              { "voice": "snare", "tick": 720, "duration": 240 },
+              { "voice": "snare", "tick": 960, "duration": 120 },
+              { "voice": "snare", "tick": 1080, "duration": 120 },
+              { "voice": "snare", "tick": 1200, "duration": 120 },
+              { "voice": "snare", "tick": 1320, "duration": 120 },
+              { "voice": "snare", "tick": 1440, "duration": 240 },
+              { "voice": "snare", "tick": 1680, "duration": 240 }
+            ],
+            "notationSystems": 1
+          }
+        ]
       }
     ],
     "order": 11,
@@ -1417,20 +1440,23 @@
     "guide": [
       {
         "text": "Quarters, 8ths and 16ths together. Read each beat as one shape before you play it.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "snare", "tick": 0, "duration": 480 },
-            { "voice": "snare", "tick": 480, "duration": 240 },
-            { "voice": "snare", "tick": 720, "duration": 240 },
-            { "voice": "snare", "tick": 960, "duration": 120 },
-            { "voice": "snare", "tick": 1080, "duration": 120 },
-            { "voice": "snare", "tick": 1200, "duration": 120 },
-            { "voice": "snare", "tick": 1320, "duration": 120 },
-            { "voice": "snare", "tick": 1440, "duration": 480 }
-          ],
-          "notationSystems": 1
-        }
+        "key": [
+          {
+            "label": "Quarters, eighths and sixteenths",
+            "bars": 1,
+            "events": [
+              { "voice": "snare", "tick": 0, "duration": 480 },
+              { "voice": "snare", "tick": 480, "duration": 240 },
+              { "voice": "snare", "tick": 720, "duration": 240 },
+              { "voice": "snare", "tick": 960, "duration": 120 },
+              { "voice": "snare", "tick": 1080, "duration": 120 },
+              { "voice": "snare", "tick": 1200, "duration": 120 },
+              { "voice": "snare", "tick": 1320, "duration": 120 },
+              { "voice": "snare", "tick": 1440, "duration": 480 }
+            ],
+            "notationSystems": 1
+          }
+        ]
       }
     ],
     "order": 12,
@@ -1547,19 +1573,22 @@
     "guide": [
       {
         "text": "Full-beat silences inside busy rhythms. Keep counting 1 e & a through every rest.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "snare", "tick": 0, "duration": 120 },
-            { "voice": "snare", "tick": 120, "duration": 120 },
-            { "voice": "snare", "tick": 240, "duration": 120 },
-            { "voice": "snare", "tick": 360, "duration": 120 },
-            { "voice": "snare", "tick": 960, "duration": 240 },
-            { "voice": "snare", "tick": 1200, "duration": 240 },
-            { "voice": "snare", "tick": 1440, "duration": 480 }
-          ],
-          "notationSystems": 1
-        }
+        "key": [
+          {
+            "label": "Mixed values with quarter rests",
+            "bars": 1,
+            "events": [
+              { "voice": "snare", "tick": 0, "duration": 120 },
+              { "voice": "snare", "tick": 120, "duration": 120 },
+              { "voice": "snare", "tick": 240, "duration": 120 },
+              { "voice": "snare", "tick": 360, "duration": 120 },
+              { "voice": "snare", "tick": 960, "duration": 240 },
+              { "voice": "snare", "tick": 1200, "duration": 240 },
+              { "voice": "snare", "tick": 1440, "duration": 480 }
+            ],
+            "notationSystems": 1
+          }
+        ]
       }
     ],
     "order": 13,
@@ -1673,19 +1702,22 @@
     "guide": [
       {
         "text": "8th rests inside mixed rhythms silence half a beat. Find which syllables are silent before you play.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "snare", "tick": 0, "duration": 120 },
-            { "voice": "snare", "tick": 120, "duration": 120 },
-            { "voice": "snare", "tick": 240, "duration": 120 },
-            { "voice": "snare", "tick": 360, "duration": 120 },
-            { "voice": "snare", "tick": 480, "duration": 240 },
-            { "voice": "snare", "tick": 960, "duration": 480 },
-            { "voice": "snare", "tick": 1680, "duration": 240 }
-          ],
-          "notationSystems": 1
-        }
+        "key": [
+          {
+            "label": "Mixed values with eighth rests",
+            "bars": 1,
+            "events": [
+              { "voice": "snare", "tick": 0, "duration": 120 },
+              { "voice": "snare", "tick": 120, "duration": 120 },
+              { "voice": "snare", "tick": 240, "duration": 120 },
+              { "voice": "snare", "tick": 360, "duration": 120 },
+              { "voice": "snare", "tick": 480, "duration": 240 },
+              { "voice": "snare", "tick": 960, "duration": 480 },
+              { "voice": "snare", "tick": 1680, "duration": 240 }
+            ],
+            "notationSystems": 1
+          }
+        ]
       }
     ],
     "order": 14,
@@ -1795,22 +1827,23 @@
     "guide": [
       {
         "text": "A 16th rest (semiquaver rest) silences a quarter of a beat. Keep counting 1 e & a and play only the syllables with notes.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "snare", "tick": 120, "duration": 120 },
-            { "voice": "snare", "tick": 240, "duration": 120 },
-            { "voice": "snare", "tick": 360, "duration": 120 },
-            { "voice": "snare", "tick": 480, "duration": 240 },
-            { "voice": "snare", "tick": 720, "duration": 240 },
-            { "voice": "snare", "tick": 960, "duration": 480 },
-            { "voice": "snare", "tick": 1440, "duration": 120 },
-            { "voice": "snare", "tick": 1560, "duration": 120 },
-            { "voice": "snare", "tick": 1680, "duration": 120 }
-          ],
-          "notationSystems": 1
-        },
         "key": [
+          {
+            "label": "Mixed values with sixteenth rests",
+            "bars": 1,
+            "events": [
+              { "voice": "snare", "tick": 120, "duration": 120 },
+              { "voice": "snare", "tick": 240, "duration": 120 },
+              { "voice": "snare", "tick": 360, "duration": 120 },
+              { "voice": "snare", "tick": 480, "duration": 240 },
+              { "voice": "snare", "tick": 720, "duration": 240 },
+              { "voice": "snare", "tick": 960, "duration": 480 },
+              { "voice": "snare", "tick": 1440, "duration": 120 },
+              { "voice": "snare", "tick": 1560, "duration": 120 },
+              { "voice": "snare", "tick": 1680, "duration": 120 }
+            ],
+            "notationSystems": 1
+          },
           {
             "label": "16th rest: play e, & and a",
             "bars": 1,
@@ -1934,21 +1967,24 @@
     "guide": [
       {
         "text": "Everything binary, everywhere on the kit. Scan each bar for its trickiest beat before you start.",
-        "example": {
-          "bars": 1,
-          "events": [
-            { "voice": "kick", "tick": 0, "duration": 480 },
-            { "voice": "hihat", "tick": 480, "duration": 240 },
-            { "voice": "hihat", "tick": 720, "duration": 240 },
-            { "voice": "snare", "tick": 960, "duration": 120 },
-            { "voice": "snare", "tick": 1080, "duration": 120 },
-            { "voice": "snare", "tick": 1200, "duration": 120 },
-            { "voice": "snare", "tick": 1320, "duration": 120 },
-            { "voice": "kick", "tick": 1440, "duration": 240 },
-            { "voice": "hihat", "tick": 1680, "duration": 240 }
-          ],
-          "notationSystems": 1
-        }
+        "key": [
+          {
+            "label": "Mixed binary rhythms around the kit",
+            "bars": 1,
+            "events": [
+              { "voice": "kick", "tick": 0, "duration": 480 },
+              { "voice": "hihat", "tick": 480, "duration": 240 },
+              { "voice": "hihat", "tick": 720, "duration": 240 },
+              { "voice": "snare", "tick": 960, "duration": 120 },
+              { "voice": "snare", "tick": 1080, "duration": 120 },
+              { "voice": "snare", "tick": 1200, "duration": 120 },
+              { "voice": "snare", "tick": 1320, "duration": 120 },
+              { "voice": "kick", "tick": 1440, "duration": 240 },
+              { "voice": "hihat", "tick": 1680, "duration": 240 }
+            ],
+            "notationSystems": 1
+          }
+        ]
       }
     ],
     "order": 16,
@@ -2073,52 +2109,53 @@
     "guide": [
       {
         "text": "A triplet (quaver triplets) fits three even notes into one beat where two 8ths would normally go, marked with a 3. Count 1-trip-let. The feel is rounder: three equal parts, not a rhythm you already know squeezed in.",
-        "example": {
-          "bars": 1,
-          "events": [
-            {
-              "voice": "snare",
-              "tick": 0,
-              "duration": 160,
-              "tuplet": { "num": 3, "den": 2 }
-            },
-            {
-              "voice": "snare",
-              "tick": 160,
-              "duration": 160,
-              "tuplet": { "num": 3, "den": 2 }
-            },
-            {
-              "voice": "snare",
-              "tick": 320,
-              "duration": 160,
-              "tuplet": { "num": 3, "den": 2 }
-            },
-            { "voice": "snare", "tick": 480, "duration": 240 },
-            { "voice": "snare", "tick": 720, "duration": 240 },
-            { "voice": "snare", "tick": 960, "duration": 480 },
-            {
-              "voice": "snare",
-              "tick": 1440,
-              "duration": 160,
-              "tuplet": { "num": 3, "den": 2 }
-            },
-            {
-              "voice": "snare",
-              "tick": 1600,
-              "duration": 160,
-              "tuplet": { "num": 3, "den": 2 }
-            },
-            {
-              "voice": "snare",
-              "tick": 1760,
-              "duration": 160,
-              "tuplet": { "num": 3, "den": 2 }
-            }
-          ],
-          "notationSystems": 1
-        },
         "key": [
+          {
+            "label": "Triplets and mixed rhythms",
+            "bars": 1,
+            "events": [
+              {
+                "voice": "snare",
+                "tick": 0,
+                "duration": 160,
+                "tuplet": { "num": 3, "den": 2 }
+              },
+              {
+                "voice": "snare",
+                "tick": 160,
+                "duration": 160,
+                "tuplet": { "num": 3, "den": 2 }
+              },
+              {
+                "voice": "snare",
+                "tick": 320,
+                "duration": 160,
+                "tuplet": { "num": 3, "den": 2 }
+              },
+              { "voice": "snare", "tick": 480, "duration": 240 },
+              { "voice": "snare", "tick": 720, "duration": 240 },
+              { "voice": "snare", "tick": 960, "duration": 480 },
+              {
+                "voice": "snare",
+                "tick": 1440,
+                "duration": 160,
+                "tuplet": { "num": 3, "den": 2 }
+              },
+              {
+                "voice": "snare",
+                "tick": 1600,
+                "duration": 160,
+                "tuplet": { "num": 3, "den": 2 }
+              },
+              {
+                "voice": "snare",
+                "tick": 1760,
+                "duration": 160,
+                "tuplet": { "num": 3, "den": 2 }
+              }
+            ],
+            "notationSystems": 1
+          },
           {
             "label": "Triplet: three even notes, one beat",
             "bars": 1,

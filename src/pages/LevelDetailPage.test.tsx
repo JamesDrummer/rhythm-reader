@@ -98,20 +98,12 @@ describe('LevelDetailPage', () => {
     )
   })
 
-  it('shows a reading guide and engraves its example on a locked preview', async () => {
+  it('shows a reading guide and engraves its key on a locked preview', async () => {
     const guidedLevel: Level = {
       ...BUILT_IN_LEVELS[1],
       guide: [
         {
           text: 'Count four steady beats and read the snare on beats one and three.',
-          example: {
-            bars: 1,
-            events: [
-              { voice: 'snare', tick: 0, duration: 480 },
-              { voice: 'snare', tick: 960, duration: 480 },
-            ],
-            notationSystems: 1,
-          },
           key: [
             {
               label: 'Quarter-note snare',
@@ -138,9 +130,6 @@ describe('LevelDetailPage', () => {
     ).toBeInTheDocument()
     expect(screen.getByText(guidedLevel.guide![0].text)).toBeInTheDocument()
     expect(screen.getByText('Locked')).toBeInTheDocument()
-    const notation = screen.getByRole('img', { name: 'Reading example 1' })
-    expect(notation.querySelector('svg')).toBeInTheDocument()
-    expect(notation.querySelectorAll('svg')).toHaveLength(1)
     expect(screen.getByText('Quarter-note snare')).toBeInTheDocument()
     expect(screen.getByText('Beat one')).toBeInTheDocument()
     const keyNotation = screen.getByRole('img', {

@@ -11,15 +11,16 @@ const mixedLevel: Level = {
   guide: [
     {
       text: 'Count each beat, then place the off-beat notes halfway between.',
-      example: {
-        bars: 1,
-        events: [
-          { voice: 'hihat', tick: 0, duration: 240 },
-          { voice: 'hihat', tick: 240, duration: 240 },
-        ],
-        notationSystems: 1,
-      },
       key: [
+        {
+          label: 'Paired 8th notes',
+          bars: 1,
+          events: [
+            { voice: 'hihat', tick: 0, duration: 240 },
+            { voice: 'hihat', tick: 240, duration: 240 },
+          ],
+          notationSystems: 1,
+        },
         {
           label: 'Quarter-note snare',
           bars: 1,
@@ -100,24 +101,27 @@ describe('built-in library JSON format', () => {
     ).toThrow('levels[0].exercises[0].groups[0].voice')
   })
 
-  it('reports invalid guide example events at their library path', () => {
+  it('reports invalid guide key events at their library path', () => {
     const invalidGuideLevel: Level = {
       ...mixedLevel,
       custom: undefined,
       guide: [
         {
-          text: 'This example runs beyond its bar.',
-          example: {
-            bars: 1,
-            events: [{ voice: 'snare', tick: 1800, duration: 240 }],
-          },
+          text: 'This key runs beyond its bar.',
+          key: [
+            {
+              label: 'Invalid key',
+              bars: 1,
+              events: [{ voice: 'snare', tick: 1800, duration: 240 }],
+            },
+          ],
         },
       ],
     }
 
     expect(() =>
       parseLibraryJson(serialiseLibrary([invalidGuideLevel])),
-    ).toThrow('levels[0].guide[0].example.events[0]')
+    ).toThrow('levels[0].guide[0].key[0].events[0]')
   })
 
   it('reports out-of-range guide key note labels at their library path', () => {

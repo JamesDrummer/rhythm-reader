@@ -392,20 +392,10 @@ describe('built-in exercise library', () => {
   it('renders every exercise and guide snippet through the production notation mapper', () => {
     const guideSnippets: Exercise[] = BUILT_IN_LEVELS.flatMap((level) =>
       (level.guide ?? []).flatMap((section, sectionIndex) => {
-        const snippets = [
-          ...(section.example
-            ? [
-                {
-                  id: `${level.id}-guide-${sectionIndex + 1}`,
-                  notation: section.example,
-                },
-              ]
-            : []),
-          ...(section.key ?? []).map((notation, keyIndex) => ({
-            id: `${level.id}-guide-${sectionIndex + 1}-key-${keyIndex + 1}`,
-            notation,
-          })),
-        ]
+        const snippets = (section.key ?? []).map((notation, keyIndex) => ({
+          id: `${level.id}-guide-${sectionIndex + 1}-key-${keyIndex + 1}`,
+          notation,
+        }))
 
         return snippets.map(({ id, notation }): Exercise => ({
           id,

@@ -44,11 +44,6 @@ export interface Level {
   order: number
   guide?: Array<{
     text: string
-    example?: {
-      bars: 1 | 2
-      events: NoteEvent[]
-      notationSystems?: 1 | 2
-    }
     key?: Array<{
       label: string
       bars: 1

@@ -21,11 +21,10 @@ export interface LibraryLevel extends Omit<Level, 'exercises' | 'custom'> {
 }
 
 type GuideSection = NonNullable<Level['guide']>[number]
-type GuideExample = NonNullable<GuideSection['example']>
 type GuideKey = NonNullable<GuideSection['key']>[number]
 
-interface ParsedGuideNotation<Bars extends 1 | 2> {
-  bars: Bars
+interface ParsedGuideNotation {
+  bars: 1
   events: NoteEvent[]
   notationSystems?: 1 | 2
 }
@@ -91,11 +90,10 @@ function parseNoteEvent(value: unknown, path: string): NoteEvent {
   }
 }
 
-function parseGuideNotation<Bars extends 1 | 2>(
+function parseGuideNotation(
   value: Record<string, unknown>,
   path: string,
-  bars: Bars,
-): ParsedGuideNotation<Bars> {
+): ParsedGuideNotation {
   if (!Array.isArray(value.events)) fail(`${path}.events`, 'must be an array')
   if (
     value.notationSystems !== undefined &&
@@ -109,8 +107,8 @@ function parseGuideNotation<Bars extends 1 | 2>(
     value.notationSystems === 1 || value.notationSystems === 2
       ? value.notationSystems
       : undefined
-  const notation: ParsedGuideNotation<Bars> = {
-    bars,
+  const notation: ParsedGuideNotation = {
+    bars: 1,
     events: value.events.map((event, eventIndex) =>
       parseNoteEvent(event, `${path}.events[${eventIndex}]`),
     ),
@@ -142,19 +140,11 @@ function parseGuideNotation<Bars extends 1 | 2>(
   return notation
 }
 
-function parseGuideExample(value: unknown, path: string): GuideExample {
-  if (!isRecord(value)) fail(path, 'must be a notation example object')
-  if (value.bars !== 1 && value.bars !== 2) {
-    fail(`${path}.bars`, 'must be 1 or 2')
-  }
-  return parseGuideNotation(value, path, value.bars)
-}
-
 function parseGuideKey(value: unknown, path: string): GuideKey {
   if (!isRecord(value)) fail(path, 'must be a key entry object')
   if (value.bars !== 1) fail(`${path}.bars`, 'must be 1')
 
-  const notation = parseGuideNotation(value, path, value.bars)
+  const notation = parseGuideNotation(value, path)
   if (value.noteLabels !== undefined && !Array.isArray(value.noteLabels)) {
     fail(`${path}.noteLabels`, 'must be an array')
   }
@@ -200,14 +190,6 @@ function parseGuide(value: unknown, path: string): Level['guide'] {
     if (!isRecord(section)) fail(sectionPath, 'must be a guide section object')
     return {
       text: stringAt(section, 'text', sectionPath),
-      ...(section.example !== undefined
-        ? {
-            example: parseGuideExample(
-              section.example,
-              `${sectionPath}.example`,
-            ),
-          }
-        : {}),
       ...(section.key !== undefined
         ? {
             key: Array.isArray(section.key)
@@ -394,7 +376,14 @@ export function toLibraryFormat(levels: readonly Level[]): LibraryLevel[] {
     title: level.title,
     description: level.description,
     order: level.order,
-    ...(level.guide ? { guide: level.guide } : {}),
+    ...(level.guide
+      ? {
+          guide: level.guide.map((section) => ({
+            text: section.text,
+            ...(section.key ? { key: section.key } : {}),
+          })),
+        }
+      : {}),
     exercises: level.exercises.map(({ events, ...exercise }) => ({
       ...exercise,
       groups: groupEvents(events),

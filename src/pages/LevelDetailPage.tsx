@@ -22,12 +22,11 @@ const MODE_LABELS: Record<ExerciseMode, string> = {
 }
 
 type GuideSection = NonNullable<Level['guide']>[number]
-type GuideExample = NonNullable<GuideSection['example']>
 type GuideKey = NonNullable<GuideSection['key']>[number]
 
 function guideNotationExercise(
   level: Level,
-  notation: GuideExample | GuideKey,
+  notation: GuideKey,
   idSuffix: string,
   title: string,
 ): Exercise {
@@ -178,21 +177,6 @@ export function LevelDetailPage() {
                 <p className="text-base leading-7 text-bhda-text/70">
                   {section.text}
                 </p>
-                {section.example && (
-                  <Notation
-                    className="mx-auto mt-4 max-w-xl border shadow-none"
-                    cropToContent
-                    exercise={guideNotationExercise(
-                      level,
-                      section.example,
-                      `guide-${sectionIndex + 1}`,
-                      `${level.title} reading example ${sectionIndex + 1}`,
-                    )}
-                    label={`Reading example ${sectionIndex + 1}`}
-                    showClef
-                    showTimeSignature
-                  />
-                )}
                 {section.key && section.key.length > 0 && (
                   <div
                     aria-label="Notation key"
@@ -201,7 +185,7 @@ export function LevelDetailPage() {
                   >
                     {section.key.map((entry, keyIndex) => (
                       <figure
-                        className="w-full min-w-0 sm:w-72"
+                        className="w-full min-w-0 sm:w-80"
                         key={`${entry.label}-${keyIndex}`}
                         role="listitem"
                       >
