@@ -1,5 +1,6 @@
 import {
   assertValidExercise,
+  ticksPerBar,
   type Exercise,
   type ExerciseMode,
   type Level,
@@ -173,11 +174,33 @@ function parseGuideKey(value: unknown, path: string): GuideKey {
         }
       })
     : undefined
+  if (value.counts !== undefined && !Array.isArray(value.counts)) {
+    fail(`${path}.counts`, 'must be an array')
+  }
+
+  const snippetTicks = ticksPerBar({ beats: 4, beatValue: 4 }) * notation.bars
+  const counts = Array.isArray(value.counts)
+    ? value.counts.map((count, countIndex) => {
+        const countPath = `${path}.counts[${countIndex}]`
+        if (!isRecord(count)) fail(countPath, 'must be a count object')
+        const tick = count.tick
+        if (
+          typeof tick !== 'number' ||
+          !Number.isInteger(tick) ||
+          tick < 0 ||
+          tick >= snippetTicks
+        ) {
+          fail(`${countPath}.tick`, 'must be an integer inside the snippet')
+        }
+        return { tick, text: stringAt(count, 'text', countPath) }
+      })
+    : undefined
 
   return {
     label: stringAt(value, 'label', path),
     ...notation,
     ...(noteLabels ? { noteLabels } : {}),
+    ...(counts ? { counts } : {}),
   }
 }
 

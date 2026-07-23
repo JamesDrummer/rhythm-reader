@@ -5,6 +5,7 @@ export { renderExerciseNotation } from './vexflowMapper'
 export type {
   LayoutBox,
   NotationClock,
+  NotationCount,
   NotationLayout,
   NotationNoteLabel,
   NotationProps,

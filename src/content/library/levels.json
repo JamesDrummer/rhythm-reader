@@ -26,7 +26,13 @@
               { "voice": "snare", "tick": 960, "duration": 480 },
               { "voice": "snare", "tick": 1440, "duration": 480 }
             ],
-            "notationSystems": 1
+            "notationSystems": 1,
+            "counts": [
+              { "tick": 0, "text": "1" },
+              { "tick": 480, "text": "2" },
+              { "tick": 960, "text": "3" },
+              { "tick": 1440, "text": "4" }
+            ]
           },
           {
             "label": "Quarter rest on beat 3",
@@ -36,7 +42,13 @@
               { "voice": "snare", "tick": 480, "duration": 480 },
               { "voice": "snare", "tick": 1440, "duration": 480 }
             ],
-            "notationSystems": 1
+            "notationSystems": 1,
+            "counts": [
+              { "tick": 0, "text": "1" },
+              { "tick": 480, "text": "2" },
+              { "tick": 960, "text": "(3)" },
+              { "tick": 1440, "text": "4" }
+            ]
           }
         ]
       }
@@ -266,7 +278,14 @@
               { "voice": "snare", "tick": 960, "duration": 480 },
               { "voice": "snare", "tick": 1440, "duration": 480 }
             ],
-            "notationSystems": 1
+            "notationSystems": 1,
+            "counts": [
+              { "tick": 0, "text": "1" },
+              { "tick": 240, "text": "&" },
+              { "tick": 480, "text": "2" },
+              { "tick": 960, "text": "3" },
+              { "tick": 1440, "text": "4" }
+            ]
           }
         ]
       }
@@ -657,7 +676,17 @@
               { "voice": "snare", "tick": 1200, "duration": 240 },
               { "voice": "snare", "tick": 1680, "duration": 240 }
             ],
-            "notationSystems": 1
+            "notationSystems": 1,
+            "counts": [
+              { "tick": 0, "text": "(1)" },
+              { "tick": 240, "text": "&" },
+              { "tick": 480, "text": "(2)" },
+              { "tick": 720, "text": "&" },
+              { "tick": 960, "text": "(3)" },
+              { "tick": 1200, "text": "&" },
+              { "tick": 1440, "text": "(4)" },
+              { "tick": 1680, "text": "&" }
+            ]
           }
         ]
       }
@@ -1181,7 +1210,17 @@
               { "voice": "snare", "tick": 480, "duration": 240 },
               { "voice": "snare", "tick": 720, "duration": 240 }
             ],
-            "notationSystems": 1
+            "notationSystems": 1,
+            "counts": [
+              { "tick": 0, "text": "1" },
+              { "tick": 120, "text": "e" },
+              { "tick": 240, "text": "&" },
+              { "tick": 360, "text": "a" },
+              { "tick": 480, "text": "2" },
+              { "tick": 720, "text": "&" },
+              { "tick": 960, "text": "(3)" },
+              { "tick": 1440, "text": "(4)" }
+            ]
           }
         ]
       }
@@ -1852,7 +1891,16 @@
               { "voice": "snare", "tick": 240, "duration": 120 },
               { "voice": "snare", "tick": 360, "duration": 120 }
             ],
-            "notationSystems": 1
+            "notationSystems": 1,
+            "counts": [
+              { "tick": 0, "text": "(1)" },
+              { "tick": 120, "text": "e" },
+              { "tick": 240, "text": "&" },
+              { "tick": 360, "text": "a" },
+              { "tick": 480, "text": "(2)" },
+              { "tick": 960, "text": "(3)" },
+              { "tick": 1440, "text": "(4)" }
+            ]
           }
         ]
       }
@@ -2181,7 +2229,16 @@
               { "voice": "snare", "tick": 480, "duration": 240 },
               { "voice": "snare", "tick": 720, "duration": 240 }
             ],
-            "notationSystems": 1
+            "notationSystems": 1,
+            "counts": [
+              { "tick": 0, "text": "1" },
+              { "tick": 160, "text": "trip" },
+              { "tick": 320, "text": "let" },
+              { "tick": 480, "text": "2" },
+              { "tick": 720, "text": "&" },
+              { "tick": 960, "text": "(3)" },
+              { "tick": 1440, "text": "(4)" }
+            ]
           }
         ]
       }

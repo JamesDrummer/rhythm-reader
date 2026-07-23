@@ -10,6 +10,7 @@ vi.mock('./vexflowMapper', () => ({
 }))
 
 const event = { voice: 'snare' as const, tick: 0, duration: PPQ }
+const laterEvent = { voice: 'snare' as const, tick: PPQ * 2, duration: PPQ }
 const exercise: Exercise = {
   id: 'labelled-notation',
   title: 'Labelled notation',
@@ -60,7 +61,50 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-describe('Notation note labels', () => {
+describe('Notation static annotations', () => {
+  it('positions a rest count between notes and includes it in a cropped viewBox', () => {
+    const countExercise: Exercise = {
+      ...exercise,
+      events: [event, laterEvent],
+    }
+    vi.mocked(renderExerciseNotation).mockImplementation((container) => {
+      appendSvg(container)
+      const base = layout(100, 150)
+      return {
+        ...base,
+        noteLayouts: [
+          base.noteLayouts[0],
+          {
+            event: laterEvent,
+            x: 300,
+            y: 80,
+            bbox: { x: 294, y: 74, width: 12, height: 12 },
+          },
+        ],
+        viewBox: { x: 0, y: 50, width: 540, height: 100 },
+      }
+    })
+
+    const { container } = render(
+      <Notation
+        counts={[{ tick: PPQ, text: '2' }]}
+        cropToContent
+        exercise={countExercise}
+      />,
+    )
+    const count = container.querySelector('[data-count-tick="480"]')
+    const notationViewBox = container
+      .querySelector('svg')
+      ?.getAttribute('viewBox')
+      ?.split(' ')
+      .map(Number)
+
+    expect(count).toHaveAttribute('x', '200')
+    expect(Number(count?.getAttribute('x'))).toBeGreaterThan(100)
+    expect(Number(count?.getAttribute('x'))).toBeLessThan(300)
+    expect(notationViewBox?.[1]).toBeLessThan(Number(count?.getAttribute('y')))
+  })
+
   it('keeps note labels inside the cropped engraving viewBox', () => {
     vi.mocked(renderExerciseNotation).mockImplementation((container) => {
       appendSvg(container)

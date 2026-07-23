@@ -53,6 +53,10 @@ export interface Level {
         eventIndex: number
         text: string
       }>
+      counts?: Array<{
+        tick: number
+        text: string
+      }>
     }>
   }>
   exercises: Exercise[]

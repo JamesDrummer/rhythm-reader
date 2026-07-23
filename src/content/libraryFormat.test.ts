@@ -20,6 +20,10 @@ const mixedLevel: Level = {
             { voice: 'hihat', tick: 240, duration: 240 },
           ],
           notationSystems: 1,
+          counts: [
+            { tick: 0, text: '1' },
+            { tick: 240, text: '&' },
+          ],
         },
         {
           label: 'Quarter-note snare',
@@ -146,5 +150,56 @@ describe('built-in library JSON format', () => {
     expect(() =>
       parseLibraryJson(serialiseLibrary([invalidGuideLevel])),
     ).toThrow('levels[0].guide[0].key[0].noteLabels[0].eventIndex')
+  })
+
+  it.each([-1, 1.5, 1920])(
+    'reports invalid guide count tick %s at its library path',
+    (tick) => {
+      const invalidGuideLevel: Level = {
+        ...mixedLevel,
+        custom: undefined,
+        guide: [
+          {
+            text: 'This count sits outside the snippet.',
+            key: [
+              {
+                label: 'Invalid count',
+                bars: 1,
+                events: [{ voice: 'snare', tick: 0, duration: 480 }],
+                counts: [{ tick, text: '1' }],
+              },
+            ],
+          },
+        ],
+      }
+
+      expect(() =>
+        parseLibraryJson(serialiseLibrary([invalidGuideLevel])),
+      ).toThrow('levels[0].guide[0].key[0].counts[0].tick')
+    },
+  )
+
+  it('reports empty guide count text at its library path', () => {
+    const invalidGuideLevel: Level = {
+      ...mixedLevel,
+      custom: undefined,
+      guide: [
+        {
+          text: 'This count has no text.',
+          key: [
+            {
+              label: 'Invalid count',
+              bars: 1,
+              events: [{ voice: 'snare', tick: 0, duration: 480 }],
+              counts: [{ tick: 0, text: ' ' }],
+            },
+          ],
+        },
+      ],
+    }
+
+    expect(() =>
+      parseLibraryJson(serialiseLibrary([invalidGuideLevel])),
+    ).toThrow('levels[0].guide[0].key[0].counts[0].text')
   })
 })

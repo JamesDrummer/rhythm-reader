@@ -199,6 +199,7 @@ export function LevelDetailPage() {
                             entry.label,
                           )}
                           label={`${entry.label} notation`}
+                          counts={entry.counts}
                           noteLabels={entry.noteLabels}
                           showClef={false}
                           showTimeSignature={false}

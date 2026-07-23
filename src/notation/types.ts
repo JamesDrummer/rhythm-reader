@@ -54,6 +54,11 @@ export interface NotationNoteLabel {
   text: string
 }
 
+export interface NotationCount {
+  tick: number
+  text: string
+}
+
 export interface NotationRenderOptions {
   cropToContent?: boolean
   showClef?: boolean
@@ -65,6 +70,7 @@ export interface NotationProps extends NotationRenderOptions {
   clock?: NotationClock
   overlayRef?: Ref<OverlayHandle>
   noteLabels?: readonly NotationNoteLabel[]
+  counts?: readonly NotationCount[]
   className?: string
   label?: string
 }

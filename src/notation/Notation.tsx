@@ -1,12 +1,20 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Overlay } from './Overlay'
-import type { NotationLayout, NotationNoteLabel, NotationProps } from './types'
+import { buildPositionAnchors, interpolatePlayheadPosition } from './playhead'
+import type {
+  NotationCount,
+  NotationLayout,
+  NotationNoteLabel,
+  NotationProps,
+} from './types'
 import { renderExerciseNotation } from './vexflowMapper'
 
 const NOTE_LABEL_HEIGHT = 12
-const NOTE_LABEL_CROP_MARGIN = 8
+const ANNOTATION_CROP_MARGIN = 8
+const COUNT_STAFF_MARGIN = 8
 const EMPTY_NOTE_LABELS: readonly NotationNoteLabel[] = []
+const EMPTY_COUNTS: readonly NotationCount[] = []
 
 function fullViewBox(layout: NotationLayout) {
   return (
@@ -51,11 +59,36 @@ function positionedNoteLabels(
   })
 }
 
+function positionedCounts(
+  exercise: NotationProps['exercise'],
+  layout: NotationLayout,
+  counts: readonly NotationCount[],
+) {
+  if (counts.length === 0) return []
+  const anchors = buildPositionAnchors(exercise, layout)
+  return counts.flatMap((count) => {
+    const position = interpolatePlayheadPosition(count.tick, anchors)
+    if (!position) return []
+
+    return [
+      {
+        ...count,
+        x: position.x,
+        y:
+          (position.staffTop ?? layout.staffBounds.top) -
+          NOTE_LABEL_HEIGHT -
+          COUNT_STAFF_MARGIN,
+      },
+    ]
+  })
+}
+
 export function Notation({
   exercise,
   clock,
   overlayRef,
   noteLabels = EMPTY_NOTE_LABELS,
+  counts = EMPTY_COUNTS,
   cropToContent = false,
   showClef = true,
   showTimeSignature = true,
@@ -78,17 +111,25 @@ export function Notation({
         { cropToContent, showClef, showTimeSignature },
       )
       const labels = positionedNoteLabels(exercise, nextLayout, noteLabels)
+      const countLabels = positionedCounts(exercise, nextLayout, counts)
       const mappedViewBox = fullViewBox(nextLayout)
       const labelledBottom = labels.length
         ? Math.max(...labels.map(({ y }) => y + NOTE_LABEL_HEIGHT)) +
-          NOTE_LABEL_CROP_MARGIN
+          ANNOTATION_CROP_MARGIN
         : mappedViewBox.y + mappedViewBox.height
+      const labelledTop = countLabels.length
+        ? Math.min(...countLabels.map(({ y }) => y)) - ANNOTATION_CROP_MARGIN
+        : mappedViewBox.y
+      const croppedTop = Math.min(mappedViewBox.y, labelledTop)
+      const croppedBottom = Math.max(
+        mappedViewBox.y + mappedViewBox.height,
+        labelledBottom,
+      )
       const viewBox = cropToContent
         ? {
             ...mappedViewBox,
-            height:
-              Math.max(mappedViewBox.y + mappedViewBox.height, labelledBottom) -
-              mappedViewBox.y,
+            y: croppedTop,
+            height: croppedBottom - croppedTop,
           }
         : mappedViewBox
 
@@ -107,11 +148,12 @@ export function Notation({
     const observer = new ResizeObserver(render)
     observer.observe(output)
     return () => observer.disconnect()
-  }, [cropToContent, exercise, noteLabels, showClef, showTimeSignature])
+  }, [counts, cropToContent, exercise, noteLabels, showClef, showTimeSignature])
 
   const labels = layout
     ? positionedNoteLabels(exercise, layout, noteLabels)
     : []
+  const countLabels = layout ? positionedCounts(exercise, layout, counts) : []
   const viewBox = layout ? fullViewBox(layout) : undefined
 
   return (
@@ -132,7 +174,7 @@ export function Notation({
           ref={overlayRef}
         />
       )}
-      {layout && viewBox && labels.length > 0 && (
+      {layout && viewBox && (labels.length > 0 || countLabels.length > 0) && (
         <svg
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 h-full w-full text-bhda-text/70"
@@ -148,6 +190,22 @@ export function Notation({
               fontSize="12"
               fontWeight="600"
               key={`${eventIndex}-${labelIndex}`}
+              textAnchor="middle"
+              x={x}
+              y={y}
+            >
+              {text}
+            </text>
+          ))}
+          {countLabels.map(({ text, tick, x, y }, countIndex) => (
+            <text
+              data-count-tick={tick}
+              dominantBaseline="hanging"
+              fill="currentColor"
+              fontFamily="Montserrat, sans-serif"
+              fontSize="12"
+              fontWeight="600"
+              key={`${tick}-${countIndex}`}
               textAnchor="middle"
               x={x}
               y={y}

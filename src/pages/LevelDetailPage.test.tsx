@@ -111,6 +111,7 @@ describe('LevelDetailPage', () => {
               events: [{ voice: 'snare', tick: 0, duration: 480 }],
               notationSystems: 1,
               noteLabels: [{ eventIndex: 0, text: 'Beat one' }],
+              counts: [{ tick: 0, text: '1' }],
             },
           ],
         },
@@ -138,6 +139,9 @@ describe('LevelDetailPage', () => {
     expect(
       keyNotation.querySelector('[data-note-label-index="0"]'),
     ).toBeInTheDocument()
+    expect(
+      keyNotation.querySelector('[data-count-tick="0"]'),
+    ).toHaveTextContent('1')
   })
 
   it('does not show a reading guide card when the level has no guide', async () => {
