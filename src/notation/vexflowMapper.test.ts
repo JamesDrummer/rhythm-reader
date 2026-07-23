@@ -215,6 +215,9 @@ describe('renderExerciseNotation', () => {
     expect(viewBox?.[1]).toBeGreaterThan(0)
     expect(viewBox?.[2]).toBe(layout.width)
     expect(viewBox?.[3]).toBeLessThan(layout.height)
+    expect(layout.barLayouts[0].contentTop).toBeLessThan(
+      layout.barLayouts[0].staffTop,
+    )
     expect((viewBox?.[1] ?? 0) + (viewBox?.[3] ?? 0)).toBeLessThan(
       layout.height,
     )

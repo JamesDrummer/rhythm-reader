@@ -551,26 +551,40 @@ export function renderExerciseNotation(
     staves.at(-1)?.getNoteEndX() ?? width - HORIZONTAL_PADDING,
   ]
   const barTicks = ticksPerBar(exercise.timeSignature)
-  const barLayouts = staves.map((stave, index) => ({
-    startTick: index * barTicks,
-    endTick: (index + 1) * barTicks,
-    startX: stave.getNoteStartX(),
-    endX: stave.getNoteEndX(),
-    staffTop: stave.getTopLineTopY(),
-    staffBottom: stave.getBottomLineBottomY(),
-  }))
+  const noteContentBoxes = [
+    ...new Map(
+      references.map(({ event, note }) => [
+        note,
+        { box: noteContentBox(note), tick: event.tick },
+      ]),
+    ).values(),
+  ]
+  const barLayouts = staves.map((stave, index) => {
+    const startTick = index * barTicks
+    const endTick = (index + 1) * barTicks
+    const staffTop = stave.getTopLineTopY()
+    const barNoteTops = noteContentBoxes
+      .filter(({ tick }) => tick >= startTick && tick < endTick)
+      .map(({ box }) => box.y)
+
+    return {
+      startTick,
+      endTick,
+      startX: stave.getNoteStartX(),
+      endX: stave.getNoteEndX(),
+      staffTop,
+      staffBottom: stave.getBottomLineBottomY(),
+      contentTop: Math.min(staffTop, ...barNoteTops),
+    }
+  })
   let viewBox: LayoutBox = { x: 0, y: 0, width, height }
   if (cropToContent) {
-    const noteContentBoxes = [
-      ...new Set(references.map(({ note }) => note)),
-    ].map(noteContentBox)
     const contentTop = Math.min(
-      ...barLayouts.map(({ staffTop }) => staffTop),
-      ...noteContentBoxes.map(({ y }) => y),
+      ...barLayouts.map(({ contentTop: barContentTop }) => barContentTop),
     )
     const contentBottom = Math.max(
       ...barLayouts.map(({ staffBottom }) => staffBottom),
-      ...noteContentBoxes.map(({ height: boxHeight, y }) => y + boxHeight),
+      ...noteContentBoxes.map(({ box }) => box.y + box.height),
     )
     viewBox = {
       x: 0,

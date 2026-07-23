@@ -11,6 +11,7 @@ vi.mock('./vexflowMapper', () => ({
 
 const event = { voice: 'snare' as const, tick: 0, duration: PPQ }
 const laterEvent = { voice: 'snare' as const, tick: PPQ * 2, duration: PPQ }
+const tallEvent = { voice: 'hihat' as const, tick: PPQ * 4, duration: PPQ }
 const exercise: Exercise = {
   id: 'labelled-notation',
   title: 'Labelled notation',
@@ -44,6 +45,7 @@ function layout(x: number, staffBottom: number): NotationLayout {
         endX: 520,
         staffTop: 70,
         staffBottom,
+        contentTop: 40,
       },
     ],
     staffBounds: { top: 70, bottom: staffBottom },
@@ -62,10 +64,12 @@ afterEach(() => {
 })
 
 describe('Notation static annotations', () => {
-  it('positions a rest count between notes and includes it in a cropped viewBox', () => {
+  it('positions a rest count between notes above the tallest note and includes it in a cropped viewBox', () => {
+    const topmostNoteTop = 30
     const countExercise: Exercise = {
       ...exercise,
-      events: [event, laterEvent],
+      bars: 2,
+      events: [event, laterEvent, tallEvent],
     }
     vi.mocked(renderExerciseNotation).mockImplementation((container) => {
       appendSvg(container)
@@ -73,12 +77,34 @@ describe('Notation static annotations', () => {
       return {
         ...base,
         noteLayouts: [
-          base.noteLayouts[0],
+          {
+            ...base.noteLayouts[0],
+            bbox: { x: 94, y: 40, width: 12, height: 46 },
+          },
           {
             event: laterEvent,
             x: 300,
             y: 80,
-            bbox: { x: 294, y: 74, width: 12, height: 12 },
+            bbox: { x: 294, y: 55, width: 12, height: 31 },
+          },
+          {
+            event: tallEvent,
+            x: 500,
+            y: 80,
+            bbox: { x: 494, y: topmostNoteTop, width: 12, height: 56 },
+          },
+        ],
+        barBoundaries: [80, 320, 520],
+        barLayouts: [
+          { ...base.barLayouts[0], endX: 320 },
+          {
+            startTick: PPQ * 4,
+            endTick: PPQ * 8,
+            startX: 320,
+            endX: 520,
+            staffTop: 70,
+            staffBottom: 150,
+            contentTop: topmostNoteTop,
           },
         ],
         viewBox: { x: 0, y: 50, width: 540, height: 100 },
@@ -102,7 +128,13 @@ describe('Notation static annotations', () => {
     expect(count).toHaveAttribute('x', '200')
     expect(Number(count?.getAttribute('x'))).toBeGreaterThan(100)
     expect(Number(count?.getAttribute('x'))).toBeLessThan(300)
+    expect(Number(count?.getAttribute('y')) + 12).toBeLessThanOrEqual(
+      topmostNoteTop - 8,
+    )
     expect(notationViewBox?.[1]).toBeLessThan(Number(count?.getAttribute('y')))
+    expect(
+      (notationViewBox?.[1] ?? 0) + (notationViewBox?.[3] ?? 0),
+    ).toBeGreaterThan(Number(count?.getAttribute('y')) + 12)
   })
 
   it('keeps note labels inside the cropped engraving viewBox', () => {

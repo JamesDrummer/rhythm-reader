@@ -69,15 +69,19 @@ function positionedCounts(
   return counts.flatMap((count) => {
     const position = interpolatePlayheadPosition(count.tick, anchors)
     if (!position) return []
+    const staffTop = position.staffTop ?? layout.staffBounds.top
+    const rowTop = Math.min(
+      staffTop,
+      ...layout.barLayouts
+        .filter((bar) => bar.staffTop === staffTop)
+        .map((bar) => bar.contentTop),
+    )
 
     return [
       {
         ...count,
         x: position.x,
-        y:
-          (position.staffTop ?? layout.staffBounds.top) -
-          NOTE_LABEL_HEIGHT -
-          COUNT_STAFF_MARGIN,
+        y: rowTop - NOTE_LABEL_HEIGHT - COUNT_STAFF_MARGIN,
       },
     ]
   })

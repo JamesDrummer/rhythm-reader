@@ -8,16 +8,6 @@
         "text": "Music is read left to right, like words. Each bar holds four steady beats: count them out loud, 1 2 3 4. A quarter note (crotchet) means play on that beat. A quarter rest (crotchet rest) means stay silent for that beat, but keep counting. The beat does not stop just because you do.",
         "key": [
           {
-            "label": "Quarter-note foundations",
-            "bars": 1,
-            "events": [
-              { "voice": "snare", "tick": 0, "duration": 480 },
-              { "voice": "snare", "tick": 480, "duration": 480 },
-              { "voice": "snare", "tick": 1440, "duration": 480 }
-            ],
-            "notationSystems": 1
-          },
-          {
             "label": "Quarter note (crotchet)",
             "bars": 1,
             "events": [

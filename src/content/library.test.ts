@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest'
-import { renderExerciseNotation } from '@/notation'
+import { createElement } from 'react'
+import { cleanup, render } from '@testing-library/react'
+import { afterEach, describe, expect, it } from 'vitest'
+import { Notation, renderExerciseNotation } from '@/notation'
 import {
   deriveRestPositions,
   generateBinaryGrid,
@@ -8,6 +10,8 @@ import {
   validateExercise,
 } from '@/model'
 import { BUILT_IN_LEVELS } from './BuiltInSource'
+
+afterEach(cleanup)
 
 const PRESERVED_EXERCISE_IDS = [
   'quarter-notes',
@@ -414,7 +418,7 @@ describe('built-in exercise library', () => {
       }),
     )
 
-    expect(guideSnippets).toHaveLength(25)
+    expect(guideSnippets).toHaveLength(24)
 
     for (const exercise of [
       ...BUILT_IN_LEVELS.flatMap((level) => level.exercises),
@@ -428,6 +432,70 @@ describe('built-in exercise library', () => {
         exercise.events.length,
       )
       expect(layout.barBoundaries, exercise.id).toHaveLength(exercise.bars + 1)
+    }
+  })
+
+  it('keeps exactly the two requested Level 1 key tiles', () => {
+    expect(
+      BUILT_IN_LEVELS[0].guide?.[0].key?.map(({ label }) => label),
+    ).toEqual(['Quarter note (crotchet)', 'Quarter rest on beat 3'])
+  })
+
+  it('renders every counted guide tile with its static count annotations', () => {
+    const countedGuideTiles = BUILT_IN_LEVELS.flatMap((level) =>
+      (level.guide ?? []).flatMap((section, sectionIndex) =>
+        (section.key ?? []).flatMap((notation, keyIndex) =>
+          notation.counts
+            ? [
+                {
+                  exercise: {
+                    id: `${level.id}-guide-${sectionIndex + 1}-counted-key-${keyIndex + 1}`,
+                    title: notation.label,
+                    tempo: 60,
+                    timeSignature: { beats: 4, beatValue: 4 } as const,
+                    bars: notation.bars,
+                    events: notation.events,
+                    ...(notation.notationSystems
+                      ? { notationSystems: notation.notationSystems }
+                      : {}),
+                    tier: 'beginner' as const,
+                    listenFirstAllowed: false,
+                    modes: ['playAlong'] as Exercise['modes'],
+                  },
+                  counts: notation.counts,
+                },
+              ]
+            : [],
+        ),
+      ),
+    )
+
+    expect(countedGuideTiles).toHaveLength(7)
+
+    for (const { counts, exercise } of countedGuideTiles) {
+      const rendered = render(
+        createElement(Notation, {
+          counts,
+          cropToContent: true,
+          exercise,
+          showClef: false,
+          showTimeSignature: false,
+        }),
+      )
+      const renderedCounts =
+        rendered.container.querySelectorAll('[data-count-tick]')
+
+      expect(renderedCounts, exercise.title).toHaveLength(counts.length)
+      expect(
+        [...renderedCounts].map((count) => count.textContent),
+        exercise.title,
+      ).toEqual(counts.map(({ text }) => text))
+      for (const count of renderedCounts) {
+        expect(Number.isFinite(Number(count.getAttribute('x')))).toBe(true)
+        expect(Number.isFinite(Number(count.getAttribute('y')))).toBe(true)
+      }
+
+      rendered.unmount()
     }
   })
 

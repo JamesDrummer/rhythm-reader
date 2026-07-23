@@ -85,6 +85,7 @@ describe('Overlay theme colours', () => {
         endX: 480,
         staffTop: 70,
         staffBottom: 150,
+        contentTop: 70,
       },
     ],
     staffBounds: { top: 70, bottom: 150 },

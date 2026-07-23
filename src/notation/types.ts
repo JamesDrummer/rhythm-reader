@@ -30,6 +30,8 @@ export interface NotationLayout {
     endX: number
     staffTop: number
     staffBottom: number
+    /** Highest engraved staff, note or stem content in this bar. */
+    contentTop: number
   }[]
   staffBounds: {
     top: number
