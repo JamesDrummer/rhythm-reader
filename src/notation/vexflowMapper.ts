@@ -20,12 +20,18 @@ import {
   type TimeSignature,
   type Voice,
 } from '@/model'
-import type { LayoutBox, NotationLayout, NoteLayout } from './types'
+import type {
+  LayoutBox,
+  NotationLayout,
+  NotationRenderOptions,
+  NoteLayout,
+} from './types'
 
 const SCORE_HEIGHT = 216
 const HORIZONTAL_PADDING = 20
 const BAR_WIDTH = 500
 const STAVE_Y = 64
+const CONTENT_CROP_MARGIN = 12
 const ENGRAVING_STYLE = {
   fillStyle: 'currentColor',
   strokeStyle: 'currentColor',
@@ -342,6 +348,25 @@ function noteHeadBox(note: StaveNote, keyIndex: number): LayoutBox {
   return { x, y, width, height }
 }
 
+function noteContentBox(note: StaveNote): LayoutBox {
+  const noteBox = note.getBoundingBox()
+  const stemExtents = note.hasStem() ? note.getStemExtents() : undefined
+  const left = noteBox.getX()
+  const top = Math.min(
+    noteBox.getY(),
+    stemExtents?.topY ?? Number.POSITIVE_INFINITY,
+    stemExtents?.baseY ?? Number.POSITIVE_INFINITY,
+  )
+  const right = noteBox.getX() + noteBox.getW()
+  const bottom = Math.max(
+    noteBox.getY() + noteBox.getH(),
+    stemExtents?.topY ?? Number.NEGATIVE_INFINITY,
+    stemExtents?.baseY ?? Number.NEGATIVE_INFINITY,
+  )
+
+  return { x: left, y: top, width: right - left, height: bottom - top }
+}
+
 function renderBar(
   context: RenderContext,
   exercise: Exercise,
@@ -445,6 +470,11 @@ export function renderExerciseNotation(
   container: HTMLDivElement,
   exercise: Exercise,
   barsPerLine = exercise.bars,
+  {
+    cropToContent = false,
+    showClef = true,
+    showTimeSignature = true,
+  }: NotationRenderOptions = {},
 ): NotationLayout {
   container.replaceChildren()
 
@@ -488,12 +518,11 @@ export function renderExerciseNotation(
     )
     stave.setStyle(ENGRAVING_STYLE)
     stave.setDefaultLedgerLineStyle(ENGRAVING_STYLE)
-    if (column === 0) {
-      stave
-        .addClef('percussion')
-        .addTimeSignature(
-          `${exercise.timeSignature.beats}/${exercise.timeSignature.beatValue}`,
-        )
+    if (column === 0 && showClef) stave.addClef('percussion')
+    if (column === 0 && showTimeSignature) {
+      stave.addTimeSignature(
+        `${exercise.timeSignature.beats}/${exercise.timeSignature.beatValue}`,
+      )
     }
     stave.setContext(context).draw()
     staves.push(stave)
@@ -530,10 +559,35 @@ export function renderExerciseNotation(
     staffTop: stave.getTopLineTopY(),
     staffBottom: stave.getBottomLineBottomY(),
   }))
+  let viewBox: LayoutBox = { x: 0, y: 0, width, height }
+  if (cropToContent) {
+    const noteContentBoxes = [
+      ...new Set(references.map(({ note }) => note)),
+    ].map(noteContentBox)
+    const contentTop = Math.min(
+      ...barLayouts.map(({ staffTop }) => staffTop),
+      ...noteContentBoxes.map(({ y }) => y),
+    )
+    const contentBottom = Math.max(
+      ...barLayouts.map(({ staffBottom }) => staffBottom),
+      ...noteContentBoxes.map(({ height: boxHeight, y }) => y + boxHeight),
+    )
+    viewBox = {
+      x: 0,
+      y: contentTop - CONTENT_CROP_MARGIN,
+      width,
+      height: contentBottom - contentTop + CONTENT_CROP_MARGIN * 2,
+    }
+  }
+
+  if (context instanceof SVGContext) {
+    context.setViewBox(viewBox.x, viewBox.y, viewBox.width, viewBox.height)
+  }
 
   return {
     width,
     height,
+    viewBox,
     noteLayouts,
     barBoundaries,
     barLayouts,

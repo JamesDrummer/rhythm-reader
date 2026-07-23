@@ -8,6 +8,7 @@ export type {
   NotationLayout,
   NotationNoteLabel,
   NotationProps,
+  NotationRenderOptions,
   NoteFeedback,
   NoteLayout,
   OverlayHandle,

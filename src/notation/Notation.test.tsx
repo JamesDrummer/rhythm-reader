@@ -49,6 +49,11 @@ function layout(x: number, staffBottom: number): NotationLayout {
   }
 }
 
+function appendSvg(container: HTMLDivElement) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+  container.replaceChildren(svg)
+}
+
 afterEach(() => {
   cleanup()
   vi.clearAllMocks()
@@ -56,6 +61,39 @@ afterEach(() => {
 })
 
 describe('Notation note labels', () => {
+  it('keeps note labels inside the cropped engraving viewBox', () => {
+    vi.mocked(renderExerciseNotation).mockImplementation((container) => {
+      appendSvg(container)
+      return {
+        ...layout(123, 150),
+        viewBox: { x: 0, y: 50, width: 540, height: 100 },
+      }
+    })
+
+    const { container } = render(
+      <Notation
+        cropToContent
+        exercise={exercise}
+        noteLabels={[{ eventIndex: 0, text: 'Beat one' }]}
+      />,
+    )
+    const svgs = container.querySelectorAll('svg')
+    const viewBoxes = [...svgs].map((svg) =>
+      svg.getAttribute('viewBox')?.split(' ').map(Number),
+    )
+    const labelY = Number(
+      container.querySelector('[data-note-label-index="0"]')?.getAttribute('y'),
+    )
+
+    expect(svgs).toHaveLength(2)
+    expect(viewBoxes[0]).toEqual(viewBoxes[1])
+    expect(viewBoxes[0]?.[1]).toBeGreaterThan(0)
+    expect(viewBoxes[0]?.[3]).toBeLessThan(216)
+    expect((viewBoxes[0]?.[1] ?? 0) + (viewBoxes[0]?.[3] ?? 0)).toBeGreaterThan(
+      labelY + 12,
+    )
+  })
+
   it('positions labels from noteLayouts and updates them after resize', () => {
     let resize: (() => void) | undefined
     class ResizeObserverMock {

@@ -18,6 +18,8 @@ export interface NoteLayout {
 export interface NotationLayout {
   width: number
   height: number
+  /** Visible SVG region. Defaults to the full logical notation dimensions. */
+  viewBox?: LayoutBox
   noteLayouts: NoteLayout[]
   /** Exercise start, each internal barline, and exercise end. */
   barBoundaries: number[]
@@ -52,7 +54,13 @@ export interface NotationNoteLabel {
   text: string
 }
 
-export interface NotationProps {
+export interface NotationRenderOptions {
+  cropToContent?: boolean
+  showClef?: boolean
+  showTimeSignature?: boolean
+}
+
+export interface NotationProps extends NotationRenderOptions {
   exercise: Exercise
   clock?: NotationClock
   overlayRef?: Ref<OverlayHandle>

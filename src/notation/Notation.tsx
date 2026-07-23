@@ -4,6 +4,21 @@ import { Overlay } from './Overlay'
 import type { NotationLayout, NotationNoteLabel, NotationProps } from './types'
 import { renderExerciseNotation } from './vexflowMapper'
 
+const NOTE_LABEL_HEIGHT = 12
+const NOTE_LABEL_CROP_MARGIN = 8
+const EMPTY_NOTE_LABELS: readonly NotationNoteLabel[] = []
+
+function fullViewBox(layout: NotationLayout) {
+  return (
+    layout.viewBox ?? {
+      x: 0,
+      y: 0,
+      width: layout.width,
+      height: layout.height,
+    }
+  )
+}
+
 function positionedNoteLabels(
   exercise: NotationProps['exercise'],
   layout: NotationLayout,
@@ -40,7 +55,10 @@ export function Notation({
   exercise,
   clock,
   overlayRef,
-  noteLabels = [],
+  noteLabels = EMPTY_NOTE_LABELS,
+  cropToContent = false,
+  showClef = true,
+  showTimeSignature = true,
   className,
   label = `${exercise.title} drum notation`,
 }: NotationProps) {
@@ -53,9 +71,34 @@ export function Notation({
     const output = outputRef.current
     const render = () => {
       const narrow = output.clientWidth > 0 && output.clientWidth < 480
-      setLayout(
-        renderExerciseNotation(output, exercise, narrow ? 1 : exercise.bars),
+      const nextLayout = renderExerciseNotation(
+        output,
+        exercise,
+        narrow ? 1 : exercise.bars,
+        { cropToContent, showClef, showTimeSignature },
       )
+      const labels = positionedNoteLabels(exercise, nextLayout, noteLabels)
+      const mappedViewBox = fullViewBox(nextLayout)
+      const labelledBottom = labels.length
+        ? Math.max(...labels.map(({ y }) => y + NOTE_LABEL_HEIGHT)) +
+          NOTE_LABEL_CROP_MARGIN
+        : mappedViewBox.y + mappedViewBox.height
+      const viewBox = cropToContent
+        ? {
+            ...mappedViewBox,
+            height:
+              Math.max(mappedViewBox.y + mappedViewBox.height, labelledBottom) -
+              mappedViewBox.y,
+          }
+        : mappedViewBox
+
+      output
+        .querySelector('svg')
+        ?.setAttribute(
+          'viewBox',
+          `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`,
+        )
+      setLayout({ ...nextLayout, viewBox })
     }
 
     render()
@@ -64,7 +107,12 @@ export function Notation({
     const observer = new ResizeObserver(render)
     observer.observe(output)
     return () => observer.disconnect()
-  }, [exercise])
+  }, [cropToContent, exercise, noteLabels, showClef, showTimeSignature])
+
+  const labels = layout
+    ? positionedNoteLabels(exercise, layout, noteLabels)
+    : []
+  const viewBox = layout ? fullViewBox(layout) : undefined
 
   return (
     <div
@@ -84,31 +132,29 @@ export function Notation({
           ref={overlayRef}
         />
       )}
-      {layout && noteLabels.length > 0 && (
+      {layout && viewBox && labels.length > 0 && (
         <svg
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 h-full w-full text-bhda-text/70"
           preserveAspectRatio="xMidYMid meet"
-          viewBox={`0 0 ${layout.width} ${layout.height}`}
+          viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
         >
-          {positionedNoteLabels(exercise, layout, noteLabels).map(
-            ({ eventIndex, text, x, y }, labelIndex) => (
-              <text
-                data-note-label-index={eventIndex}
-                dominantBaseline="hanging"
-                fill="currentColor"
-                fontFamily="Montserrat, sans-serif"
-                fontSize="12"
-                fontWeight="600"
-                key={`${eventIndex}-${labelIndex}`}
-                textAnchor="middle"
-                x={x}
-                y={y}
-              >
-                {text}
-              </text>
-            ),
-          )}
+          {labels.map(({ eventIndex, text, x, y }, labelIndex) => (
+            <text
+              data-note-label-index={eventIndex}
+              dominantBaseline="hanging"
+              fill="currentColor"
+              fontFamily="Montserrat, sans-serif"
+              fontSize="12"
+              fontWeight="600"
+              key={`${eventIndex}-${labelIndex}`}
+              textAnchor="middle"
+              x={x}
+              y={y}
+            >
+              {text}
+            </text>
+          ))}
         </svg>
       )}
     </div>

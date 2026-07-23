@@ -180,7 +180,8 @@ export function LevelDetailPage() {
                 </p>
                 {section.example && (
                   <Notation
-                    className="mt-4 border shadow-none"
+                    className="mx-auto mt-4 max-w-xl border shadow-none"
+                    cropToContent
                     exercise={guideNotationExercise(
                       level,
                       section.example,
@@ -188,6 +189,8 @@ export function LevelDetailPage() {
                       `${level.title} reading example ${sectionIndex + 1}`,
                     )}
                     label={`Reading example ${sectionIndex + 1}`}
+                    showClef
+                    showTimeSignature
                   />
                 )}
                 {section.key && section.key.length > 0 && (
@@ -198,12 +201,13 @@ export function LevelDetailPage() {
                   >
                     {section.key.map((entry, keyIndex) => (
                       <figure
-                        className="w-full min-w-0 sm:w-56"
+                        className="w-full min-w-0 sm:w-72"
                         key={`${entry.label}-${keyIndex}`}
                         role="listitem"
                       >
                         <Notation
                           className="border shadow-none"
+                          cropToContent
                           exercise={guideNotationExercise(
                             level,
                             entry,
@@ -212,6 +216,8 @@ export function LevelDetailPage() {
                           )}
                           label={`${entry.label} notation`}
                           noteLabels={entry.noteLabels}
+                          showClef={false}
+                          showTimeSignature={false}
                         />
                         <figcaption className="mt-2 text-center text-sm font-semibold text-bhda-text/70">
                           {entry.label}

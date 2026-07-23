@@ -193,6 +193,45 @@ describe('renderExerciseNotation', () => {
     )
   })
 
+  it('crops the SVG viewBox to the engraved staff and note content', () => {
+    const exercise: Exercise = {
+      ...AUDIO_DEMO_EXERCISE,
+      id: 'cropped-static-notation',
+      bars: 1,
+      events: AUDIO_DEMO_EXERCISE.events.filter(({ tick }) => tick < PPQ * 4),
+    }
+    const container = document.createElement('div')
+    const layout = renderExerciseNotation(container, exercise, 1, {
+      cropToContent: true,
+    })
+    const viewBox = container
+      .querySelector('svg')
+      ?.getAttribute('viewBox')
+      ?.split(' ')
+      .map(Number)
+
+    expect(viewBox).toBeDefined()
+    expect(viewBox?.[0]).toBe(0)
+    expect(viewBox?.[1]).toBeGreaterThan(0)
+    expect(viewBox?.[2]).toBe(layout.width)
+    expect(viewBox?.[3]).toBeLessThan(layout.height)
+    expect((viewBox?.[1] ?? 0) + (viewBox?.[3] ?? 0)).toBeLessThan(
+      layout.height,
+    )
+  })
+
+  it('can omit the clef and time signature from a static snippet', () => {
+    const container = document.createElement('div')
+    renderExerciseNotation(container, AUDIO_DEMO_EXERCISE, 1, {
+      showClef: false,
+      showTimeSignature: false,
+    })
+
+    expect(container.querySelector('.vf-clef')).toBeNull()
+    expect(container.querySelector('.vf-timesignature')).toBeNull()
+    expect(container.querySelector('.vf-stavenote')).not.toBeNull()
+  })
+
   it.each([1, 2] as const)(
     'uses the theme notation colour throughout a %s-system score',
     (notationSystems) => {
